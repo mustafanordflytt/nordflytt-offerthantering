@@ -1,0 +1,632 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 241, 245, 249;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .moving-type-card {
+    @apply border rounded-lg p-4 cursor-pointer transition-all hover:border-blue-500 hover:shadow-md;
+  }
+
+  .moving-type-card.selected {
+    @apply border-blue-500 bg-blue-50 shadow-md;
+  }
+
+  .moving-type-card .card-icon {
+    @apply text-3xl mb-2;
+  }
+
+  .moving-type-card h3 {
+    @apply font-medium text-lg mb-1;
+  }
+
+  .moving-type-card p {
+    @apply text-sm text-gray-500;
+  }
+
+  .next-button {
+    @apply px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors;
+  }
+
+  .animated-checkmark {
+    @apply text-green-500 transition-all duration-300 transform;
+  }
+
+  .animated-checkmark.checked {
+    @apply scale-125;
+  }
+
+  .bg-sand {
+    @apply bg-amber-50;
+  }
+
+  .item-card {
+    @apply border rounded-lg p-4 transition-all hover:shadow-md;
+  }
+}
+
+.bg-sand {
+  background-color: #f5f0e8;
+}
+
+.moving-type-card {
+  @apply relative flex items-center gap-4 p-6 bg-white rounded-lg border-2 border-transparent hover:border-accent/50 transition-all cursor-pointer;
+}
+
+.moving-type-card.selected {
+  @apply border-blue-500 shadow-md;
+  animation: subtle-pulse-blue 2s infinite;
+}
+
+@keyframes subtle-pulse-blue {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.item-card {
+  @apply relative flex flex-col items-center justify-between p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border-2 border-transparent hover:border-accent/50;
+}
+
+.item-card.selected {
+  @apply border-secondary;
+}
+
+.next-button {
+  @apply w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all flex items-center justify-center transform hover:scale-105 duration-200 shadow-md hover:shadow-lg;
+}
+
+.back-button {
+  @apply w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 font-medium py-3 px-6 rounded-lg transition-all;
+}
+
+/* Add animation for "Not recommended" cards */
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.not-recommended-card:hover {
+  animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Add these styles at the end of the file to improve tooltips and ensure text doesn't overflow */
+
+/* Ensure tooltips are always on top */
+.tooltip {
+  z-index: 1000 !important;
+}
+
+/* Improve text wrapping */
+.break-words {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Enhance card styling */
+.card {
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card:active {
+  transform: translateY(1px);
+}
+
+/* Improve badge visibility */
+.badge {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure consistent spacing */
+.space-y-2\.5 > * + * {
+  margin-top: 0.625rem;
+}
+
+/* Tooltip improvements */
+.tooltip-content {
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000 !important;
+  opacity: 0;
+  animation: fadeIn 0.2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Improve text line height */
+.line-height-\[1\.5\] {
+  line-height: 1.5;
+}
+
+/* Improve card content spacing */
+.card-content {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure vertical centering */
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Improve button hover states */
+.next-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+/* Improve badge positioning */
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* Ensure consistent padding */
+@media (min-width: 640px) {
+  .sm\:p-4 {
+    padding: 1rem;
+  }
+
+  .sm\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Improve discount text */
+.text-blue-700.font-semibold {
+  font-weight: 600;
+  color: #0056b3;
+}
+
+/* Add a subtle pulse animation for selected cards */
+@keyframes subtle-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.border-blue-500 {
+  animation: subtle-pulse 2s infinite;
+}
+
+.border-green-500 {
+  animation: green-pulse 2s infinite;
+}
+
+.border-indigo-500 {
+  animation: indigo-pulse 2s infinite;
+}
+
+@keyframes green-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes indigo-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+/* Green checkmark pulse animation */
+@keyframes green-checkmark-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+/* Improve spacing between sections */
+.mb-6 {
+  margin-bottom: 1.75rem;
+}
+
+/* Enhance focus states for better accessibility */
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Confetti Animation Styles */
+.confirmation-card {
+  position: relative;
+  animation: card-appear 0.5s ease-out forwards;
+  overflow: visible !important;
+}
+
+@keyframes card-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #ff5b8f;
+  opacity: 1;
+  z-index: 1;
+  will-change: transform, opacity;
+}
+
+/* Custom inventory styles */
+.inventory-item {
+  transition: all 0.2s ease;
+}
+
+.inventory-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.inventory-count-btn {
+  transition: all 0.15s ease;
+}
+
+.inventory-count-btn:active {
+  transform: scale(0.95);
+}
+
+/* Progress bar animation */
+@keyframes progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.progress-fill {
+  animation: progress-fill 0.5s ease-out forwards;
+}
+
+/* Fade in animation for steps */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* Animated checkmark styles */
+.animated-checkmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background-color: rgba(0, 82, 204, 0.2);
+  border-radius: 50%;
+  z-index: 100;
+  pointer-events: none;
+  animation: checkmark-pulse 1.5s ease-out forwards;
+}
+
+.animated-checkmark::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background-color: #0052cc;
+  border-radius: 50%;
+  z-index: 101;
+  animation: checkmark-scale 0.5s ease-out forwards;
+}
+
+.animated-checkmark::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 102;
+  animation: checkmark-appear 0.5s 0.1s ease-out forwards;
+}
+
+@keyframes checkmark-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes checkmark-scale {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes checkmark-appear {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.service-card-selected {
+  border-color: #22c55e !important;
+  background-color: rgba(34, 197, 94, 0.05) !important;
+}
+
+.service-card-selected .checkmark-icon {
+  animation: green-checkmark-pulse 2s infinite;
+}
+
+.animated-checkmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background-color: rgba(0, 82, 204, 0.2);
+  border-radius: 50%;
+  z-index: 100;
+  pointer-events: none;
+  animation: checkmark-pulse 1.5s ease-out forwards;
+}
+
+.animated-checkmark::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background-color: #0052cc;
+  border-radius: 50%;
+  z-index: 101;
+  animation: checkmark-scale 0.5s ease-out forwards;
+}
+
+.animated-checkmark::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  z-index: 102;
+  animation: checkmark-appear 0.5s 0.1s ease-out forwards;
+}
+
+@keyframes checkmark-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes checkmark-scale {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes checkmark-appear {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}

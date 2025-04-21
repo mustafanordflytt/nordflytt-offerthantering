@@ -1,0 +1,36 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+== Projektfokus ==
+Vi ska arbeta med ett Next.js-projekt (App Router) som innehåller ett bokningsformulär skapat i v0.dev. Målet är att:
+1. Rensa bort allt som inte tillhör själva bokningsformuläret (offertvisning, CRM etc)
+2. Se till att formuläret fungerar visuellt och funktionellt direkt i `localhost`
+3. Säkerställa att Supabase-interaktionen sker via `lib/supabase.ts`
+
+== Teknisk struktur som gäller ==
+* UI: Tailwind CSS + shadcn/ui
+* Ikoner: `lucide-react`
+* Design: Mobilförst, responsiv och byggd i komponenter från `components/`
+* API och datalogik hålls i `lib/` eller `actions/`, inte i komponenter
+* Använd TypeScript (`interface`, ingen `any`)
+* Typdefinitioner ligger i `types/`
+* Undvik hårdkodning och duplicerad logik
+* Känsliga värden i `.env.local`
+
+== Att göra direkt efter import ==
+1. Säkerställ att `app/` endast innehåller routes för formuläret – allt annat kan tas bort
+2. Behåll `lib/supabase.ts`, `components/`, `types/`, `styles/globals.css`
+3. Verifiera att designen från v0 stämmer visuellt (mobilförst, tydlig layout)
+4. Kontrollera att alla komponenter (`Step1`, `Step2`, `Summary`, etc) är korrekt länkade och typade
+5. Starta dev-server och se till att `/` visar hela bokningsflödet
+
+== Regler du följer i detta projekt ==
+(inkludera reglerna från prompten ovan så Cursor minns dem internt)
+
+== Syftet just nu ==
+Fokusera endast på formuläret. Offertvyn hanteras i ett separat Cursor-projekt. Formuläret skickar data till Supabase – och denna data används i nästa steg av kundresan.

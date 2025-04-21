@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adressavstånd - Nordflytts</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1d4ed8;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .required {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px 10px 10px 36px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: #9ca3af;
+        }
+        
+        .status {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+        
+        .status.loading {
+            color: #2563eb;
+        }
+        
+        .status.error {
+            color: #dc2626;
+        }
+        
+        .status.success {
+            color: #16a34a;
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+            border: 2px solid #ddd;
+            border-top: 2px solid #2563eb;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Beräkna körsträcka</h1>
+        
+        <div class="card">
+            <div class="form-group">
+                <label for="fromAddress">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Från adress <span class="required">*</span>
+                </label>
+                <div class="input-container">
+                    <input type="text" id="fromAddress" placeholder="Ange startadress" required />
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="toAddress">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Till adress <span class="required">*</span>
+                </label>
+                <div class="input-container">
+                    <input type="text" id="toAddress" placeholder="Ange destinationsadress" required />
+                </div>
+            </div>
+            
+            <input type="hidden" id="calculatedDistance" name="calculatedDistance" value="" />
+            
+            <div id="status"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Funktion för att fördröja API-anrop (debounce)
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+        
+        // Huvudfunktion som körs när Google Maps API har laddats
+        function initMap() {
+            const fromInput = document.getElementById('fromAddress');
+            const toInput = document.getElementById('toAddress');
+            const statusEl = document.getElementById('status');
+            const distanceInput = document.getElementById('calculatedDistance');
+            
+            let fromAutocomplete;
+            let toAutocomplete;
+            let distanceMatrix;
+            
+            // Initialisera Google Maps tjänster
+            function initialize() {
+                // Skapa autocomplete för från-adress
+                fromAutocomplete = new google.maps.places.Autocomplete(fromInput, {
+                    componentRestrictions: { country: 'se' },
+                    fields: ['formatted_address']
+                });
+                
+                // Skapa autocomplete för till-adress
+                toAutocomplete = new google.maps.places.Autocomplete(toInput, {
+                    componentRestrictions: { country: 'se' },
+                    fields: ['formatted_address']
+                });
+                
+                // Skapa distansmatrisen
+                distanceMatrix = new google.maps.DistanceMatrixService();
+                
+                // Lyssna på platsval från autocomplete
+                fromAutocomplete.addListener('place_changed', () => {
+                    const place = fromAutocomplete.getPlace();
+                    if (place && place.formatted_address) {
+                        fromInput.value = place.formatted_address;
+                        if (toInput.value) {
+                            calculateDistance();
+                        }
+                    }
+                });
+                
+                toAutocomplete.addListener('place_changed', () => {
+                    const place = toAutocomplete.getPlace();
+                    if (place && place.formatted_address) {
+                        toInput.value = place.formatted_address;
+                        if (fromInput.value) {
+                            calculateDistance();
+                        }
+                    }
+                });
+                
+                // Lyssna på manuella ändringar i inputfälten
+                fromInput.addEventListener('input', debouncedCalculate);
+                toInput.addEventListener('input', debouncedCalculate);
+            }
+            
+            // Debounce-funktion för beräkning
+            const debouncedCalculate = debounce(() => {
+                if (fromInput.value && toInput.value) {
+                    calculateDistance();
+                }
+            }, 1000);
+            
+            // Beräkna distans mellan adresserna
+            function calculateDistance() {
+                if (!fromInput.value || !toInput.value) {
+                    showStatus('error', 'Både från- och tilladress krävs för att beräkna avstånd.');
+                    return;
+                }
+                
+                showLoadingStatus();
+                
+                distanceMatrix.getDistanceMatrix(
+                    {
+                        origins: [fromInput.value],
+                        destinations: [toInput.value],
+                        travelMode: google.maps.TravelMode.DRIVING,
+                        unitSystem: google.maps.UnitSystem.METRIC
+                    },
+                    (response, status) => {
+                        if (status !== 'OK') {
+                            showStatus('error', `Kunde inte beräkna avstånd: ${status}`);
+                            return;
+                        }
+                        
+                        const result = response.rows[0]?.elements[0];
+                        
+                        if (result?.status === "OK" && result.distance && result.duration) {
+                            // Spara distansen i det dolda fältet
+                            distanceInput.value = result.distance.value;
+                            
+                            // Visa resultatet
+                            showStatus(
+                                'success', 
+                                `Avstånd: <strong>${result.distance.text}</strong> (körtid: ${result.duration.text})`
+                            );
+                        } else {
+                            showStatus(
+                                'error', 
+                                `Kunde inte hitta rutt mellan adresserna: ${result?.status || 'Okänt fel'}`
+                            );
+                        }
+                    }
+                );
+            }
+            
+            // Visa status - typ kan vara 'loading', 'error' eller 'success'
+            function showStatus(type, message) {
+                statusEl.innerHTML = '';
+                statusEl.className = `status ${type}`;
+                
+                if (type === 'loading') {
+                    const spinner = document.createElement('div');
+                    spinner.className = 'spinner';
+                    statusEl.appendChild(spinner);
+                } else if (type === 'error') {
+                    // Error icon
+                    statusEl.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    `;
+                } else if (type === 'success') {
+                    // Check icon
+                    statusEl.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+                }
+                
+                const messageEl = document.createElement('span');
+                messageEl.innerHTML = message;
+                statusEl.appendChild(messageEl);
+            }
+            
+            function showLoadingStatus() {
+                showStatus('loading', 'Beräknar avstånd...');
+            }
+            
+            // Initialisera
+            initialize();
+        }
+    </script>
+    
+    <!-- Läs in Google Maps JavaScript API med Places biblioteket -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChAUwFV4q2SQUbHjjw_QIK1I5I3mee8b0&libraries=places&callback=initMap" async defer></script>
+</body>
+</html> 
