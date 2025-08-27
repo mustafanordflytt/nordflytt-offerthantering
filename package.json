@@ -135,6 +135,19 @@
     "zod": "^3.24.1",
     "zustand": "^4.5.5"
   },
+  "overrides": {
+    "react-leaflet": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@react-leaflet/core": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "react-day-picker": {
+      "date-fns": "$date-fns"
+    }
+  },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.17",
