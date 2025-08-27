@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordflytt Mobile Access Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .link-card {
+            background: #002A5C;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .link-card:hover {
+            background: #003872;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🚚 Nordflytt Mobile Access Test</h1>
+        
+        <div class="status info">
+            📱 Denna sida hjälper dig att testa åtkomst till Nordflytt från din mobil
+        </div>
+        
+        <h2>📍 Din server-information:</h2>
+        <ul>
+            <li><strong>IP-adress:</strong> <code>192.168.1.228</code></li>
+            <li><strong>Port:</strong> <code>3000</code></li>
+            <li><strong>Status:</strong> <span id="server-status">Kontrollerar...</span></li>
+        </ul>
+        
+        <h2>🔗 Direktlänkar:</h2>
+        <a href="http://192.168.1.228:3000/staff" class="link-card">
+            👷 Staff App - Port 3000
+        </a>
+        <a href="http://192.168.1.228:3002/staff" class="link-card">
+            🧪 Staff App - Port 3002 (Test)
+        </a>
+        <a href="http://192.168.1.228:3000/" class="link-card">
+            🏠 Huvudsida
+        </a>
+        
+        <h2>🔧 Felsökning:</h2>
+        <div class="card" style="background: #f8f9fa;">
+            <h3>Om det inte fungerar:</h3>
+            <ol>
+                <li><strong>Kontrollera URL:</strong> Se till att du skriver <code>http://192.168.1.228:3000/staff</code> (inte https, inget U efter portnumret)</li>
+                <li><strong>Samma nätverk:</strong> Din mobil måste vara på samma WiFi-nätverk som din Mac</li>
+                <li><strong>Brandvägg:</strong> Du kan behöva tillåta Node.js i macOS brandvägg:
+                    <ul>
+                        <li>Systeminställningar → Säkerhet & Integritet → Brandvägg</li>
+                        <li>Klicka på "Brandväggsalternativ..."</li>
+                        <li>Lägg till Node.js och tillåt inkommande anslutningar</li>
+                    </ul>
+                </li>
+                <li><strong>Starta om servern:</strong> 
+                    <code>npm run dev</code>
+                </li>
+            </ol>
+        </div>
+        
+        <h2>📲 QR-kod för enkel åtkomst:</h2>
+        <div id="qr-container" style="text-align: center; padding: 20px; background: white; border-radius: 8px;">
+            <p>Skanna denna QR-kod med din mobil:</p>
+            <canvas id="qr-code"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        // Check server status
+        fetch('http://192.168.1.228:3000/')
+            .then(response => {
+                document.getElementById('server-status').innerHTML = '<span class="success">✅ Servern körs!</span>';
+            })
+            .catch(error => {
+                document.getElementById('server-status').innerHTML = '<span class="error">❌ Kan inte nå servern</span>';
+            });
+        
+        // Simple QR code generator (text-based)
+        function generateTextQR(text) {
+            const canvas = document.getElementById('qr-code');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200;
+            canvas.height = 200;
+            
+            // Simple placeholder - in real app you'd use a QR library
+            ctx.fillStyle = '#000';
+            ctx.font = '12px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('http://192.168.1.228:3000/staff', 100, 100);
+            ctx.strokeRect(10, 10, 180, 180);
+        }
+        
+        generateTextQR('http://192.168.1.228:3000/staff');
+    </script>
+</body>
+</html>

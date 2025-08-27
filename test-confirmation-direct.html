@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Confirmation Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-link {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0;
+            background: #002A5C;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .test-link:hover {
+            background: #003D7A;
+        }
+        .info {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        code {
+            background: #e5e5e5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Bekräftelsesida - Tilläggstjänster</h1>
+        
+        <div class="info">
+            <h2>Instruktioner:</h2>
+            <ol>
+                <li>Klicka på länken nedan för att öppna bekräftelsesidan</li>
+                <li>Öppna Developer Console (F12) och titta på Console-fliken</li>
+                <li>Sök efter följande meddelanden:
+                    <ul>
+                        <li><code>🔄 Hämtar tilläggstjänster för bokning:</code></li>
+                        <li><code>📡 API Response status:</code></li>
+                        <li><code>✅ Tilläggstjänster från databas:</code></li>
+                        <li><code>🔍 Debug dbAdditionalServices:</code></li>
+                    </ul>
+                </li>
+                <li>Scrolla ner på sidan och leta efter "Tilläggstjänster under uppdraget"</li>
+            </ol>
+        </div>
+        
+        <h2>Testlänkar:</h2>
+        
+        <h3>Bokning: b87bc970-d99f-45ae-aa8f-1fb8bb44c3e4</h3>
+        <a href="http://localhost:3000/order-confirmation/b87bc970-d99f-45ae-aa8f-1fb8bb44c3e4" 
+           target="_blank" 
+           class="test-link">
+            Öppna bekräftelsesida →
+        </a>
+        
+        <h3>Senaste bokning: 6cb25b02-22e4-4e19-9ea0-9d67870cc9b2</h3>
+        <a href="http://localhost:3000/order-confirmation/6cb25b02-22e4-4e19-9ea0-9d67870cc9b2" 
+           target="_blank" 
+           class="test-link">
+            Öppna senaste bekräftelsesida →
+        </a>
+        
+        <div class="info">
+            <h3>Förväntad output i console:</h3>
+            <pre>
+🔄 Hämtar tilläggstjänster för bokning: b87bc970-d99f-45ae-aa8f-1fb8bb44c3e4
+📡 API Response status: 200
+✅ Tilläggstjänster från databas: {
+  additionalServices: [
+    { service_name: "Packhjälp", quantity: 1, total_price: 700 },
+    { service_name: "Flyttkartonger", quantity: 15, total_price: 1185 }
+  ],
+  totalAdditionalCost: 1885
+}
+📊 Setting dbAdditionalServices with: [...]
+✅ State updated - services should now display
+🔍 Debug dbAdditionalServices: [Array med services]
+🔍 Debug dbAdditionalServices.length: 2
+            </pre>
+        </div>
+        
+        <div class="info">
+            <h3>Om tilläggstjänster inte visas:</h3>
+            <ul>
+                <li>Kontrollera om API:et returnerar 404 eller annat fel</li>
+                <li>Se om <code>dbAdditionalServices.length</code> är 0</li>
+                <li>Kolla om det finns fel i console</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

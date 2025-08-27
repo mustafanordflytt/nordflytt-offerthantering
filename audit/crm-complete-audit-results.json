@@ -1,0 +1,1593 @@
+{
+  "auditDate": "2025-08-10T20:02:13.951Z",
+  "modules": {
+    "Dashboard": {
+      "name": "Dashboard",
+      "path": "/crm/dashboard",
+      "critical": true,
+      "status": "success",
+      "loadTime": 26,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Inställningar",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Avböj alla",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Acceptera alla",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Statistics cards visible",
+          "Charts/graphs render",
+          "Quick actions work"
+        ],
+        "working": [],
+        "broken": [
+          "Statistics cards visible",
+          "Charts/graphs render",
+          "Quick actions work"
+        ]
+      },
+      "errors": []
+    },
+    "Kunder": {
+      "name": "Kunder",
+      "path": "/crm/kunder",
+      "critical": true,
+      "status": "success",
+      "loadTime": 17,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Customer list loads",
+          "Add new customer button",
+          "Search functionality",
+          "Customer details modal"
+        ],
+        "working": [],
+        "broken": [
+          "Customer list loads",
+          "Add new customer button",
+          "Search functionality",
+          "Customer details modal"
+        ]
+      },
+      "errors": []
+    },
+    "Leads": {
+      "name": "Leads",
+      "path": "/crm/leads",
+      "critical": true,
+      "status": "success",
+      "loadTime": 16,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Leads list loads",
+          "Create new lead",
+          "Lead conversion button",
+          "Lead status filtering"
+        ],
+        "working": [],
+        "broken": [
+          "Leads list loads",
+          "Create new lead",
+          "Lead conversion button",
+          "Lead status filtering"
+        ]
+      },
+      "errors": []
+    },
+    "Uppdrag": {
+      "name": "Uppdrag",
+      "path": "/crm/uppdrag",
+      "critical": true,
+      "status": "success",
+      "loadTime": 16,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Jobs list loads",
+          "Create new job",
+          "Job status update",
+          "Assign staff"
+        ],
+        "working": [],
+        "broken": [
+          "Jobs list loads",
+          "Create new job",
+          "Job status update",
+          "Assign staff"
+        ]
+      },
+      "errors": []
+    },
+    "Offerter": {
+      "name": "Offerter",
+      "path": "/crm/offerter",
+      "critical": true,
+      "status": "success",
+      "loadTime": 16,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Quotes list loads",
+          "Create new quote",
+          "Convert to job",
+          "Send quote"
+        ],
+        "working": [],
+        "broken": [
+          "Quotes list loads",
+          "Create new quote",
+          "Convert to job",
+          "Send quote"
+        ]
+      },
+      "errors": []
+    },
+    "Ekonomi": {
+      "name": "Ekonomi",
+      "path": "/crm/ekonomi",
+      "critical": true,
+      "status": "success",
+      "loadTime": 16,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Financial overview loads",
+          "Invoice list",
+          "Create invoice",
+          "Payment tracking"
+        ],
+        "working": [],
+        "broken": [
+          "Financial overview loads",
+          "Invoice list",
+          "Create invoice",
+          "Payment tracking"
+        ]
+      },
+      "errors": []
+    },
+    "Anställda": {
+      "name": "Anställda",
+      "path": "/crm/anstallda",
+      "critical": true,
+      "status": "success",
+      "loadTime": 15,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [
+          "Staff list loads",
+          "Add new staff",
+          "View schedule",
+          "Time reporting"
+        ],
+        "working": [],
+        "broken": [
+          "Staff list loads",
+          "Add new staff",
+          "View schedule",
+          "Time reporting"
+        ]
+      },
+      "errors": []
+    },
+    "Kalender": {
+      "name": "Kalender",
+      "path": "/crm/kalender",
+      "critical": false,
+      "status": "success",
+      "loadTime": 14,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Rapporter": {
+      "name": "Rapporter",
+      "path": "/crm/rapporter",
+      "critical": false,
+      "status": "success",
+      "loadTime": 12,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "AI Optimering": {
+      "name": "AI Optimering",
+      "path": "/crm/ai-optimering",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "AI Kundtjänst": {
+      "name": "AI Kundtjänst",
+      "path": "/crm/ai-kundtjanst",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Automation": {
+      "name": "Automation",
+      "path": "/crm/automation",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Dokument": {
+      "name": "Dokument",
+      "path": "/crm/dokument",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Juridik & Risk": {
+      "name": "Juridik & Risk",
+      "path": "/crm/juridik-risk",
+      "critical": false,
+      "status": "success",
+      "loadTime": 14,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Lager": {
+      "name": "Lager",
+      "path": "/crm/lager",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Leverantörer": {
+      "name": "Leverantörer",
+      "path": "/crm/leverantorer",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    },
+    "Samarbeten": {
+      "name": "Samarbeten",
+      "path": "/crm/samarbeten",
+      "critical": false,
+      "status": "success",
+      "loadTime": 13,
+      "elements": {
+        "buttons": [
+          {
+            "text": "Logga in",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Admin",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Manager",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "text": "Anställd",
+            "disabled": false,
+            "visible": true
+          }
+        ],
+        "forms": [
+          {
+            "id": "",
+            "action": "http://localhost:3000/login?from=%2Fcrm%2Flogin",
+            "method": "get"
+          }
+        ],
+        "tables": [],
+        "links": [
+          {
+            "text": "skapa ett nytt konto",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "Glömt lösenord?",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "användarvillkor",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          },
+          {
+            "text": "integritetspolicy",
+            "href": "http://localhost:3000/login?from=%2Fcrm%2Flogin#",
+            "target": ""
+          }
+        ],
+        "inputs": [
+          {
+            "type": "email",
+            "name": "",
+            "required": true,
+            "value": ""
+          },
+          {
+            "type": "password",
+            "name": "",
+            "required": true,
+            "value": ""
+          }
+        ]
+      },
+      "functionality": {
+        "tested": [],
+        "working": [],
+        "broken": []
+      },
+      "errors": []
+    }
+  },
+  "businessLogic": {
+    "Lead to Customer Conversion": {
+      "name": "Lead to Customer Conversion",
+      "status": "failed",
+      "stepsCompleted": 1,
+      "errors": [
+        "Element not found: .lead-card:first-child, tr:first-child"
+      ]
+    },
+    "Quote to Job Conversion": {
+      "name": "Quote to Job Conversion",
+      "status": "failed",
+      "stepsCompleted": 1,
+      "errors": [
+        "Element not found: .quote-card:first-child, tr:first-child"
+      ]
+    },
+    "Job Assignment Flow": {
+      "name": "Job Assignment Flow",
+      "status": "failed",
+      "stepsCompleted": 1,
+      "errors": [
+        "Element not found: .job-card:first-child, tr:first-child"
+      ]
+    },
+    "Invoice Generation": {
+      "name": "Invoice Generation",
+      "status": "failed",
+      "stepsCompleted": 1,
+      "errors": [
+        "Element not found: .completed-job:first-child"
+      ]
+    }
+  },
+  "integrations": {
+    "Supabase Database": {
+      "status": "disconnected",
+      "tested": true
+    },
+    "Email Service": {
+      "status": "disconnected",
+      "tested": true
+    },
+    "SMS Service": {
+      "status": "disconnected",
+      "tested": true
+    },
+    "Payment Gateway": {
+      "status": "disconnected",
+      "tested": true
+    },
+    "Google Maps API": {
+      "status": "disconnected",
+      "tested": true
+    },
+    "File Storage": {
+      "status": "disconnected",
+      "tested": true
+    }
+  },
+  "dataFlow": {
+    "Lead → Customer → Job": {
+      "leadCreated": false,
+      "customerCreated": false,
+      "jobCreated": false,
+      "complete": false
+    },
+    "Job → Invoice → Payment": {
+      "jobFound": false,
+      "invoiceCreated": false,
+      "paymentRegistered": false,
+      "complete": false
+    },
+    "Staff → Schedule → Job Assignment": {
+      "staffAvailable": false,
+      "scheduleWorks": false,
+      "assignmentWorks": false,
+      "complete": false
+    }
+  },
+  "errors": [
+    {
+      "type": "network",
+      "url": "http://localhost:3000/login?from=%2Fcrm%2Flogin&_rsc=1f1ag",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "network",
+      "url": "http://localhost:3000/login?from=%2Fcrm%2Flogin&_rsc=zga3f",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "network",
+      "url": "http://localhost:3000/login?from=%2Fcrm%2Flogin&_rsc=1kezi",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "network",
+      "url": "http://localhost:3000/login?from=%2Fcrm%2Flogin&_rsc=16r9a",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "network",
+      "url": "http://localhost:3000/login?from=%2Fcrm%2Flogin&_rsc=qhwaa",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "warnings": [],
+  "recommendations": [
+    "🚨 CRITICAL: System health is very low. Immediate action required.",
+    "🔴 Fix critical module issues first:",
+    "  - Kunder has 4 broken features",
+    "  - Leads has 4 broken features",
+    "  - Uppdrag has 4 broken features",
+    "  - Offerter has 4 broken features",
+    "  - Ekonomi has 4 broken features",
+    "  - Anställda has 4 broken features",
+    "⚠️ Most business workflows are broken. Prioritize workflow automation.",
+    "🔌 Many integrations are disconnected. Check API keys and configurations.",
+    "🔄 No data flows are working end-to-end. Fix module connections.",
+    "\n📋 Specific improvements needed:",
+    "1. Implement proper error handling across all modules",
+    "2. Add loading states for all async operations",
+    "3. Create automated tests for critical workflows",
+    "4. Optimize database queries for better performance",
+    "5. Add real-time updates using WebSockets"
+  ],
+  "healthScore": 25
+}

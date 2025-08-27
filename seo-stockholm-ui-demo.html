@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Stockholm UI/UX Demo - Nordflytt</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .demo-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1f2937; margin-bottom: 8px; }
+        h2 { color: #374151; margin-top: 32px; }
+        .subtitle { color: #6b7280; margin-bottom: 32px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .feature-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        .feature-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .badge.new { background: #dcfce7; color: #166534; }
+        .badge.improved { background: #dbeafe; color: #1e40af; }
+        .demo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #7c3aed;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .demo-link:hover { background: #6d28d9; }
+        .screenshot {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-top: 16px;
+        }
+        .ai-mode-demo {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .mode-button {
+            padding: 8px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-button.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-section">
+            <h1>SEO Stockholm - UI/UX Förbättringar</h1>
+            <p class="subtitle">En fullständig omarbetning för enklare användning och AI-driven automation</p>
+            
+            <a href="http://localhost:3000/crm/ai-marknadsforing" class="demo-link">
+                Öppna Live Demo →
+            </a>
+        </div>
+
+        <div class="demo-section">
+            <h2>🚀 Huvudförbättringar</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="badge new">NYTT</span>
+                    <h3>Förenklad Huvudvy</h3>
+                    <p>Endast 3 nyckeltal visas - allt annat är gömt tills det behövs. AI prioriterar vad som är viktigt just nu.</p>
+                    <ul>
+                        <li>Nya kunder från Google</li>
+                        <li>Intäkter från SEO</li>
+                        <li>Din position</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <span class="badge new">NYTT</span>
+                    <h3>AI-lägen</h3>
+                    <p>Välj hur mycket kontroll du vill ha:</p>
+                    <div class="ai-mode-demo">
+                        <button class="mode-button active">Auto</button>
+                        <button class="mode-button">Assist</button>
+                        <button class="mode-button">Manuell</button>
+                    </div>
+                    <ul>
+                        <li><strong>Auto:</strong> AI sköter allt</li>
+                        <li><strong>Assist:</strong> AI föreslår, du godkänner</li>
+                        <li><strong>Manuell:</strong> Full kontroll</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <span class="badge improved">FÖRBÄTTRAT</span>
+                    <h3>AI Assistent</h3>
+                    <p>Konversationsbaserad hjälp som förstår kontext och kan svara på frågor som:</p>
+                    <ul>
+                        <li>"Varför tappar vi position?"</li>
+                        <li>"Vad är viktigast just nu?"</li>
+                        <li>"Hur ligger vi till mot konkurrenter?"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>✨ Nya komponenter</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>One-Click Actions</h3>
+                    <p>Kraftfulla optimeringar med ett enda klick:</p>
+                    <ul>
+                        <li>Boost för helgen (+45K kr)</li>
+                        <li>Försvara position #3 (behåll 125K/mån)</li>
+                        <li>Svara på recensioner (+35K/mån)</li>
+                        <li>Veckounderhåll (förebyggande)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Smart Notifications</h3>
+                    <p>Intelligenta notiser med automatisk prioritering:</p>
+                    <ul>
+                        <li>Kritiska händelser markeras tydligt</li>
+                        <li>AI kan agera automatiskt efter nedräkning</li>
+                        <li>Visar ekonomisk påverkan direkt</li>
+                        <li>Grupperar liknande notiser</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Förenklad Mobilvy</h3>
+                    <p>CEO-läge för mobilen:</p>
+                    <ul>
+                        <li>Swipe-baserad navigation</li>
+                        <li>Stora touch-ytor (minst 44px)</li>
+                        <li>Snabbåtgärder i botten</li>
+                        <li>AI-förslag baserat på tid och plats</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎯 Användningsflöde</h2>
+            
+            <ol style="line-height: 1.8;">
+                <li><strong>Öppna dashboard:</strong> Se direkt vad som är viktigast (3 metrics)</li>
+                <li><strong>AI rekommenderar:</strong> "Du har 3 kritiska åtgärder värda 245K/mån"</li>
+                <li><strong>Ett klick:</strong> "Fixa allt automatiskt" eller granska först</li>
+                <li><strong>AI arbetar:</strong> Live-uppdateringar medan optimeringar körs</li>
+                <li><strong>Klart:</strong> Notis när allt är färdigt med resultat</li>
+            </ol>
+        </div>
+
+        <div class="demo-section">
+            <h2>📱 Test själv</h2>
+            <p>Besök <a href="http://localhost:3000/crm/ai-marknadsforing">http://localhost:3000/crm/ai-marknadsforing</a> och:</p>
+            <ol>
+                <li>Klicka på "SEO Stockholm" fliken</li>
+                <li>Testa de olika AI-lägena (Auto/Assist/Manuell)</li>
+                <li>Öppna AI-assistenten (lila knapp nere till höger)</li>
+                <li>Prova "Fixa allt automatiskt" knappen</li>
+                <li>Växla mellan förenklad och avancerad vy</li>
+                <li>Testa på mobil för CEO-läge</li>
+            </ol>
+        </div>
+
+        <div class="demo-section" style="background: #f3f4f6;">
+            <h2>📊 Resultat</h2>
+            <p><strong>Förväntad effekt av UI/UX-förbättringarna:</strong></p>
+            <ul>
+                <li>80% mindre tid för att fatta beslut</li>
+                <li>95% av åtgärder kan göras med ett klick</li>
+                <li>Ingen teknisk kunskap krävs</li>
+                <li>AI hanterar 90% av optimeringarna automatiskt</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Demo interactivity
+        document.querySelectorAll('.mode-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.mode-button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

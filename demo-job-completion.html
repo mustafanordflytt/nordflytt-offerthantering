@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Jobbavslutning och Flyttpärm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 p-4">
+    <div class="max-w-md mx-auto">
+        <h1 class="text-2xl font-bold text-center mb-6 text-blue-900">Nordflytt - Jobbavslutning Demo</h1>
+        
+        <!-- Job Card -->
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="font-bold text-lg">Test Kund</h3>
+                    <p class="text-sm text-gray-600">NF2024001</p>
+                </div>
+                <span id="status-badge" class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500 text-white">
+                    ⏰ Kommande
+                </span>
+            </div>
+            
+            <div class="space-y-2 mb-4">
+                <p class="text-sm">📍 Testgatan 2, Stockholm</p>
+                <p class="text-sm">⏱️ <span id="work-time">Ingen tid loggad</span></p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div id="action-buttons" class="space-y-2">
+                <button id="start-job-btn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700">
+                    ▶️ Påbörja uppdrag
+                </button>
+            </div>
+        </div>
+        
+        <!-- Status Messages -->
+        <div id="messages" class="space-y-2"></div>
+        
+        <!-- Flyttpärm Preview -->
+        <div id="flyttparm-preview" class="hidden bg-white rounded-lg shadow-lg p-4 mt-4">
+            <h3 class="font-bold text-lg mb-3">📁 Kundens Flyttpärm</h3>
+            <div id="flyttparm-content"></div>
+        </div>
+    </div>
+
+    <script>
+        let jobStatus = 'upcoming';
+        let startTime = null;
+        let timeInterval = null;
+        
+        // Mock job data
+        const jobData = {
+            id: 'test-job-001',
+            bookingNumber: 'NF2024001',
+            customerName: 'Test Kund',
+            customerPhone: '+46 70 123 45 67',
+            toAddress: 'Testgatan 2, Stockholm',
+            moveTime: '09:00',
+            endTime: '13:00'
+        };
+        
+        function updateUI() {
+            const statusBadge = document.getElementById('status-badge');
+            const actionButtons = document.getElementById('action-buttons');
+            
+            if (jobStatus === 'upcoming') {
+                statusBadge.textContent = '⏰ Kommande';
+                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-medium bg-blue-500 text-white';
+                
+                actionButtons.innerHTML = `
+                    <button onclick="startJob()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700">
+                        ▶️ Påbörja uppdrag
+                    </button>
+                `;
+            } else if (jobStatus === 'in_progress') {
+                statusBadge.textContent = '▶️ Pågående';
+                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-medium bg-green-500 text-white';
+                
+                actionButtons.innerHTML = `
+                    <div class="flex space-x-2">
+                        <button onclick="toggleTime()" id="time-btn" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700">
+                            ⏱️ Starta tid
+                        </button>
+                        <button onclick="showCompletionModal()" class="flex-1 bg-orange-600 text-white py-2 rounded-lg font-medium hover:bg-orange-700">
+                            ✅ Avsluta uppdrag
+                        </button>
+                    </div>
+                `;
+            } else if (jobStatus === 'completed') {
+                statusBadge.textContent = '✓ Slutfört';
+                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-medium bg-gray-500 text-white';
+                
+                actionButtons.innerHTML = `
+                    <button class="w-full bg-gray-400 text-white py-3 rounded-lg font-medium cursor-not-allowed" disabled>
+                        Uppdraget är slutfört
+                    </button>
+                `;
+            }
+        }
+        
+        function startJob() {
+            jobStatus = 'in_progress';
+            updateUI();
+            showMessage('✅ Jobb startat!', 'success');
+            
+            // Simulera att tid startas automatiskt
+            setTimeout(() => {
+                startTime = new Date();
+                updateTimeDisplay();
+                showMessage('⏱️ Tidsloggning startad', 'info');
+            }, 1000);
+        }
+        
+        function toggleTime() {
+            if (!startTime) {
+                startTime = new Date();
+                timeInterval = setInterval(updateTimeDisplay, 1000);
+                document.getElementById('time-btn').textContent = '⏸️ Stoppa tid';
+                showMessage('⏱️ Tidsloggning startad', 'info');
+            } else {
+                clearInterval(timeInterval);
+                document.getElementById('time-btn').textContent = '⏱️ Starta tid';
+                showMessage('⏸️ Tidsloggning pausad', 'info');
+            }
+        }
+        
+        function updateTimeDisplay() {
+            if (startTime) {
+                const now = new Date();
+                const diff = now - startTime;
+                const minutes = Math.floor(diff / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                document.getElementById('work-time').textContent = `Pågående: ${minutes}m ${seconds}s`;
+            }
+        }
+        
+        function showCompletionModal() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md w-full">
+                    <h2 class="text-xl font-bold mb-4">Avsluta uppdrag</h2>
+                    <p class="text-gray-600 mb-4">Bekräfta att uppdraget är slutfört för ${jobData.customerName}</p>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <p class="text-sm">Bokningsnummer: ${jobData.bookingNumber}</p>
+                        <p class="text-sm">Arbetstid: ${document.getElementById('work-time').textContent}</p>
+                    </div>
+                    
+                    <textarea 
+                        id="completion-notes" 
+                        class="w-full p-3 border rounded-lg mb-4" 
+                        rows="3" 
+                        placeholder="Avslutningskommentar (valfritt)..."
+                    ></textarea>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 py-2 border rounded-lg">
+                            Avbryt
+                        </button>
+                        <button onclick="completeJob()" class="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            ✅ Avsluta uppdrag
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function completeJob() {
+            const notes = document.getElementById('completion-notes')?.value || '';
+            
+            // Simulera avslutning
+            jobStatus = 'completed';
+            clearInterval(timeInterval);
+            
+            // Stäng modal
+            document.querySelector('.fixed').remove();
+            
+            // Visa orderbekräftelse modal
+            setTimeout(showOrderConfirmationModal, 500);
+            
+            updateUI();
+            showMessage('✅ Jobb avslutat!', 'success');
+        }
+        
+        function showOrderConfirmationModal() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+                    <h2 class="text-xl font-bold mb-4">Lägg till i Flyttpärm</h2>
+                    <p class="text-gray-600 mb-4">Sammanställning läggs till i kundens befintliga flyttpärm</p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h3 class="font-medium text-blue-900">📦 Utförda tjänster</h3>
+                            <p class="text-sm text-blue-700 mt-1">Flytt - ${document.getElementById('work-time').textContent}</p>
+                        </div>
+                        
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h3 class="font-medium text-green-900">📸 Fotodokumentation</h3>
+                            <p class="text-sm text-green-700 mt-1">3 bilder (före, under, efter)</p>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm text-gray-600">All information från detta arbetspass kommer att läggas till kundens befintliga orderbekräftelse i flyttpärmen.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 mt-6">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 py-2 border rounded-lg">
+                            Avbryt
+                        </button>
+                        <button onclick="addToFlyttparm()" class="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            ➕ Lägg till i flyttpärm
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function addToFlyttparm() {
+            // Simulera att lägga till i flyttpärm
+            const flyttparmData = {
+                NF2024: {
+                    customerName: 'Test Kund',
+                    customerEmail: 'test@example.com',
+                    createdAt: new Date().toISOString(),
+                    bookings: [{
+                        bookingNumber: 'NF2024001',
+                        createdAt: new Date().toISOString(),
+                        lastUpdated: new Date().toISOString(),
+                        services: [{
+                            serviceType: 'Flytt',
+                            startTime: startTime.toISOString(),
+                            endTime: new Date().toISOString(),
+                            duration: Math.floor((new Date() - startTime) / 60000)
+                        }],
+                        photos: [
+                            { category: 'before', url: 'photo1.jpg', timestamp: new Date().toISOString() },
+                            { category: 'during', url: 'photo2.jpg', timestamp: new Date().toISOString() },
+                            { category: 'after', url: 'photo3.jpg', timestamp: new Date().toISOString() }
+                        ],
+                        workTime: {
+                            totalHours: 0,
+                            totalMinutes: Math.floor((new Date() - startTime) / 60000),
+                            sessions: [{
+                                date: new Date().toISOString(),
+                                hours: 0,
+                                minutes: Math.floor((new Date() - startTime) / 60000),
+                                staff: 'Erik Andersson'
+                            }]
+                        },
+                        additionalServices: []
+                    }]
+                }
+            };
+            
+            // Stäng modal
+            document.querySelector('.fixed').remove();
+            
+            // Visa flyttpärm
+            showFlyttparm(flyttparmData);
+            
+            showMessage('✅ Orderbekräftelse tillagd i flyttpärmen!', 'success');
+        }
+        
+        function showFlyttparm(data) {
+            const preview = document.getElementById('flyttparm-preview');
+            const content = document.getElementById('flyttparm-content');
+            
+            const booking = data.NF2024.bookings[0];
+            content.innerHTML = `
+                <div class="space-y-3">
+                    <div class="bg-gray-50 p-3 rounded">
+                        <p class="font-medium">Bokningsnummer: ${booking.bookingNumber}</p>
+                        <p class="text-sm text-gray-600">Senast uppdaterad: ${new Date(booking.lastUpdated).toLocaleString('sv-SE')}</p>
+                    </div>
+                    
+                    <div class="bg-blue-50 p-3 rounded">
+                        <p class="font-medium">📷 Foton: ${booking.photos.length} st</p>
+                        <div class="flex space-x-2 mt-2">
+                            ${booking.photos.map(p => `
+                                <span class="text-xs bg-white px-2 py-1 rounded">${p.category}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-3 rounded">
+                        <p class="font-medium">⏱️ Total arbetstid</p>
+                        <p class="text-2xl font-bold">${booking.workTime.totalMinutes}m</p>
+                        <p class="text-xs text-gray-600">Session: ${booking.workTime.sessions[0].staff}</p>
+                    </div>
+                </div>
+            `;
+            
+            preview.classList.remove('hidden');
+        }
+        
+        function showMessage(text, type) {
+            const messages = document.getElementById('messages');
+            const message = document.createElement('div');
+            message.className = `p-3 rounded-lg ${
+                type === 'success' ? 'bg-green-100 text-green-800' : 
+                type === 'error' ? 'bg-red-100 text-red-800' : 
+                'bg-blue-100 text-blue-800'
+            }`;
+            message.textContent = text;
+            messages.appendChild(message);
+            
+            setTimeout(() => message.remove(), 3000);
+        }
+        
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>

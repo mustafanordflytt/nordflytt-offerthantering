@@ -1,0 +1,107 @@
+#!/usr/bin/env node
+// FORTNOX API TEST SCRIPT - WORKING VERSION
+
+const https = require('https');
+
+djaEZnT0tLOEhCWGlROUtHVGJMSlJFa2hqSlhHWE9PNjhyemlyWXdsUEFVWk0xRnFKYWtjWm11MHZNdk10T1VESEZFV0xnd21tOWdxanZHM3ZEN20rOW1FTnJ6dERFQnNPMXZGM3NCSVc4dWdmMVpUb3Z1ZGxnTlIxNzJLVnhXdW9nQlVDRGNlRGZpZFZncG9rTHBoZForQ3MydHNtZk9hQ3Y3Z2lQTkJDdnY0eHVJQmk0ajNSeXVHVEROZUhiRTRhWlwvUFBSSDRPb2poWGg0N3p4bllXYkJRQ1o3R0kzUm9GR2NSMXFEVktyYWhRRjltUE5EdWRMaktqRVU0a3F3Zzl4UGtJb3dTVW5xMzQ4bVJqK0lVWGlINkdnMHNQSWNVeEpKWjhJXC9ocFMrZDNzaFRrWXlLUEd2akhcL1FFR3hqcE9vV212ME51ZVdzZHdmUTZkdnZ1QzdERTRaUjBONlNtUzAwVCtoaDRkdTFsa1hFOG9xQnhmbmhNTjc2UjVQcXNVeUVoMklPTDQyS2E0bzh1M0NCSnBia1pCOHJPWTN1U1lONEs1cSsxRG40WUJQOWRMYXpva0llR3FINFRhR2U4czczQzhXTEc5a3kxbERFMHd2SnJLOG9zTTJOaGZydW9PNXd2K0hxVWhTVjV4OCtjZnZXeWlRbkxuR2wwbFpLdlJpTWd1V1dTSzB3d1l0T0ZpdFFOUG9LRnlrSGFMWTRxZkxDNVI4OThJZ1R1ZUpnZkdpcjQ2ZnFDRHBYK21BVkM5VDF6U3hvQmJNdllHcjRrcGdlWHlqK1R4ajB4SDNHOWNkT1NPSWFHZVRYNG12ZjJxM2JiQUFMWW1cLzZpTzY1K2NuZDZKZFplc0QwdUFxbTJ3REdDQ2hRWmVCZ2gyNXZYMTRjdWpHbkxTeGdlRyt6SUU3UiswZHZudmFkUGcyVHUrVWdRbUh3Y3BuZ0IxR1hsT0xvcUlVeGwwUTZDR2ZKaGdIazZJMElSaWpXcTNJRHJWSllLSzBSbEozV1lZb0hvcTFGV3lTYjZDSzFpbGF0a2NwMStMSnRwbjlhUVN2ZE9jMTA1WEFGT0JQeFdHSXgrQitxV1lTT2NNY2wxcnZMRVhDYTBPazhMWlVXTjFSVVc5aXI0ZXJGYUFjY2RaQkNwVFNlOE5QZWNmTlwvbFpoWHlnU3E0XC9LRXhFK0s0YmNWR0RJWHZDelI1Y2s3VjFuamNvXC9BblY0MysyT0JNNHNFS2Z2WE1BMEpnWEV0YUhzYnB2UVVPdmhUQVpvelBvQ2JrTFNGUXB1R1hXRXVUVTVzcHRQUEdWeE9uZmJGU3A2a1RjdHc3Sm45cmd6aDZZR2x0d0NWejJxY0xqaCtZdnFpMGZMU3BJWTFMRHpWeUkzbDQwdmhWdFlzQVUzVG1HaXQwS3UrSm1uZkw2Wnlyc05XaDZjUnZ5SWxWZmkxVStqdHRLMW9ZRWR0MEViYWtqeFh6RTVvZis1SVJTa3RmQVVwYXZzbVZiSEE0R0N3VlRFTXF4eExnT2tDYmgxd0ZCQUZqVDNRMU5WaGV1Y3N3Ym9VUmJtWGNSWU1jRE80bGprNllWdFFiSWdmOHVPS2ZpNFErWHZLNXNyR3JqN2M4bmZOSXhuMWlFTjdlNjBHcGtjUkhUOU5hcTgyR2Nac1BUNHVGOTU3R0dUODFROGFmSjgxUGhNbUFoWFNHMzdVZEFpc2p2aVAwZmh0dStxVHltTFhjczc3Q0plUVFXWUg0R0Nac2NqRjJGOUdabUxFa3ZsZjRTREZaZjJyTlN1N2lIemkxRWk0YWVWQjlNM2xpamdLNU8zd2lBWXk3UFhZMnIxaCtQTE54XC94ZFJPRmVmY1ZhR0QwY285VlpyZmFiam5uS0RhZ0dDOVJjT29vb3JUNDVQXC9HU0plNG5CUWFCZTU1QUhoNDNcL2plUUZIMU9Ea2NWUG1uSmFsZVRpOTFFUUVcLzlIY284djhXZmNtTzhKV0VuaWRLbjRxZUd1cU1yNjlHakZlcUtMdXdPY2taVndMTFJFalArM1d1NmFhWCtHYVVsKytQZFwvR1BpVWNFc1VBQUE9IiwicmlnaHRzIjoiSDRzSUFBQUFBQUFBQTR0V3lrN1R5OHdyeTg5TVRsWFNBWEh5OGl0Z1wvRmdBSm1zS1lSNEFBQUE9IiwiYXBwc1NlcnZlckhvc3QiOiJhcHBzNS5mb3J0bm94LnNlIiwic2VuZEludm9pY2VBY2Nlc3MiOnRydWUsImNsaWVudElkIjoieHZla1NXN2NxUnNmIiwic2NvcGVzIjpbImN1c3RvbWVyIiwiaW52b2ljZSIsImFydGljbGUiXSwiYXV0aHNvdXJjZSI6Ik9BVVRIMiIsImlkIjoiMTY5NjhiMWQ2NGE0NzMwOGU0OGM2MmYwNjcwNTQ2MWEwZjJkMGVkYyIsImp0aSI6IjE2OTY4YjFkNjRhNDczMDhlNDhjNjJmMDY3MDU0NjFhMGYyZDBlZGMiLCJpc3MiOiJodHRwczpcL1wvYXBpLmZvcnRub3guc2VcL29hdXRoMiIsImF1ZCI6Inh2ZWtTVzdjcVJzZiIsInN1YiI6IjFAMTcxMDk1NiIsImV4cCI6MTc1MzE4ODcyNiwiaWF0IjoxNzUzMTg1MTI2LCJ0b2tlbl90eXBlIjoiYmVhcmVyIiwic2NvcGUiOiJjdXN0b21lciBpbnZvaWNlIGFydGljbGUifQ.wpJRLD2yhRNlrvpkskPOOOu2S7OhI4vVigW1dzIG2IE";
+const CLIENT_SECRET = "YhfvjemECo";
+
+// API ENDPOINTS TO TEST
+const tests = [
+  {
+    name: "Company Information",
+    endpoint: "/3/companyinformation"
+  },
+  {
+    name: "Articles List",
+    endpoint: "/3/articles"
+  },
+  {
+    name: "Customers List", 
+    endpoint: "/3/customers"
+  }
+];
+
+// MAKE API REQUEST FUNCTION
+function makeRequest(endpoint) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'api.fortnox.se',
+      path: endpoint,
+      method: 'GET',
+      headers: {
+        'Access-Token': ACCESS_TOKEN,
+        'Client-Secret': CLIENT_SECRET,
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      res.on('end', () => {
+        try {
+          const jsonData = JSON.parse(data);
+          resolve({
+            status: res.statusCode,
+            data: jsonData
+          });
+        } catch (error) {
+          resolve({
+            status: res.statusCode,
+            data: data
+          });
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(error);
+    });
+
+    req.end();
+  });
+}
+
+// RUN ALL TESTS
+async function runTests() {
+  console.log('🚀 TESTING FORTNOX API CONNECTION...\n');
+  
+  for (const test of tests) {
+    try {
+      console.log(`📊 Testing: ${test.name}`);
+      const result = await makeRequest(test.endpoint);
+      
+      if (result.status === 200) {
+        console.log(`✅ SUCCESS: ${test.name}`);
+        
+        // Show relevant data
+        if (test.endpoint.includes('companyinformation')) {
+          console.log(`   Company: ${result.data.CompanyInformation?.CompanyName || 'N/A'}`);
+        } else if (test.endpoint.includes('articles')) {
+          console.log(`   Articles found: ${result.data.Articles?.length || 0}`);
+        } else if (test.endpoint.includes('customers')) {
+          console.log(`   Customers found: ${result.data.Customers?.length || 0}`);
+        }
+      } else {
+        console.log(`❌ FAILED: ${test.name} (Status: ${result.status})`);
+        console.log(`   Error: ${JSON.stringify(result.data)}`);
+      }
+    } catch (error) {
+      console.log(`❌ ERROR: ${test.name}`);
+      console.log(`   ${error.message}`);
+    }
+    
+    console.log(''); // Empty line
+  }
+  
+  console.log('🎉 API TESTING COMPLETE!');
+  console.log('\n🔧 READY FOR AUTO-INVOICE IMPLEMENTATION!');
+}
+
+// RUN THE TESTS
+runTests().catch(console.error);

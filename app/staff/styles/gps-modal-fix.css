@@ -1,0 +1,87 @@
+/* GPS Modal Critical Fixes */
+
+/* Ensure GPS modal and its buttons are always clickable */
+[id*="gps-modal"],
+[id*="start-without-gps"],
+[id*="cancel-btn"],
+div[style*="z-index: 2147483647"],
+div[style*="z-index: 2147483648"],
+button[style*="z-index: 2147483649"] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Override any global styles that might interfere */
+body > div[style*="position: fixed"][style*="z-index: 2147483647"] {
+  pointer-events: auto !important;
+  touch-action: none !important;
+}
+
+/* Ensure buttons in GPS modal are always interactive */
+body > div[style*="position: fixed"] button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 2147483649 !important;
+}
+
+/* Fix for iOS Safari touch issues */
+@supports (-webkit-touch-callout: none) {
+  body > div[style*="position: fixed"][style*="z-index: 2147483647"] button {
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* Ensure modal backdrop doesn't block interactions */
+body > div[style*="position: fixed"][style*="background: rgba(0,0,0"] {
+  pointer-events: auto !important;
+}
+
+/* Inner dialog should also be interactive */
+body > div[style*="position: fixed"] > div[style*="background: white"] {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+/* Force button hover states to work */
+body > div[style*="position: fixed"] button:hover {
+  opacity: 0.9 !important;
+  transform: scale(0.98) !important;
+}
+
+/* Active state for better feedback */
+body > div[style*="position: fixed"] button:active {
+  transform: scale(0.95) !important;
+}
+
+/* Ensure no parent element can block the modal */
+* {
+  /* Remove any contain properties that might interfere */
+  contain: layout style !important;
+}
+
+/* GPS modal specific overrides */
+#start-without-gps-btn,
+#cancel-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+/* Debug styling - remove in production */
+#start-without-gps-btn:hover {
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.8) !important;
+}
+
+#cancel-btn:hover {
+  background-color: #e2e8f0 !important;
+}

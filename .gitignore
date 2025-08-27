@@ -137,3 +137,19 @@ dist
 
 # macOS files
 .DS_Store
+
+# Känslig data - ALDRIG committa dessa!
+/data/contracts.json
+/data/asset-documents.json
+/data/*.json
+/public/generated-documents/
+/public/contracts/
+/backup/
+
+# Temporära filer
+*.tmp
+*.temp
+test-*.png
+test-*.js
+debug-*.js
+.backup-test-files/

@@ -64,7 +64,7 @@ const businessPackingServices: Service[] = [
     ],
   },
   {
-    name: "Packning & emballering",
+    name: "Packning av hela bohag",
     description: "Vi packar hela kontoret",
     icon: <Package className="w-8 h-8" />,
     price: "från 5 500 kr",
@@ -79,7 +79,6 @@ const businessPackingServices: Service[] = [
     checklistItems: [
       "Sparar 20-30 arbetstimmar för er personal",
       "Professionell hantering av känslig utrustning",
-      "Allt packmaterial ingår",
       "Inventarieförteckning och märkning ingår",
     ],
   },
@@ -404,8 +403,8 @@ export default function Step6AdditionalServices({
   // First, let's add the useEffect for initializing
   useEffect(() => {
     // Initialize additionalBusinessServices array if it doesn't exist
-    if (!formData.additionalBusinessServices) {
-      formData.additionalBusinessServices = []
+    if (!formData.additionalBusinessServices || !Array.isArray(formData.additionalBusinessServices)) {
+      handleChange("additionalBusinessServices", [])
     }
 
     // Set initial values for packingService and cleaningService if they are empty
@@ -479,6 +478,17 @@ export default function Step6AdditionalServices({
     },
   }
 
+  // Helper function to check if additional service is selected
+  const isAdditionalServiceSelected = (serviceName: string): boolean => {
+    if (Array.isArray(formData.additionalBusinessServices)) {
+      return formData.additionalBusinessServices.includes(serviceName)
+    } else if (typeof formData.additionalBusinessServices === 'string' && formData.additionalBusinessServices) {
+      const services = formData.additionalBusinessServices.split(',').filter(s => s.trim())
+      return services.includes(serviceName)
+    }
+    return false
+  }
+
   // Sort services by order
   const sortedPackingServices = [...packingServices].sort((a, b) => (a.order || 0) - (b.order || 0))
   const sortedCleaningServices = [...cleaningServices].sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -496,7 +506,7 @@ export default function Step6AdditionalServices({
     }
 
     // Get the current value to check if we're selecting or deselecting
-    const currentValue = formData[field]
+    const currentValue = (formData as any)[field]
     const isSelecting = currentValue !== value && value !== "Ingen packning" && value !== "Ingen städning"
 
     handleChange(field, value)
@@ -532,8 +542,14 @@ export default function Step6AdditionalServices({
     e.preventDefault()
     e.stopPropagation()
 
-    // Ensure we have an array to work with
-    const currentServices = formData.additionalBusinessServices || []
+    // Ensure we have an array to work with - handle both array and string cases
+    let currentServices: string[] = []
+    if (Array.isArray(formData.additionalBusinessServices)) {
+      currentServices = formData.additionalBusinessServices
+    } else if (typeof formData.additionalBusinessServices === 'string' && formData.additionalBusinessServices) {
+      currentServices = formData.additionalBusinessServices.split(',').filter(s => s.trim())
+    }
+    
     const isSelected = currentServices.includes(serviceName)
 
     // Create new array with or without the service
@@ -541,7 +557,7 @@ export default function Step6AdditionalServices({
       ? currentServices.filter((service) => service !== serviceName)
       : [...currentServices, serviceName]
 
-    // Update parent formData
+    // Update parent formData - always pass as array
     handleChange("additionalBusinessServices", newServices)
 
     // Set the selected service for feedback message
@@ -644,42 +660,43 @@ export default function Step6AdditionalServices({
             : "Välj hur du vill hantera packning och emballering av ditt hem"}
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 mb-8 pt-4">
           {sortedPackingServices.map((service) => (
             <TooltipProvider key={service.name}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Card
-                    className={`cursor-pointer transition-all relative ${
-                      service.isDefault
-                        ? "sm:col-span-4 bg-gray-100 hover:bg-gray-200 opacity-75 not-recommended-card"
-                        : "sm:col-span-4 hover:shadow-md transform hover:scale-[1.02]"
-                    } ${
-                      formData.packingService === service.name
-                        ? service.isDefault
-                          ? "border border-gray-300"
-                          : "border-2 border-[#0052CC] shadow-md"
-                        : service.isDefault
-                          ? "border border-gray-200"
-                          : "border border-gray-300"
-                    } ${!service.isDefault ? "bg-white" : ""}`}
-                    style={{ minHeight: "380px", borderRadius: "4px" }}
-                    onClick={(e) => {
-                      handleServiceSelection(e, "packingService", service.name)
-                    }}
-                  >
-                    {service.isDefault && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 mt-[-5px] bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-md border border-amber-200 whitespace-nowrap z-20 shadow-sm">
-                        <AlertTriangle className="w-3 h-3 inline-block mr-1" />
-                        Mindre fördelaktigt val
-                      </div>
-                    )}
+                  <div className="sm:col-span-4 relative">
+                    <Card
+                      className={`cursor-pointer transition-all ${
+                        service.isDefault
+                          ? "bg-gray-100 hover:bg-gray-200 opacity-75 not-recommended-card"
+                          : "hover:shadow-md transform hover:scale-[1.02]"
+                      } ${
+                        formData.packingService === service.name
+                          ? service.isDefault
+                            ? "border border-gray-300"
+                            : "border-2 border-[#0052CC] shadow-md"
+                          : service.isDefault
+                            ? "border border-gray-200"
+                            : "border border-gray-300"
+                      } ${!service.isDefault ? "bg-white" : ""}`}
+                      style={{ minHeight: "380px", borderRadius: "4px" }}
+                      onClick={(e) => {
+                        handleServiceSelection(e, "packingService", service.name)
+                      }}
+                    >
+                      {service.isDefault && (
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-md border border-amber-200 whitespace-nowrap z-20 shadow-sm">
+                          <AlertTriangle className="w-3 h-3 inline-block mr-1" />
+                          Mindre fördelaktigt val
+                        </div>
+                      )}
 
-                    {!service.isDefault && service.mostPopular && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 mb-1 bg-[#8A2BE2] text-white text-[10px] font-medium py-1 px-2 rounded-md whitespace-nowrap z-20 shadow-sm">
-                        <Star className="w-2.5 h-2.5 mr-1 inline-block" /> Rekommenderas
-                      </div>
-                    )}
+                      {!service.isDefault && service.mostPopular && (
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#8A2BE2] text-white text-[10px] font-medium py-1 px-2 rounded-md whitespace-nowrap z-20 shadow-sm">
+                          <Star className="w-2.5 h-2.5 mr-1 inline-block" /> Rekommenderas
+                        </div>
+                      )}
 
                     <div
                       className={`flex flex-col items-center justify-between text-center p-4 sm:p-5 space-y-3 h-full w-full card-content`}
@@ -767,6 +784,7 @@ export default function Step6AdditionalServices({
                       )}
                     </div>
                   </Card>
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent
                   side="top"
@@ -824,50 +842,51 @@ export default function Step6AdditionalServices({
             : "Välj hur du vill hantera städning av din bostad"}
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 pt-4">
           {sortedCleaningServices.map((service) => (
             <TooltipProvider key={service.name}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Card
-                    className={`cursor-pointer transition-all relative ${
-                      service.isDefault
-                        ? "bg-gray-100 hover:bg-gray-200 opacity-75 not-recommended-card"
-                        : "hover:shadow-md transform hover:scale-[1.02]"
-                    } ${
-                      formData.cleaningService === service.name
-                        ? service.isDefault
-                          ? "border border-gray-300"
-                          : "border-2 border-[#0052CC] shadow-md"
-                        : service.isDefault
-                          ? "border border-gray-200"
-                          : "border border-gray-300"
-                    } ${!service.isDefault ? "bg-white" : ""}`}
-                    style={{ minHeight: "380px", borderRadius: "4px" }}
-                    onClick={(e) => {
-                      handleServiceSelection(e, "cleaningService", service.name)
-                    }}
-                  >
-                    {service.isDefault && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 mt-[-5px] bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-md border border-amber-200 whitespace-nowrap z-20 shadow-sm">
-                        <AlertTriangle className="w-3 h-3 inline-block mr-1" />
-                        Mindre fördelaktigt val
-                      </div>
-                    )}
+                  <div className="relative">
+                    <Card
+                      className={`cursor-pointer transition-all ${
+                        service.isDefault
+                          ? "bg-gray-100 hover:bg-gray-200 opacity-75 not-recommended-card"
+                          : "hover:shadow-md transform hover:scale-[1.02]"
+                      } ${
+                        formData.cleaningService === service.name
+                          ? service.isDefault
+                            ? "border border-gray-300"
+                            : "border-2 border-[#0052CC] shadow-md"
+                          : service.isDefault
+                            ? "border border-gray-200"
+                            : "border border-gray-300"
+                      } ${!service.isDefault ? "bg-white" : ""}`}
+                      style={{ minHeight: "380px", borderRadius: "4px" }}
+                      onClick={(e) => {
+                        handleServiceSelection(e, "cleaningService", service.name)
+                      }}
+                    >
+                      {service.isDefault && (
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-amber-50 text-amber-700 text-xs px-2 py-1 rounded-md border border-amber-200 whitespace-nowrap z-20 shadow-sm">
+                          <AlertTriangle className="w-3 h-3 inline-block mr-1" />
+                          Mindre fördelaktigt val
+                        </div>
+                      )}
 
-                    {!service.isDefault && service.mostPopular && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 mb-1 bg-[#0052CC] text-white text-[10px] font-medium py-1 px-2 rounded-md whitespace-nowrap z-20 shadow-sm">
-                        {isBusinessType ? (
-                          <>
-                            <Building2 className="w-2.5 h-2.5 mr-1 inline-block" /> Krav i de flesta hyresavtal
-                          </>
-                        ) : (
-                          <>
-                            <Home className="w-2.5 h-2.5 mr-1 inline-block" /> Krav i de flesta hyresavtal
-                          </>
-                        )}
-                      </div>
-                    )}
+                      {!service.isDefault && service.mostPopular && (
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#0052CC] text-white text-[10px] font-medium py-1 px-2 rounded-md whitespace-nowrap z-20 shadow-sm">
+                          {isBusinessType ? (
+                            <>
+                              <Building2 className="w-2.5 h-2.5 mr-1 inline-block" /> Krav i de flesta hyresavtal
+                            </>
+                          ) : (
+                            <>
+                              <Home className="w-2.5 h-2.5 mr-1 inline-block" /> Krav i de flesta hyresavtal
+                            </>
+                          )}
+                        </div>
+                      )}
 
                     <div
                       className={`flex flex-col items-center justify-between text-center p-4 sm:p-5 space-y-3 h-full w-full card-content`}
@@ -950,6 +969,7 @@ export default function Step6AdditionalServices({
                       )}
                     </div>
                   </Card>
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent
                   side="top"
@@ -1020,7 +1040,7 @@ export default function Step6AdditionalServices({
                   <TooltipTrigger asChild>
                     <Card
                       className={`cursor-pointer transition-all relative hover:shadow-md transform hover:scale-[1.02] ${
-                        formData.additionalBusinessServices?.includes(service.name)
+                        isAdditionalServiceSelected(service.name)
                           ? `border-2 border-[#0052CC] shadow-md`
                           : "border border-gray-300"
                       } bg-white`}
@@ -1038,8 +1058,8 @@ export default function Step6AdditionalServices({
                       <div className="flex flex-col items-center justify-between text-center p-4 sm:p-5 space-y-3 h-full w-full card-content">
                         <div
                           className={`w-14 h-14 flex items-center justify-center rounded-full mb-2 ${
-                            serviceColors[service.name]?.bg || "bg-[#0052CC]/10"
-                          } ${serviceColors[service.name]?.text || "text-[#0052CC]"}`}
+                            (serviceColors as any)[service.name]?.bg || "bg-[#0052CC]/10"
+                          } ${(serviceColors as any)[service.name]?.text || "text-[#0052CC]"}`}
                         >
                           {service.icon}
                         </div>
@@ -1080,7 +1100,7 @@ export default function Step6AdditionalServices({
                             {service.checklistItems.map((item, index) => (
                               <li key={index} className="flex items-start">
                                 <span className="w-5 flex-shrink-0 text-center">
-                                  <span className={serviceColors[service.name]?.text || "text-[#0052CC]"}>✓</span>
+                                  <span className={(serviceColors as any)[service.name]?.text || "text-[#0052CC]"}>✓</span>
                                 </span>
                                 <span className="flex-1 leading-relaxed break-words">
                                   {item.includes("Installation") ||
@@ -1108,7 +1128,7 @@ export default function Step6AdditionalServices({
 
                         <div
                           className={`mt-4 px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                            formData.additionalBusinessServices?.includes(service.name)
+                            isAdditionalServiceSelected(service.name)
                               ? "bg-[#0052CC] text-white shadow-sm hover:bg-[#003D99]"
                               : "bg-white text-[#0052CC] border border-[#0052CC] hover:bg-[#EAF2FF]"
                           }`}
@@ -1116,7 +1136,7 @@ export default function Step6AdditionalServices({
                             handleAdditionalServiceSelection(e, service.name)
                           }}
                         >
-                          {formData.additionalBusinessServices?.includes(service.name)
+                          {isAdditionalServiceSelected(service.name)
                             ? "Tjänst vald ✓"
                             : "Välj denna tjänst"}
                         </div>

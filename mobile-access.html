@@ -1,0 +1,78 @@
+<\!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordflytt Mobile Access</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        .link {
+            display: block;
+            background: #002A5C;
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        .link:hover {
+            background: #001a42;
+        }
+        .info {
+            font-size: 14px;
+            color: #666;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        .ip {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚛 Nordflytt Staff</div>
+        
+        <h2>Mobile Access</h2>
+        
+        <div class="ip">IP: 172.20.10.3:3001</div>
+        
+        <a href="http://172.20.10.3:3001" class="link">📱 Huvudapp</a>
+        <a href="http://172.20.10.3:3001/staff" class="link">👨‍💼 Staff Login</a>
+        <a href="http://172.20.10.3:3001/staff/dashboard" class="link">📊 Staff Dashboard</a>
+        
+        <div class="info">
+            <strong>Troubleshooting:</strong><br>
+            • Kontrollera att telefonen är på samma WiFi<br>
+            • Prova att ladda om sidan<br>
+            • Kontakta utvecklaren om problem kvarstår
+        </div>
+    </div>
+</body>
+</html>
+EOF < /dev/null

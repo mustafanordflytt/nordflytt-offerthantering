@@ -1,0 +1,101 @@
+{
+  "testSession": {
+    "id": "E2E-1754120490309",
+    "startTime": "2025-08-02T07:41:25.015Z",
+    "duration": 5294,
+    "environment": "localhost:3000"
+  },
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "successRate": "100%"
+  },
+  "workflow": {
+    "bookingId": "BOOK1001",
+    "jobId": "JOB1001"
+  },
+  "results": [
+    {
+      "step": "Create_Booking",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:25.417Z",
+      "duration": 403,
+      "data": {
+        "bookingId": "BOOK1001",
+        "totalPrice": 7983,
+        "estimatedTime": 13
+      }
+    },
+    {
+      "step": "Create_Job",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:25.511Z",
+      "duration": 496,
+      "data": {
+        "jobId": "JOB1001",
+        "customer": "Anna Andersson"
+      }
+    },
+    {
+      "step": "CRM_Dashboard",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:26.076Z",
+      "duration": 1061,
+      "data": {
+        "customers": 3,
+        "bookings": 2,
+        "pendingActions": 2
+      }
+    },
+    {
+      "step": "Lowisa_AI_Chat",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:30.182Z",
+      "duration": 5167,
+      "data": {
+        "response": "Hej Test Kandidat! Vad roligt att du är intresserad av att jobba som flyttare hos oss på Nordflytt. ..."
+      }
+    },
+    {
+      "step": "ML_Screening",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:30.309Z",
+      "duration": 5294,
+      "data": {
+        "hiringSuccess": 0.6670025439976733
+      }
+    },
+    {
+      "step": "Staff_Update_Simulation",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:30.309Z",
+      "duration": 5294,
+      "data": {
+        "jobId": "JOB1001",
+        "updates": {
+          "actual_time": 10,
+          "additional_services": [
+            "extra_packing",
+            "furniture_assembly"
+          ],
+          "status": "completed",
+          "notes": "Kunden beställde extra packning och möbelmontering"
+        }
+      }
+    },
+    {
+      "step": "Workflow_Validation",
+      "status": "PASS",
+      "timestamp": "2025-08-02T07:41:30.309Z",
+      "duration": 5294,
+      "data": {
+        "bookingCreated": true,
+        "jobCreated": true,
+        "crmIntegrated": true,
+        "aiSystemsOperational": true,
+        "staffWorkflowComplete": true
+      }
+    }
+  ]
+}

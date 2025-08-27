@@ -98,20 +98,64 @@ interface Step5Props {
   formData: {
     selectedItems: { [key: string]: number }
     startLivingArea: string
+    estimatedVolume?: string
+    startPropertyType?: string
   }
   handleChange: (field: string, value: any) => void
   nextStep: () => void
   prevStep: () => void
 }
 
-const calculateEstimatedVolume = (livingArea: number): number => {
-  if (livingArea <= 20) return 5
-  if (livingArea <= 35) return 10
-  if (livingArea <= 50) return 15
-  if (livingArea <= 70) return 19
-  if (livingArea <= 95) return 28
-  if (livingArea <= 130) return 38
-  return 57
+// 🔧 FIXAD VOLYMBERÄKNING - Nu med magasin, villa och lägenhet-logik
+const calculateEstimatedVolume = (livingArea: number, propertyType?: string): number => {
+  // 📦 MAGASIN/LAGER - Fast 3 meter takhöjd
+  if (propertyType === "storage") {
+    const volume = Math.ceil(livingArea * 3.0); // kvm × 3m höjd
+    console.log('📦 Step5 Magasin volymberäkning:', {
+      kvm: livingArea,
+      takhöjd: '3.0m',
+      beräknadVolym: volume,
+      formel: `${livingArea} kvm × 3.0m = ${volume} m³`
+    });
+    return volume;
+  }
+  
+  // 🏘️ VILLA/RADHUS - Mer volym än lägenhet (fler rum, källare, vind)
+  if (propertyType === "house") {
+    let volume;
+    if (livingArea <= 50) volume = 19;       // Litet radhus
+    else if (livingArea <= 70) volume = 28;  // Medel radhus  
+    else if (livingArea <= 100) volume = 38; // Stor radhus
+    else if (livingArea <= 130) volume = 57; // Liten villa
+    else if (livingArea <= 160) volume = 76; // Medel villa
+    else if (livingArea <= 200) volume = 95; // Stor villa
+    else volume = Math.ceil(livingArea * 0.5); // 0.5 m³/kvm för jättestora villor
+    
+    console.log('🏘️ Step5 Villa/Radhus volymberäkning:', {
+      kvm: livingArea,
+      beräknadVolym: volume,
+      volymPerKvm: (volume / livingArea).toFixed(2) + ' m³/kvm'
+    });
+    return volume;
+  }
+  
+  // 🏢 LÄGENHET - Ursprunglig beräkning
+  let volume;
+  if (livingArea <= 20) volume = 5;
+  else if (livingArea <= 35) volume = 10;
+  else if (livingArea <= 50) volume = 15;
+  else if (livingArea <= 70) volume = 19;
+  else if (livingArea <= 95) volume = 28;
+  else if (livingArea <= 130) volume = 38;
+  else volume = 57;
+  
+  console.log('🏢 Step5 Lägenhet volymberäkning:', {
+    kvm: livingArea,
+    beräknadVolym: volume,
+    volymPerKvm: (volume / livingArea).toFixed(2) + ' m³/kvm'
+  });
+  
+  return volume;
 }
 
 export default function Step5Inventory({ formData, handleChange, nextStep, prevStep }: Step5Props) {
@@ -126,16 +170,44 @@ export default function Step5Inventory({ formData, handleChange, nextStep, prevS
   const [showResetConfirmation, setShowResetConfirmation] = useState(false)
   const [hasFurnitureSelections, setHasFurnitureSelections] = useState(false)
 
-  // Calculate the automatic estimation based on living area
+  // 🔧 FIXAD - Använd redan beräknad volym från Step4 när möjligt
   const getAutomaticEstimation = () => {
-    const livingArea = Number.parseInt(formData.startLivingArea) || 0
-    return calculateEstimatedVolume(livingArea)
+    const livingArea = Number.parseInt(formData.startLivingArea) || 0;
+    
+    // 🔧 PRIORITET 1: Använd redan beräknad volym från Step4 om den finns
+    if (formData.estimatedVolume && Number(formData.estimatedVolume) > 0) {
+      const existingVolume = Number(formData.estimatedVolume);
+      console.log('✅ Step5 använder redan beräknad volym från Step4:', {
+        volym: existingVolume,
+        källa: 'Step4 (magasin/villa/lägenhet-beräkning)'
+      });
+      return existingVolume;
+    }
+    
+    // 🔧 PRIORITET 2: Annars beräkna baserat på bostadstyp och living area
+    const propertyType = formData.startPropertyType;
+    const calculatedVolume = calculateEstimatedVolume(livingArea, propertyType);
+    
+    console.log('🔄 Step5 beräknar ny volym:', {
+      livingArea,
+      propertyType,
+      calculatedVolume,
+      anledning: 'Ingen volym från Step4 hittades'
+    });
+    
+    return calculatedVolume;
   }
 
   useEffect(() => {
-    // Set the initial estimated volume based on living area
-    setEstimatedVolume(getAutomaticEstimation())
-  }, [formData.startLivingArea])
+    // Set the initial estimated volume based on living area and property type
+    const automaticVolume = getAutomaticEstimation();
+    setEstimatedVolume(automaticVolume);
+    
+    // 🔧 NYTT: Uppdatera formData med rätt volym om den inte finns
+    if (!formData.estimatedVolume || Number(formData.estimatedVolume) !== automaticVolume) {
+      handleChange("estimatedVolume", automaticVolume.toString());
+    }
+  }, [formData.startLivingArea, formData.startPropertyType, formData.estimatedVolume])
 
   // Check if there are any furniture selections
   useEffect(() => {
@@ -278,8 +350,12 @@ export default function Step5Inventory({ formData, handleChange, nextStep, prevS
                     <Info className="inline-block w-4 h-4 ml-1 text-blue-500 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    Denna uppskattning baseras på genomsnittliga flyttvolymer för din bostadstyp. Du kan justera genom
-                    att använda vår möbelkalkylator.
+                    {formData.startPropertyType === "storage" 
+                      ? "För magasin räknar vi med 3 meters takhöjd (kvm × 3.0 = m³). Du kan justera genom att använda vår möbelkalkylator."
+                      : formData.startPropertyType === "house"
+                      ? "För villa/radhus räknar vi med mer volym än lägenheter pga fler rum, källare och vind. Du kan justera genom att använda vår möbelkalkylator."
+                      : "Denna uppskattning baseras på genomsnittliga flyttvolymer för din bostadstyp. Du kan justera genom att använda vår möbelkalkylator."
+                    }
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -289,6 +365,8 @@ export default function Step5Inventory({ formData, handleChange, nextStep, prevS
                 ? "De flesta kunder använder denna uppskattning, men du kan justera genom att välja möbler eller ange exakt volym."
                 : "Du använder nu en anpassad volym. Du kan återgå till den automatiska uppskattningen när som helst."}
             </p>
+            
+            {/* 🔧 BORTTAGET: Den gröna magasin-texten är nu helt borttagen */}
           </div>
         </div>
 

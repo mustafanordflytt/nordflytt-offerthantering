@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import type { FormData, AdditionalService } from "@/types/formData"
+import { ButtonLoadingSpinner, ContentSkeleton } from "@/components/ui/loading-spinner"
 
 interface Step3Props {
   formData: FormData
@@ -12,6 +13,8 @@ interface Step3Props {
 
 export default function Step3Services({ formData, updateFormData, nextStep, prevStep }: Step3Props) {
   const [services, setServices] = useState<string[]>(formData.services)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isCalculatingPrice, setIsCalculatingPrice] = useState(false)
   const [additionalServices, setAdditionalServices] = useState<AdditionalService[]>(
     formData.additionalServices.length > 0
       ? formData.additionalServices
@@ -86,19 +89,31 @@ export default function Step3Services({ formData, updateFormData, nextStep, prev
     setTotalPrice(newTotalPrice)
   }, [additionalServices])
 
-  const toggleService = (serviceId: string) => {
+  const toggleService = async (serviceId: string) => {
+    setIsCalculatingPrice(true)
     setAdditionalServices((prev) =>
       prev.map((service) => (service.id === serviceId ? { ...service, selected: !service.selected } : service)),
     )
+    // Simulera prisberäkning
+    await new Promise(resolve => setTimeout(resolve, 200))
+    setIsCalculatingPrice(false)
   }
 
-  const handleSubmit = () => {
-    updateFormData({
-      services,
-      additionalServices,
-      totalPrice,
-    })
-    nextStep()
+  const handleSubmit = async () => {
+    setIsProcessing(true)
+    try {
+      // Simulera prisberäkning
+      await new Promise(resolve => setTimeout(resolve, 300))
+      
+      updateFormData({
+        services,
+        additionalServices,
+        totalPrice,
+      })
+      nextStep()
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   return (
@@ -144,12 +159,14 @@ export default function Step3Services({ formData, updateFormData, nextStep, prev
           <h3 className="text-lg font-medium mb-3">Tilläggstjänster</h3>
           <div className="space-y-3">
             {additionalServices.map((service) => (
-              <div
+              <button
                 key={service.id}
-                className={`border rounded-md p-4 cursor-pointer transition-colors ${
+                type="button"
+                className={`w-full text-left border rounded-md p-4 cursor-pointer transition-colors min-h-[80px] ${
                   service.selected ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
                 }`}
                 onClick={() => toggleService(service.id)}
+                disabled={isCalculatingPrice}
               >
                 <div className="flex items-center">
                   <input
@@ -173,7 +190,7 @@ export default function Step3Services({ formData, updateFormData, nextStep, prev
                     <span className="text-lg font-semibold">{service.price} kr</span>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -181,21 +198,36 @@ export default function Step3Services({ formData, updateFormData, nextStep, prev
         <div className="bg-gray-50 p-4 rounded-md">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium">Totalt pris</h3>
-            <span className="text-xl font-bold">{totalPrice} kr</span>
+            <span className="text-xl font-bold">
+              {isCalculatingPrice ? (
+                <span className="inline-flex items-center gap-2">
+                  <ContentSkeleton lines={1} className="w-24" />
+                </span>
+              ) : (
+                `${totalPrice} kr`
+              )}
+            </span>
           </div>
           <p className="text-sm text-gray-500 mt-1">Inkl. moms och försäkring</p>
         </div>
       </div>
 
-      <div className="flex justify-between mt-6">
+      <div className="step-form-navigation">
         <button
           onClick={prevStep}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 min-h-[44px] min-w-[100px]"
+          disabled={isProcessing}
         >
           Tillbaka
         </button>
-        <button onClick={handleSubmit} className="next-button">
-          Nästa steg
+        <button 
+          onClick={handleSubmit} 
+          className="next-button min-h-[44px] min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
+          disabled={isProcessing}
+        >
+          <ButtonLoadingSpinner loading={isProcessing} loadingText="Sparar...">
+            Nästa steg
+          </ButtonLoadingSpinner>
         </button>
       </div>
     </div>

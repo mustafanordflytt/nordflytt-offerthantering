@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ngrok Direct Links</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 10px;
+        }
+        .url-display {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        a {
+            display: block;
+            background: #002A5C;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        a:hover {
+            background: #003d7a;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Nordflytt HTTPS Testing</h1>
+        
+        <p>Din ngrok URL är:</p>
+        <div class="url-display" id="ngrok-url">Laddar...</div>
+        
+        <div class="warning">
+            ⚠️ Om du ser ngrok varningssida, klicka "Visit Site" för att fortsätta.
+        </div>
+        
+        <div class="links">
+            <h3>Direktlänkar:</h3>
+            <a href="#" id="homepage-link" target="_blank">🏠 Startsida</a>
+            <a href="#" id="staff-link" target="_blank">👷 Staff Login</a>
+            <a href="#" id="dashboard-link" target="_blank">📊 Staff Dashboard</a>
+            <a href="#" id="form-link" target="_blank">📝 Bokningsformulär</a>
+        </div>
+        
+        <h3>📸 Testa Kamera:</h3>
+        <ol>
+            <li>Klicka "Staff Login" ovan</li>
+            <li>Logga in som testanvändare</li>
+            <li>Gå till Dashboard</li>
+            <li>Klicka "Ta foto" på ett jobb</li>
+            <li>Nu fungerar kameran med HTTPS! 🎉</li>
+        </ol>
+    </div>
+    
+    <script>
+        // Hämta ngrok URL från API
+        fetch('http://localhost:4040/api/tunnels')
+            .then(r => r.json())
+            .then(data => {
+                const tunnel = data.tunnels.find(t => t.proto === 'https');
+                if (tunnel) {
+                    const url = tunnel.public_url;
+                    document.getElementById('ngrok-url').textContent = url;
+                    document.getElementById('homepage-link').href = url;
+                    document.getElementById('staff-link').href = url + '/staff';
+                    document.getElementById('dashboard-link').href = url + '/staff/dashboard';
+                    document.getElementById('form-link').href = url + '/form';
+                }
+            })
+            .catch(err => {
+                document.getElementById('ngrok-url').textContent = 'Fel: Kunde inte hämta ngrok URL';
+            });
+    </script>
+</body>
+</html>

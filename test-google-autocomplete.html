@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Autocomplete Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Google Autocomplete Debug Test</h1>
+    
+    <div id="status-container"></div>
+    
+    <h2>Test Address Inputs</h2>
+    <label for="from-address">From Address:</label>
+    <input type="text" id="from-address" placeholder="Start typing an address...">
+    
+    <label for="to-address">To Address:</label>
+    <input type="text" id="to-address" placeholder="Start typing an address...">
+    
+    <button onclick="testAPI()">Test API Directly</button>
+    <button onclick="location.reload()">Reload Page</button>
+    
+    <div class="debug-info">
+        <h3>Debug Information:</h3>
+        <div id="debug-output"></div>
+    </div>
+    
+    <script>
+        const API_KEY = 'AIzaSyChAUwFV4q2SQUbHjjw_QIK1I5I3mee8b0';
+        let autocompleteFrom, autocompleteTo;
+        
+        function addStatus(message, type = 'info') {
+            const container = document.getElementById('status-container');
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            container.appendChild(status);
+        }
+        
+        function updateDebug(info) {
+            const debug = document.getElementById('debug-output');
+            debug.innerHTML += info + '<br>';
+        }
+        
+        // Load Google Maps API
+        function loadGoogleMaps() {
+            addStatus('Loading Google Maps API...', 'info');
+            
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initAutocomplete`;
+            script.async = true;
+            script.defer = true;
+            
+            script.onerror = () => {
+                addStatus('Failed to load Google Maps API!', 'error');
+                updateDebug('Script loading error - check API key and network');
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        // Initialize autocomplete
+        function initAutocomplete() {
+            addStatus('Google Maps API loaded successfully!', 'success');
+            updateDebug(`google.maps loaded: ${!!window.google?.maps}`);
+            updateDebug(`google.maps.places loaded: ${!!window.google?.maps?.places}`);
+            
+            try {
+                // Initialize autocomplete for from address
+                const fromInput = document.getElementById('from-address');
+                autocompleteFrom = new google.maps.places.Autocomplete(fromInput, {
+                    types: ['address'],
+                    componentRestrictions: { country: 'se' },
+                    fields: ['formatted_address', 'geometry', 'address_components']
+                });
+                
+                autocompleteFrom.addListener('place_changed', () => {
+                    const place = autocompleteFrom.getPlace();
+                    addStatus(`From address selected: ${place.formatted_address}`, 'success');
+                    updateDebug(`From place data: ${JSON.stringify(place, null, 2)}`);
+                });
+                
+                // Initialize autocomplete for to address
+                const toInput = document.getElementById('to-address');
+                autocompleteTo = new google.maps.places.Autocomplete(toInput, {
+                    types: ['address'],
+                    componentRestrictions: { country: 'se' },
+                    fields: ['formatted_address', 'geometry', 'address_components']
+                });
+                
+                autocompleteTo.addListener('place_changed', () => {
+                    const place = autocompleteTo.getPlace();
+                    addStatus(`To address selected: ${place.formatted_address}`, 'success');
+                    updateDebug(`To place data: ${JSON.stringify(place, null, 2)}`);
+                });
+                
+                addStatus('Autocomplete initialized successfully!', 'success');
+                
+                // Add input listeners to detect typing
+                fromInput.addEventListener('input', (e) => {
+                    updateDebug(`Typing in from field: "${e.target.value}"`);
+                });
+                
+                toInput.addEventListener('input', (e) => {
+                    updateDebug(`Typing in to field: "${e.target.value}"`);
+                });
+                
+            } catch (error) {
+                addStatus(`Error initializing autocomplete: ${error.message}`, 'error');
+                updateDebug(`Error details: ${error.stack}`);
+            }
+        }
+        
+        // Test API directly
+        async function testAPI() {
+            addStatus('Testing Places API directly...', 'info');
+            
+            try {
+                const service = new google.maps.places.PlacesService(document.createElement('div'));
+                
+                const request = {
+                    query: 'Kungsgatan Stockholm',
+                    fields: ['name', 'formatted_address', 'geometry']
+                };
+                
+                service.textSearch(request, (results, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+                        addStatus(`API Test successful! Found ${results.length} results`, 'success');
+                        results.slice(0, 3).forEach(place => {
+                            updateDebug(`Found: ${place.formatted_address}`);
+                        });
+                    } else {
+                        addStatus(`API Test failed: ${status}`, 'error');
+                    }
+                });
+            } catch (error) {
+                addStatus(`API Test error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Check environment on page load
+        window.addEventListener('load', () => {
+            updateDebug(`Window loaded at: ${new Date().toISOString()}`);
+            updateDebug(`Browser: ${navigator.userAgent}`);
+            updateDebug(`API Key: ${API_KEY.substring(0, 10)}...`);
+            
+            // Check if Google Maps is already loaded
+            if (window.google?.maps?.places) {
+                addStatus('Google Maps already loaded!', 'warning');
+                initAutocomplete();
+            } else {
+                loadGoogleMaps();
+            }
+        });
+        
+        // Global callback for Google Maps
+        window.initAutocomplete = initAutocomplete;
+    </script>
+</body>
+</html>

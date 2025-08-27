@@ -17,3 +17,6 @@ export function useIsMobile() {
 
   return !!isMobile
 }
+
+// Alias för bakåtkompatibilitet
+export const useMobile = useIsMobile;

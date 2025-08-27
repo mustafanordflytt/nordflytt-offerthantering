@@ -1,37 +1,19 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CustomerList } from "@/components/crm/CustomerList"
-import { OfferOverview } from "@/components/crm/OfferOverview"
-import { Schedule } from "@/components/crm/Schedule"
-import { CustomerDetails } from "@/components/crm/CustomerDetails"
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
-export default function CRMPage() {
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null)
+export default function CRMRootPage() {
+  const router = useRouter()
 
-  const handleCustomerSelect = (customerId: string) => {
-    setSelectedCustomerId(customerId)
-  }
+  useEffect(() => {
+    // Redirect to dashboard as default CRM page
+    router.replace('/crm/dashboard')
+  }, [router])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Nordflytt CRM</h1>
-      <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Översikt</TabsTrigger>
-          <TabsTrigger value="schedule">Schema</TabsTrigger>
-        </TabsList>
-        <TabsContent value="overview">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <CustomerList onCustomerSelect={handleCustomerSelect} />
-            {selectedCustomerId ? <CustomerDetails customerId={selectedCustomerId} /> : <OfferOverview />}
-          </div>
-        </TabsContent>
-        <TabsContent value="schedule">
-          <Schedule />
-        </TabsContent>
-      </Tabs>
+    <div className="flex items-center justify-center min-h-screen">
+      <p>Omdirigerar till CRM dashboard...</p>
     </div>
   )
 }

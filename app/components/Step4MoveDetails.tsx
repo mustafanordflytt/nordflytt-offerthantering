@@ -1,14 +1,240 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Home, Clock, Building2, MapPin, AlertTriangle, Info, Warehouse, Calendar, Map, ArrowDown, ArrowUp, ArrowRight, ArrowLeft } from "lucide-react"
+import { Home, Clock, Building2, MapPin, AlertTriangle, Info, Warehouse, Calendar } from "lucide-react"
 import { LargeElevatorIcon, SmallElevatorIcon, StairsIcon } from "./icons"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { FormField, MoveFormData } from '../../types/form'
+import { toast } from "sonner"
+
+// 🚀 WORKING ADDRESS INPUT - FINAL FIXED VERSION
+interface WorkingAddressInputProps {
+  id?: string
+  value: string
+  onChange: (value: string, placeData?: any) => void
+  onPlaceSelected?: (place: any) => void
+  placeholder?: string
+  className?: string
+}
+
+function WorkingAddressInput({
+  id,
+  value,
+  onChange,
+  onPlaceSelected,
+  placeholder = "Skriv adress...",
+  className = ""
+}: WorkingAddressInputProps) {
+  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [googleReady, setGoogleReady] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const autocompleteServiceRef = useRef<any>(null)
+  const placesServiceRef = useRef<any>(null)
+
+  // 🔧 ENHANCED GOOGLE INITIALIZATION
+  useEffect(() => {
+    let attempts = 0
+    const maxAttempts = 50
+    
+    const initializeGoogle = () => {
+      attempts++
+      
+      if (window.google?.maps?.places) {
+        console.log('🌍 Google Maps Places API ready!');
+        try {
+          autocompleteServiceRef.current = new window.google.maps.places.AutocompleteService()
+          
+          // Create dummy map for PlacesService
+          const dummyMap = new window.google.maps.Map(document.createElement('div'))
+          placesServiceRef.current = new window.google.maps.places.PlacesService(dummyMap)
+          
+          setGoogleReady(true)
+          console.log('✅ Google services initialized successfully');
+        } catch (error) {
+          console.error('❌ Error initializing Google services:', error);
+        }
+      } else if (attempts < maxAttempts) {
+        console.log(`⏳ Waiting for Google Maps API... (attempt ${attempts}/${maxAttempts})`);
+        setTimeout(initializeGoogle, 100)
+      } else {
+        console.error('❌ Google Maps API failed to load after 5 seconds');
+        console.log('🔍 Debug info:', {
+          windowGoogle: !!window.google,
+          windowGoogleMaps: !!window.google?.maps,
+          windowGoogleMapsPlaces: !!window.google?.maps?.places
+        });
+      }
+    }
+    
+    initializeGoogle()
+  }, [])
+
+  // 🔧 FIXED SEARCH WITH CORRECT STATUS CHECKS
+  const searchPlaces = useCallback(async (input: string) => {
+    if (!googleReady || !autocompleteServiceRef.current || input.length < 2) {
+      setSuggestions([])
+      return
+    }
+
+    setIsLoading(true)
+    
+    try {
+      autocompleteServiceRef.current.getPlacePredictions({
+        input: input,
+        componentRestrictions: { country: 'se' },
+        types: ['address']
+      }, (predictions: any, status: any) => {
+        setIsLoading(false)
+        
+        console.log('🔍 Google API Response:', { status, predictions: predictions?.length || 0 });
+        
+        // 🔧 FIXED: Use string comparison instead of enum
+        if (status === 'OK' && predictions) {
+          console.log('✅ Got predictions:', predictions.length);
+          setSuggestions(predictions.slice(0, 5))
+          setShowDropdown(true)
+        } else {
+          console.log('❌ No predictions or error:', status);
+          if (status === 'REQUEST_DENIED') {
+            console.error('🚨 API REQUEST DENIED - Check API key and billing!');
+          }
+          setSuggestions([])
+          setShowDropdown(false)
+        }
+      })
+    } catch (error) {
+      console.error('❌ Search error:', error)
+      setIsLoading(false)
+      setSuggestions([])
+    }
+  }, [googleReady])
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    onChange(newValue)
+    
+    if (newValue.length >= 2) {
+      searchPlaces(newValue)
+    } else {
+      setSuggestions([])
+      setShowDropdown(false)
+    }
+  }
+
+  // 🔧 FIXED PLACE SELECTION WITH CORRECT STATUS CHECK
+  const handlePlaceSelect = (prediction: any) => {
+    console.log('🔍 Place selected:', prediction)
+    
+    onChange(prediction.description)
+    setShowDropdown(false)
+    setSuggestions([])
+
+    // Get detailed place information
+    if (placesServiceRef.current) {
+      placesServiceRef.current.getDetails({
+        placeId: prediction.place_id,
+        fields: ['place_id', 'geometry', 'formatted_address', 'address_components']
+      }, (place: any, status: any) => {
+        // 🔧 FIXED: Use string comparison instead of enum
+        if (status === 'OK') {
+          const placeData = {
+            placeId: place.place_id,
+            coordinates: {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            },
+            formattedAddress: place.formatted_address,
+            addressComponents: place.address_components
+          }
+          
+          console.log('📍 Complete place data:', placeData)
+          onPlaceSelected?.(placeData)
+        } else {
+          console.error('❌ Place details error:', status);
+        }
+      })
+    }
+  }
+
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+          inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Enhanced status icons
+  const getStatusIcon = () => {
+    if (!googleReady) return '❌'
+    if (isLoading) return '⏳'
+    if (suggestions.length > 0) return '🔍'
+    return '🌍'
+  }
+
+  return (
+    <div className="relative">
+      <div className="relative">
+        <Input
+          ref={inputRef}
+          id={id}
+          type="text"
+          value={value}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          className={className}
+        />
+        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm" title={googleReady ? 'Google Places ready' : 'Google Places not ready'}>
+          {getStatusIcon()}
+        </span>
+      </div>
+
+      {showDropdown && suggestions.length > 0 && (
+        <div
+          ref={dropdownRef}
+          className="absolute z-50 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto mt-1"
+        >
+          {suggestions.map((suggestion) => (
+            <div
+              key={suggestion.place_id}
+              className="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+              onClick={() => handlePlaceSelect(suggestion)}
+            >
+              <div className="text-sm font-medium text-gray-900">
+                {suggestion.structured_formatting?.main_text || suggestion.description}
+              </div>
+              {suggestion.structured_formatting?.secondary_text && (
+                <div className="text-xs text-gray-600 mt-1">
+                  {suggestion.structured_formatting.secondary_text}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Debug info for development */}
+      {process.env.NODE_ENV === 'development' && !googleReady && (
+        <div className="absolute top-full left-0 mt-1 p-2 bg-red-100 border border-red-300 rounded text-xs text-red-700 z-40">
+          ⚠️ Google Places API not ready. Check console for details.
+        </div>
+      )}
+    </div>
+  )
+}
 
 interface ElevatorOption {
   id: "big" | "small" | "none"
@@ -39,29 +265,11 @@ const elevatorOptions: ElevatorOption[] = [
 ]
 
 interface Step4Props {
-  formData: {
-    moveDate: string
-    moveTime: string
-    startAddress: string
-    startFloor: string
-    startElevator: "big" | "small" | "none"
-    endAddress: string
-    endFloor: string
-    endElevator: "big" | "small" | "none"
-    startParkingDistance: string
-    endParkingDistance: string
-    startLivingArea: string
-    endLivingArea: string
-    startPropertyType: "apartment" | "house" | "storage"
-    endPropertyType: "apartment" | "house" | "storage"
-    startDoorCode: string
-    endDoorCode: string
-    calculatedDistance?: string
-    flexibleMoveDate?: boolean
-    flexibleDateRange?: string
-  }
-  handleChange: (field: string, value: string) => void
-  nextStep: () => void
+  formData: MoveFormData
+  handleChange: (field: FormField, value: string | boolean) => void
+  handleSubmit: (e: React.FormEvent) => void
+  formSubmitted: boolean
+  invalidFields: FormField[]
   prevStep: () => void
 }
 
@@ -88,70 +296,60 @@ const timeOptions = [
   },
 ]
 
-// Uppdatera AddressSuggestion interfacet för att matcha Google Places API
-interface AddressSuggestion {
-  description: string
-  place_id: string
-}
-
-// Component to render required field indicator
 const RequiredFieldIndicator = () => (
   <span className="text-red-500 ml-1" aria-label="Obligatoriskt fält">
     *
   </span>
 )
 
-// Återskapa debounce-funktionen då vi fortfarande behöver den
-function debounce<F extends (...args: any[]) => any>(func: F, wait: number) {
+function debounce<F extends (...args: any[]) => any>(func: F, wait: number = 1000) {
   let timeout: NodeJS.Timeout | null = null
+  let lastExecuted = 0
 
   return ((...args: Parameters<F>) => {
+    const now = Date.now()
+    
     if (timeout) {
       clearTimeout(timeout)
     }
 
+    if (now - lastExecuted > wait * 2) {
+      lastExecuted = now
+      func(...args)
+      return
+    }
+
     timeout = setTimeout(() => {
+      lastExecuted = Date.now()
       func(...args)
     }, wait)
   }) as F
 }
 
-// Add this at the top of the file, after the existing imports
-interface WindowWithGoogle extends Window {
-  google: typeof google;
-  initGoogleMaps: () => void;
-}
-
-declare global {
-  interface Window {
-    google: typeof google;
-    initGoogleMaps: () => void;
-  }
-}
-
-export default function Step4MoveDetails({ formData, handleChange, nextStep, prevStep }: Step4Props) {
-  const [startElevator, setStartElevator] = useState<"big" | "small" | "none" | "">(formData.startElevator || "")
-  const [endElevator, setEndElevator] = useState<"big" | "small" | "none">(formData.endElevator || "big")
-  const [distanceError, setDistanceError] = useState<string | null>(null)
-  const [startAddressSuggestions, setStartAddressSuggestions] = useState<AddressSuggestion[]>([])
-  const [endAddressSuggestions, setEndAddressSuggestions] = useState<AddressSuggestion[]>([])
-  const [startCoords, setStartCoords] = useState<{ lat: number; lon: number } | null>(null)
-  const [endCoords, setEndCoords] = useState<{ lat: number; lon: number } | null>(null)
-  const [isLoadingStartSuggestions, setIsLoadingStartSuggestions] = useState(false)
-  const [isLoadingEndSuggestions, setIsLoadingEndSuggestions] = useState(false)
-  const [addressError, setAddressError] = useState<{ start: string | null; end: string | null }>({
-    start: null,
-    end: null,
-  })
-  const [isFormValid, setIsFormValid] = useState(false)
-  const [invalidFields, setInvalidFields] = useState<string[]>([])
-  const [formSubmitted, setFormSubmitted] = useState(false)
-  const [isCalculating, setIsCalculating] = useState(false)
-  const [originType, setOriginType] = useState<"address" | "other">("address")
-  const [destinationType, setDestinationType] = useState<"address" | "other">("address")
-  const [isFlexibleDate, setIsFlexibleDate] = useState<boolean>(formData.flexibleMoveDate || false)
+export default function Step4MoveDetails({ 
+  formData, 
+  handleChange, 
+  handleSubmit: propHandleSubmit,
+  formSubmitted,
+  invalidFields,
+  prevStep,
+}: Step4Props) {
+  // Local state för omedelbar UI-feedback
+  const [localStartAddress, setLocalStartAddress] = useState(formData.startAddress || "")
+  const [localEndAddress, setLocalEndAddress] = useState(formData.endAddress || "")
+  const [localStartLivingArea, setLocalStartLivingArea] = useState(formData.startLivingArea || "")
+  const [localEndLivingArea, setLocalEndLivingArea] = useState(formData.endLivingArea || "")
+  const [localStartParkingDistance, setLocalStartParkingDistance] = useState(formData.startParkingDistance || "")
+  const [localEndParkingDistance, setLocalEndParkingDistance] = useState(formData.endParkingDistance || "")
   
-  // Alternativ för flexibelt datumintervall
+  const [startElevator, setStartElevator] = useState<"big" | "small" | "none">(formData.startElevator)
+  const [endElevator, setEndElevator] = useState<"big" | "small" | "none">(formData.endElevator)
+  const [distanceError, setDistanceError] = useState<string | null>(null)
+  const [isCalculating, setIsCalculating] = useState(false)
+  const [isFlexibleDate, setIsFlexibleDate] = useState<boolean>(formData.flexibleMoveDate || false)
+  const [isClient, setIsClient] = useState(false)
+  const [lastDistanceCalculation, setLastDistanceCalculation] = useState<string>("")
+  
   const flexibleDateOptions = [
     { value: "1-3", label: "1–3 dagar" },
     { value: "7-14", label: "1–2 veckor" },
@@ -159,215 +357,273 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
     { value: "28-42", label: "4–6 veckor" },
   ]
 
-  // Get today's date in YYYY-MM-DD format for min date attribute
   const today = new Date().toISOString().split("T")[0]
 
-  // Initialize parking distances if they don't exist
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Address sync
+  useEffect(() => {
+    console.log('🔍 ADDRESS SYNC CHECK:', {
+      localStartAddress: localStartAddress?.length || 0,
+      localEndAddress: localEndAddress?.length || 0,
+      formDataStartAddress: formData.startAddress?.length || 0,
+      formDataEndAddress: formData.endAddress?.length || 0
+    });
+
+    if (localStartAddress && localStartAddress.length > 3 && 
+        (!formData.startAddress || formData.startAddress !== localStartAddress)) {
+      console.log('🔧 SYNCING START ADDRESS:', localStartAddress);
+      handleChange('startAddress', localStartAddress);
+    }
+
+    if (localEndAddress && localEndAddress.length > 3 && 
+        (!formData.endAddress || formData.endAddress !== localEndAddress)) {
+      console.log('🔧 SYNCING END ADDRESS:', localEndAddress);
+      handleChange('endAddress', localEndAddress);
+    }
+  }, [localStartAddress, localEndAddress, formData.startAddress, formData.endAddress, handleChange]);
+
+  // Sync local state with form data
+  useEffect(() => {
+    setLocalStartAddress(formData.startAddress || "")
+    setLocalEndAddress(formData.endAddress || "")
+    setLocalStartLivingArea(formData.startLivingArea || "")
+    setLocalEndLivingArea(formData.endLivingArea || "")
+    setLocalStartParkingDistance(formData.startParkingDistance || "")
+    setLocalEndParkingDistance(formData.endParkingDistance || "")
+  }, [formData.startAddress, formData.endAddress, formData.startLivingArea, formData.endLivingArea, formData.startParkingDistance, formData.endParkingDistance])
+
+  // Initialize parking distances
   useEffect(() => {
     if (formData.startParkingDistance === undefined && formData.endParkingDistance === undefined) {
-      // If the old single parking distance exists, copy it to both
       if ((formData as any).parkingDistance) {
         handleChange("startParkingDistance", (formData as any).parkingDistance)
         handleChange("endParkingDistance", (formData as any).parkingDistance)
-        // Clean up old property by setting it to empty instead of deleting
         handleChange("parkingDistance", "")
       } else {
         handleChange("startParkingDistance", "")
         handleChange("endParkingDistance", "")
       }
     }
-  }, [formData, handleChange])
+  }, [handleChange])
 
+  // Auto-set elevator/floor for property types
   useEffect(() => {
+    let shouldUpdate = false;
+    
     if (formData.startPropertyType === "house" || formData.startPropertyType === "storage") {
-      setStartElevator("none")
-      handleChange("startElevator", "none")
+      if (startElevator !== "none") {
+        setStartElevator("none");
+        handleChange("startElevator", "none");
+        shouldUpdate = true;
+      }
+      if (!formData.startFloor || formData.startFloor === "") {
+        handleChange("startFloor", "0");
+        shouldUpdate = true;
+      }
     }
+    
     if (formData.endPropertyType === "house" || formData.endPropertyType === "storage") {
-      setEndElevator("none")
-      handleChange("endElevator", "none")
+      if (endElevator !== "none") {
+        setEndElevator("none");
+        handleChange("endElevator", "none");
+        shouldUpdate = true;
+      }
+      if (!formData.endFloor || formData.endFloor === "") {
+        handleChange("endFloor", "0");
+        shouldUpdate = true;
+      }
     } else if (formData.endPropertyType === "apartment" && !formData.endElevator) {
-      // Set large elevator as default for end address if it's an apartment and no selection yet
-      setEndElevator("big")
-      handleChange("endElevator", "big")
+      setEndElevator("big");
+      handleChange("endElevator", "big");
+      shouldUpdate = true;
     }
-  }, [formData.startPropertyType, formData.endPropertyType, formData.endElevator, handleChange])
-
-  // Check if form is valid and track invalid fields
-  useEffect(() => {
-    const newInvalidFields: string[] = []
-
-    if (!formData.moveDate && !isFlexibleDate) newInvalidFields.push("moveDate")
-    if (isFlexibleDate && !formData.flexibleDateRange) newInvalidFields.push("flexibleDateRange")
-    if (!formData.startAddress) newInvalidFields.push("startAddress")
-    if (!formData.endAddress) newInvalidFields.push("endAddress")
-    if (!formData.startLivingArea) newInvalidFields.push("startLivingArea")
-    if (!formData.endLivingArea) newInvalidFields.push("endLivingArea")
-    if (formData.startParkingDistance === "") newInvalidFields.push("startParkingDistance")
-    if (formData.endParkingDistance === "") newInvalidFields.push("endParkingDistance")
-
-    if (formData.startPropertyType === "apartment") {
-      if (!formData.startFloor) newInvalidFields.push("startFloor")
-    }
-
-    if (formData.endPropertyType === "apartment") {
-      if (!formData.endFloor) newInvalidFields.push("endFloor")
-    }
-
-    setInvalidFields(newInvalidFields)
-    setIsFormValid(newInvalidFields.length === 0)
-  }, [formData])
-
-  // Add required refs for input elements
-  const fromInputRef = useRef<HTMLInputElement>(null);
-  const toInputRef = useRef<HTMLInputElement>(null);
-
-  // Referens för Google Maps Autocomplete-objekt
-  const startAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
-  const endAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
-  const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null)
-  const distanceMatrixRef = useRef<google.maps.DistanceMatrixService | null>(null)
-  
-  // Remove the Google Maps API loading code since it's now in layout.tsx
-  // Instead, just initialize the services when Google is available
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.google && window.google.maps) {
-      initializeGoogleMapsServices();
-    }
-  }, []);
-  
-  // Uppdatera calculateAndSetDistance-funktionen för att använda nyare API
-  const calculateAndSetDistance = useCallback((origin: string, destination: string) => {
-    if (!origin || !destination) return;
-
-    setIsCalculating(true);
-    // Skapa en ny service-instans för varje anrop istället för att återanvända en referens
-    const service = new google.maps.DistanceMatrixService();
     
-    service.getDistanceMatrix(
-      {
-        origins: [origin],
-        destinations: [destination],
-        travelMode: google.maps.TravelMode.DRIVING,
-        unitSystem: google.maps.UnitSystem.METRIC,
-      },
-      (response, status) => {
-        setIsCalculating(false);
-        
-        if (status === "OK" && response?.rows[0]?.elements[0]?.status === "OK") {
-          const distanceResult = response.rows[0].elements[0];
-          
-          if (distanceResult?.distance && distanceResult?.duration) {
-            const distanceValue = distanceResult.distance.value; // meters
-            console.log("Setting calculatedDistance to:", distanceValue.toString());
-            handleChange('calculatedDistance', distanceValue.toString());
-            setDistanceError(null);
-            
-            // Set parking distance values in form
-            if (originType === "address" && destinationType === "address") {
-              handleChange("endParkingDistance", Math.round(distanceValue / 1000).toString()); // km
-            }
-          }
-        } else {
-          console.error("Error calculating distance:", status);
-          setDistanceError('Kunde inte beräkna avståndet. Vänligen kontrollera adresserna.');
-        }
-      }
-    );
-  }, [handleChange])
+    if (shouldUpdate) {
+      console.log('🏠 Auto-setting elevator/floor for property types');
+    }
+  }, [formData.startPropertyType, formData.endPropertyType, handleChange]);
 
-  // Uppdatera initializeGoogleMapsServices för modern Google Maps API
-  const initializeGoogleMapsServices = useCallback(() => {
-    if (typeof window !== "undefined" && window.google && window.google.maps) {
+  // 🔧 FIXED DISTANCE CALCULATION WITH CORRECT TYPES
+  const debouncedCalculateDistance = useCallback(
+    debounce(async (origin: string, destination: string, originPlaceId?: string, destPlaceId?: string) => {
+      const distanceKey = `${originPlaceId || origin}-${destPlaceId || destination}`;
+      if (distanceKey === lastDistanceCalculation) {
+        console.log('🚫 Duplicate distance calculation prevented');
+        return;
+      }
+      
+      if (!origin || !destination || origin.length < 10 || destination.length < 10) {
+        console.log('🚫 Addresses too short for distance calculation');
+        return;
+      }
+      
+      setLastDistanceCalculation(distanceKey);
+      setIsCalculating(true);
+      setDistanceError(null);
+      
       try {
-        // Use the newer API approach
-        const autocompleteStartAddress = new google.maps.places.Autocomplete(
-          fromInputRef.current as HTMLInputElement,
-          { types: ["address"] }
-        );
+        if (!window.google?.maps) {
+          throw new Error('Google Maps inte laddat');
+        }
+
+        const service = new google.maps.DistanceMatrixService();
         
-        const autocompleteEndAddress = new google.maps.places.Autocomplete(
-          toInputRef.current as HTMLInputElement,
-          { types: ["address"] }
-        );
+        // 🔧 FIXED: Correct type handling for origins/destinations
+        const origins: (string | google.maps.LatLng | google.maps.Place | google.maps.LatLngLiteral)[] = 
+          originPlaceId ? [{placeId: originPlaceId} as google.maps.Place] : [origin];
+        const destinations: (string | google.maps.LatLng | google.maps.Place | google.maps.LatLngLiteral)[] = 
+          destPlaceId ? [{placeId: destPlaceId} as google.maps.Place] : [destination];
         
-        // Set up listeners
-        autocompleteStartAddress.addListener("place_changed", () => {
-          const place = autocompleteStartAddress.getPlace();
-          if (place && place.formatted_address) {
-            setStartAddressSuggestions([]);
-            handleChange('startAddress', place.formatted_address);
-            
-            if (place.geometry?.location) {
-              setStartCoords({
-                lat: place.geometry.location.lat(),
-                lon: place.geometry.location.lng()
-              });
-              
-              // Calculate distance if both addresses are present
-              if (formData.endAddress && endCoords) {
-                calculateAndSetDistance(place.formatted_address, formData.endAddress);
+        console.log('🚗 Calculating distance:', { origins, destinations });
+        
+        const response = await new Promise<google.maps.DistanceMatrixResponse>((resolve, reject) => {
+          service.getDistanceMatrix(
+            {
+              origins: origins,
+              destinations: destinations,
+              travelMode: google.maps.TravelMode.DRIVING,
+              unitSystem: google.maps.UnitSystem.METRIC,
+            },
+            (response, status) => {
+              if (status === google.maps.DistanceMatrixStatus.OK && response?.rows[0]?.elements[0]?.status === google.maps.DistanceMatrixElementStatus.OK) {
+                resolve(response);
+              } else {
+                reject(new Error(`Kunde inte beräkna avståndet: ${status}`));
               }
             }
-          }
+          );
         });
-        
-        autocompleteEndAddress.addListener("place_changed", () => {
-          const place = autocompleteEndAddress.getPlace();
-          if (place && place.formatted_address) {
-            setEndAddressSuggestions([]);
-            handleChange('endAddress', place.formatted_address);
-            
-            if (place.geometry?.location) {
-              setEndCoords({
-                lat: place.geometry.location.lat(),
-                lon: place.geometry.location.lng()
-              });
-              
-              // Calculate distance if both addresses are present
-              if (formData.startAddress && startCoords) {
-                calculateAndSetDistance(formData.startAddress, place.formatted_address);
-              }
-            }
-          }
-        });
-        
-        // Save references to service
-        placesServiceRef.current = new google.maps.places.PlacesService(document.createElement('div'));
+
+        const distanceResult = response.rows[0].elements[0];
+        if (distanceResult?.distance) {
+          const distanceInKm = (distanceResult.distance.value / 1000).toFixed(1);
+          
+          console.log('✅ DISTANCE CALCULATED:', {
+            distanceInKm,
+            distanceText: distanceResult.distance.text,
+            durationText: distanceResult.duration?.text
+          });
+          
+          handleChange('calculatedDistance', distanceInKm);
+          setDistanceError(null);
+        }
       } catch (error) {
-        console.error("Error initializing Google Maps services:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Ett okänt fel uppstod';
+        console.error('❌ Distance calculation error:', errorMessage);
+        setDistanceError(errorMessage);
+      } finally {
+        setIsCalculating(false);
       }
-    }
-  }, [handleChange, calculateAndSetDistance])
+    }, 2000),
+    [handleChange, lastDistanceCalculation]
+  );
 
-  // Uppdatera handleAddressChange för att bara uppdatera adressfälten
-  const handleAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, addressType: 'startAddress' | 'endAddress') => {
+  // Trigger distance calculation
+  useEffect(() => {
+    if (formData.startAddress && formData.endAddress && 
+        formData.startAddress.length > 10 && formData.endAddress.length > 10 &&
+        (!formData.calculatedDistance || formData.calculatedDistance === "0" || formData.calculatedDistance === "Ej beräknad")) {
+      
+      console.log('🚗 Triggering distance calculation');
+      
+      const startPlaceId = (formData as any).startPlaceId;
+      const endPlaceId = (formData as any).endPlaceId;
+      
+      debouncedCalculateDistance(
+        formData.startAddress, 
+        formData.endAddress,
+        startPlaceId,
+        endPlaceId
+      );
+    }
+  }, [formData.startAddress, formData.endAddress, debouncedCalculateDistance])
+
+  // Form validation
+  const isFormValid = useMemo(() => {
+    const addressesValid = (localStartAddress?.length > 5) && (localEndAddress?.length > 5);
+    
+    const validationChecks = {
+      addressesValid,
+      startLivingArea: formData.startLivingArea && Number(formData.startLivingArea) > 0,
+      endLivingArea: formData.endLivingArea && Number(formData.endLivingArea) > 0,
+      startParkingDistance: formData.startParkingDistance !== undefined && formData.startParkingDistance !== "",
+      endParkingDistance: formData.endParkingDistance !== undefined && formData.endParkingDistance !== "",
+      startPropertyType: !!formData.startPropertyType,
+      endPropertyType: !!formData.endPropertyType,
+      moveTime: !!formData.moveTime,
+      moveDate: isFlexibleDate ? !!formData.flexibleDateRange : !!formData.moveDate,
+      startFloor: formData.startPropertyType === "apartment" 
+        ? (formData.startFloor !== undefined && formData.startFloor !== null && formData.startFloor !== "")
+        : true,
+      endFloor: formData.endPropertyType === "apartment" 
+        ? (formData.endFloor !== undefined && formData.endFloor !== null && formData.endFloor !== "")
+        : true,
+    };
+
+    const isValid = Object.values(validationChecks).every(Boolean);
+    
+    console.log('🔍 VALIDATION STATUS:', {
+      isValid,
+      ...validationChecks,
+      localStartAddressLength: localStartAddress?.length || 0,
+      localEndAddressLength: localEndAddress?.length || 0
+    });
+    
+    return isValid;
+  }, [
+    localStartAddress, 
+    localEndAddress, 
+    formData.startLivingArea,
+    formData.endLivingArea,
+    formData.startParkingDistance,
+    formData.endParkingDistance,
+    formData.startPropertyType,
+    formData.endPropertyType,
+    formData.moveTime,
+    formData.moveDate,
+    formData.flexibleDateRange,
+    formData.startFloor,
+    formData.endFloor,
+    isFlexibleDate
+  ]);
+
+  // Event handlers
+  const handleStartLivingAreaChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
-    // Update the form data immediately for immediate UI feedback
-    handleChange(addressType, value);
-    
-    // We don't need to fetch suggestions manually as the Autocomplete handles this
-    // Just clear any previously set suggestions
-    if (addressType === 'startAddress') {
-      setStartAddressSuggestions([]);
-    } else {
-      setEndAddressSuggestions([]);
+    if (/^\d{0,4}$/.test(value)) {
+      setLocalStartLivingArea(value);
+      handleChange('startLivingArea', value);
     }
-  }, [handleChange])
+  }, [handleChange]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setFormSubmitted(true)
-    if (isFormValid) {
-      nextStep()
-    } else {
-      // Show validation errors
-      alert("Vänligen fyll i alla obligatoriska fält markerade med *")
+  const handleEndLivingAreaChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,4}$/.test(value)) {
+      setLocalEndLivingArea(value);
+      handleChange('endLivingArea', value);
     }
-  }
+  }, [handleChange]);
 
-  const handleElevatorChange = (location: "start" | "end", value: "big" | "small" | "none") => {
+  const handleStartParkingDistanceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setLocalStartParkingDistance(value);
+      handleChange('startParkingDistance', value);
+    }
+  }, [handleChange]);
+
+  const handleEndParkingDistanceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setLocalEndParkingDistance(value);
+      handleChange('endParkingDistance', value);
+    }
+  }, [handleChange]);
+
+  const handleElevatorChange = useCallback((location: "start" | "end", value: "big" | "small" | "none") => {
     if (location === "start") {
       setStartElevator(value)
       handleChange("startElevator", value)
@@ -375,50 +631,85 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
       setEndElevator(value)
       handleChange("endElevator", value)
     }
-  }
+  }, [handleChange]);
 
-  // Fix property reference in handleParkingDistanceChange
-  const handleParkingDistanceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (/^\d*$/.test(value)) {
-      handleChange('endParkingDistance', value);
+  const handlePropertyTypeChange = useCallback((location: "start" | "end", value: string) => {
+    if (location === "start") {
+      handleChange("startPropertyType", value);
+    } else {
+      handleChange("endPropertyType", value);
     }
-  };
+  }, [handleChange]);
 
-  // Update deleteFormField to make it safe
-  const deleteFormField = (field: string) => {
-    // Instead of deleting, we set the field to an empty string
-    // This is a safer approach in TypeScript
-    if (field in formData) {
-      handleChange(field, "");
-    }
-  };
-
-  // Hantera tidsvalet
-  const handleTimeChange = (time: string) => {
+  const handleTimeChange = useCallback((time: string) => {
     handleChange("moveTime", time);
-  };
+  }, [handleChange]);
 
-  const handleFlexibleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFlexibleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
     setIsFlexibleDate(isChecked);
     handleChange("flexibleMoveDate", isChecked.toString());
     
-    // Om vi avmarkerar flexibelt datum, rensa intervallet
     if (!isChecked) {
       handleChange("flexibleDateRange", "");
     } else if (flexibleDateOptions.length > 0) {
-      // Sätt standardvärde för flexibelt datumintervall
       handleChange("flexibleDateRange", flexibleDateOptions[0].value);
     }
-  };
+  }, [handleChange, flexibleDateOptions]);
   
-  const handleFlexibleDateRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFlexibleDateRangeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     handleChange("flexibleDateRange", e.target.value);
-  };
+  }, [handleChange]);
+
+  const handleFormSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    console.log('🔍 FORM SUBMISSION:', {
+      isFormValid,
+      formData: {
+        startAddress: formData.startAddress,
+        endAddress: formData.endAddress,
+        startPropertyType: formData.startPropertyType,
+        endPropertyType: formData.endPropertyType,
+        moveTime: formData.moveTime,
+        moveDate: formData.moveDate,
+      }
+    });
+    
+    if (!isFormValid) {
+      toast.error("Vänligen fyll i alla obligatoriska fält", {
+        description: "Kontrollera fälten markerade med *"
+      });
+      return;
+    }
+
+    try {
+      propHandleSubmit(e);
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      if (!errorMessage.includes('navigation') && 
+          !errorMessage.includes('redirect') && 
+          !errorMessage.includes('abort') &&
+          !errorMessage.includes('cancelled')) {
+        
+        toast.error("Ett fel uppstod", {
+          description: "Kunde inte skicka formuläret. Vänligen försök igen."
+        });
+      }
+    }
+  }, [formData, isFormValid, propHandleSubmit]);
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto">
+    <form 
+      className="w-full max-w-4xl mx-auto"
+      onSubmit={handleFormSubmit}
+    >
       <div className="space-y-6">
         {/* Date and Time section */}
         <div className="mb-8">
@@ -428,7 +719,6 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
           </div>
 
           <div className="flex flex-col gap-6">
-            {/* Datum och flexibilitet */}
             <div className="w-full">
               <div className="flex items-center mb-2">
                 <Label htmlFor="move-date" className="text-sm font-medium">
@@ -509,9 +799,10 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
               </div>
             </div>
 
-            {/* Tidval */}
             <div className="w-full mt-4">
-              <Label className="mb-2 block">Flyttid</Label>
+              <Label className="mb-2 block">
+                Flyttid <RequiredFieldIndicator />
+              </Label>
               <div className="grid grid-cols-3 gap-4 mt-2">
                 {timeOptions.map((option) => (
                   <Card
@@ -561,29 +852,34 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
               Adress <RequiredFieldIndicator />
             </Label>
             <div className="relative">
-              <Input
-                ref={fromInputRef}
+              <WorkingAddressInput
                 id="startAddress"
-                value={formData.startAddress}
-                onChange={(e) => handleAddressChange(e, 'startAddress')}
-                placeholder="Sök efter en adress..."
-                className={formSubmitted && invalidFields.includes("startAddress") ? "border-red-500" : ""}
-                required
+                value={localStartAddress}
+                onChange={(value) => {
+                  console.log('🔍 START ADDRESS CHANGE:', value);
+                  setLocalStartAddress(value);
+                  handleChange('startAddress', value);
+                }}
+                onPlaceSelected={(placeData) => {
+                  console.log('📍 START PLACE DATA:', placeData);
+                  if (placeData) {
+                    handleChange('startPlaceId' as FormField, placeData.placeId);
+                    handleChange('startCoordinates' as FormField, JSON.stringify(placeData.coordinates));
+                  }
+                }}
+                placeholder="Skriv startadress..."
+                className={`w-full ${formSubmitted && invalidFields.includes("startAddress") ? "border-red-500" : ""}`}
               />
-              {isLoadingStartSuggestions && <div className="absolute right-2 top-2 animate-spin">⟳</div>}
             </div>
-            {addressError.start && (
-              <p className="text-red-500 text-sm flex items-center mt-1">
-                <AlertTriangle className="w-4 h-4 mr-1" /> {addressError.start}
-              </p>
-            )}
             {formSubmitted && invalidFields.includes("startAddress") && (
               <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
             )}
           </div>
 
           <div className="mt-4">
-            <Label>Bostadstyp</Label>
+            <Label>
+              Bostadstyp <RequiredFieldIndicator />
+            </Label>
             <div className="grid grid-cols-3 gap-4 mt-2">
               {[
                 {
@@ -610,7 +906,7 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                   className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
                     formData.startPropertyType === option.id ? "border-2 border-blue-500 bg-blue-50 shadow-lg" : ""
                   }`}
-                  onClick={() => handleChange("startPropertyType", option.id)}
+                  onClick={() => handlePropertyTypeChange("start", option.id)}
                 >
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
@@ -626,14 +922,19 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
 
           <div className="mt-4">
             <Label htmlFor="startLivingArea" className="flex items-center">
-              Boarea (kvm) <RequiredFieldIndicator />
+              {formData.startPropertyType === "storage" ? "Yta (kvm)" : "Boarea (kvm)"} <RequiredFieldIndicator />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">Ange boarean i kvadratmeter för en mer exakt offert.</p>
+                    <p className="max-w-xs">
+                      {formData.startPropertyType === "storage" 
+                        ? "Ange ytan i kvadratmeter för magasinet. Vi räknar automatiskt med 3 meters takhöjd." 
+                        : "Ange boarean i kvadratmeter för en mer exakt offert."
+                      }
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -641,9 +942,11 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
             <Input
               type="number"
               id="startLivingArea"
-              value={formData.startLivingArea}
-              onChange={(e) => handleChange("startLivingArea", e.target.value)}
+              value={localStartLivingArea}
+              onChange={handleStartLivingAreaChange}
               className={`w-full mt-1 bg-[#F7F7F7] ${formSubmitted && invalidFields.includes("startLivingArea") ? "border-red-500" : ""}`}
+              placeholder={formData.startPropertyType === "storage" ? "Ex: 12 kvm" : "Ex: 85 kvm"}
+              max="9999"
               required
             />
             {formSubmitted && invalidFields.includes("startLivingArea") && (
@@ -683,7 +986,7 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                 <Input
                   type="number"
                   id="startFloor"
-                  value={formData.startFloor}
+                  value={formData.startFloor || ""}
                   onChange={(e) => handleChange("startFloor", e.target.value)}
                   className={`w-full mt-1 ${formSubmitted && invalidFields.includes("startFloor") ? "border-red-500" : ""}`}
                   min="0"
@@ -710,7 +1013,7 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
 
           <div className="mt-4">
             <Label htmlFor="startParkingDistance" className="flex items-center">
-              Avstånd till parkering (Från adress)
+              Avstånd till parkering (Från adress) <RequiredFieldIndicator />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -725,8 +1028,8 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
             <Input
               type="number"
               id="startParkingDistance"
-              value={formData.startParkingDistance}
-              onChange={(e) => handleChange("startParkingDistance", e.target.value)}
+              value={localStartParkingDistance}
+              onChange={handleStartParkingDistanceChange}
               className={`w-full mt-1 ${formSubmitted && invalidFields.includes("startParkingDistance") ? "border-red-500" : ""}`}
               min="0"
               placeholder="Ange avstånd i meter"
@@ -740,14 +1043,16 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                 className="mr-2"
                 onChange={(e) => {
                   if (e.target.checked) {
-                    handleChange("startParkingDistance", "15")
-                  } else if (formData.startParkingDistance === "15") {
+                    setLocalStartParkingDistance("10")
+                    handleChange("startParkingDistance", "10")
+                  } else if (formData.startParkingDistance === "10") {
+                    setLocalStartParkingDistance("")
                     handleChange("startParkingDistance", "")
                   }
                 }}
               />
               <label htmlFor="startParkingUnknown" className="text-sm">
-                Jag vet inte avståndet, använd standardvärde (15 meter)
+                Jag vet inte avståndet, använd standardvärde (10 meter)
               </label>
             </div>
             {formSubmitted && invalidFields.includes("startParkingDistance") && (
@@ -768,22 +1073,25 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
               Adress <RequiredFieldIndicator />
             </Label>
             <div className="relative">
-              <Input
-                ref={toInputRef}
+              <WorkingAddressInput
                 id="endAddress"
-                value={formData.endAddress}
-                onChange={(e) => handleAddressChange(e, 'endAddress')}
-                placeholder="Sök efter en adress..."
-                className={formSubmitted && invalidFields.includes("endAddress") ? "border-red-500" : ""}
-                required
+                value={localEndAddress}
+                onChange={(value) => {
+                  console.log('🔍 END ADDRESS CHANGE:', value);
+                  setLocalEndAddress(value);
+                  handleChange('endAddress', value);
+                }}
+                onPlaceSelected={(placeData) => {
+                  console.log('📍 END PLACE DATA:', placeData);
+                  if (placeData) {
+                    handleChange('endPlaceId' as FormField, placeData.placeId);
+                    handleChange('endCoordinates' as FormField, JSON.stringify(placeData.coordinates));
+                  }
+                }}
+                placeholder="Skriv slutadress..."
+                className={`w-full ${formSubmitted && invalidFields.includes("endAddress") ? "border-red-500" : ""}`}
               />
-              {isLoadingEndSuggestions && <div className="absolute right-2 top-2 animate-spin">⟳</div>}
             </div>
-            {addressError.end && (
-              <p className="text-red-500 text-sm flex items-center mt-1">
-                <AlertTriangle className="w-4 h-4 mr-1" /> {addressError.end}
-              </p>
-            )}
             {formSubmitted && invalidFields.includes("endAddress") && (
               <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
             )}
@@ -794,10 +1102,18 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                 Beräknar avstånd...
               </div>
             )}
+            
+            {distanceError && (
+              <div className="text-red-500 text-sm mt-2">
+                ⚠️ {distanceError}
+              </div>
+            )}
           </div>
 
           <div className="mt-4">
-            <Label>Bostadstyp</Label>
+            <Label>
+              Bostadstyp <RequiredFieldIndicator />
+            </Label>
             <div className="grid grid-cols-3 gap-4 mt-2">
               {[
                 {
@@ -824,7 +1140,7 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                   className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
                     formData.endPropertyType === option.id ? "border-2 border-blue-500 bg-blue-50 shadow-lg" : ""
                   }`}
-                  onClick={() => handleChange("endPropertyType", option.id)}
+                  onClick={() => handlePropertyTypeChange("end", option.id)}
                 >
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
@@ -840,14 +1156,19 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
 
           <div className="mt-4">
             <Label htmlFor="endLivingArea" className="flex items-center">
-              Boarea (kvm) <RequiredFieldIndicator />
+              {formData.endPropertyType === "storage" ? "Yta (kvm)" : "Boarea (kvm)"} <RequiredFieldIndicator />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">Ange boarean i kvadratmeter för en mer exakt offert.</p>
+                    <p className="max-w-xs">
+                      {formData.endPropertyType === "storage" 
+                        ? "Ange ytan i kvadratmeter för magasinet. Vi räknar automatiskt med 3 meters takhöjd." 
+                        : "Ange boarean i kvadratmeter för en mer exakt offert."
+                      }
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -855,9 +1176,11 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
             <Input
               type="number"
               id="endLivingArea"
-              value={formData.endLivingArea}
-              onChange={(e) => handleChange("endLivingArea", e.target.value)}
+              value={localEndLivingArea}
+              onChange={handleEndLivingAreaChange}
               className={`w-full mt-1 bg-[#F7F7F7] ${formSubmitted && invalidFields.includes("endLivingArea") ? "border-red-500" : ""}`}
+              placeholder={formData.endPropertyType === "storage" ? "Ex: 12 kvm" : "Ex: 85 kvm"}
+              max="9999"
               required
             />
             {formSubmitted && invalidFields.includes("endLivingArea") && (
@@ -897,7 +1220,7 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                 <Input
                   type="number"
                   id="endFloor"
-                  value={formData.endFloor}
+                  value={formData.endFloor || ""}
                   onChange={(e) => handleChange("endFloor", e.target.value)}
                   className={`w-full mt-1 ${formSubmitted && invalidFields.includes("endFloor") ? "border-red-500" : ""}`}
                   min="0"
@@ -924,7 +1247,7 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
 
           <div className="mt-4">
             <Label htmlFor="endParkingDistance" className="flex items-center">
-              Avstånd till parkering (Till adress)
+              Avstånd till parkering (Till adress) <RequiredFieldIndicator />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -939,8 +1262,8 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
             <Input
               type="number"
               id="endParkingDistance"
-              value={formData.endParkingDistance}
-              onChange={handleParkingDistanceChange}
+              value={localEndParkingDistance}
+              onChange={handleEndParkingDistanceChange}
               className={`w-full mt-1 ${formSubmitted && invalidFields.includes("endParkingDistance") ? "border-red-500" : ""}`}
               min="0"
               placeholder="Ange avstånd i meter"
@@ -954,14 +1277,16 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
                 className="mr-2"
                 onChange={(e) => {
                   if (e.target.checked) {
-                    handleChange("endParkingDistance", "15")
-                  } else if (formData.endParkingDistance === "15") {
+                    setLocalEndParkingDistance("10")
+                    handleChange("endParkingDistance", "10")
+                  } else if (formData.endParkingDistance === "10") {
+                    setLocalEndParkingDistance("")
                     handleChange("endParkingDistance", "")
                   }
                 }}
               />
               <label htmlFor="endParkingUnknown" className="text-sm">
-                Jag vet inte avståndet, använd standardvärde (15 meter)
+                Jag vet inte avståndet, använd standardvärde (10 meter)
               </label>
             </div>
             {formSubmitted && invalidFields.includes("endParkingDistance") && (
@@ -969,6 +1294,22 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
             )}
           </div>
         </div>
+
+        {/* Debug info */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-gray-100 p-4 rounded-lg text-xs">
+            <h4 className="font-bold mb-2">🔍 Debug Info:</h4>
+            <p>Form Valid: {isFormValid ? '✅' : '❌'}</p>
+            <p>Start Address: {formData.startAddress || 'Ej ifylld'} (Lokal: {localStartAddress?.length || 0} tecken)</p>
+            <p>End Address: {formData.endAddress || 'Ej ifylld'} (Lokal: {localEndAddress?.length || 0} tecken)</p>
+            <p>Start Property Type: {formData.startPropertyType || 'Ej vald'}</p>
+            <p>End Property Type: {formData.endPropertyType || 'Ej vald'}</p>
+            <p>Move Time: {formData.moveTime || 'Ej vald'}</p>
+            <p>Move Date: {formData.moveDate || 'Ej vald'}</p>
+            <p>Distance: {formData.calculatedDistance || 'Ej beräknad'}</p>
+            <p>Google Ready: {typeof window !== 'undefined' && window.google?.maps?.places ? '✅' : '❌'}</p>
+          </div>
+        )}
 
         <div className="flex justify-between">
           <button
@@ -980,12 +1321,20 @@ export default function Step4MoveDetails({ formData, handleChange, nextStep, pre
           </button>
           <button
             type="submit"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            disabled={!isFormValid}
+            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${
+              isFormValid
+                ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' 
+                : 'bg-gray-400 cursor-not-allowed'
+            }`}
           >
             Nästa
+            {!isFormValid && (
+              <AlertTriangle className="ml-2 w-4 h-4" />
+            )}
           </button>
         </div>
       </div>
     </form>
   )
-}
+}3

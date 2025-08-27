@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <title>Force Login - Mustafa</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px 20px; background: #002A5C; color: white; border: none; cursor: pointer; }
+        .status { margin-top: 20px; padding: 10px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Force Login för Mustafa</h1>
+    <button onclick="forceLogin()">Klicka här för att logga in direkt</button>
+    <div id="status"></div>
+
+    <script>
+        function forceLogin() {
+            const user = {
+                id: '6a8589db-f55a-4e97-bd46-1dfb8b725909',
+                email: 'mustafa@nordflytt.se',
+                name: 'Mustafa Abdulkarim',
+                role: 'admin',
+                permissions: ['*']
+            };
+            
+            // Spara i localStorage
+            localStorage.setItem('crm-user', JSON.stringify(user));
+            localStorage.setItem('crm-token', 'mustafa-admin-token');
+            
+            document.getElementById('status').className = 'status success';
+            document.getElementById('status').innerHTML = '✅ Inloggad! Redirectar till dashboard...';
+            
+            // Gå direkt till dashboard
+            setTimeout(() => {
+                window.location.href = '/crm/dashboard';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

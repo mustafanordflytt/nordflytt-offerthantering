@@ -1,0 +1,21 @@
+{
+  "endpoint_name": "nordflytt-time-estimation",
+  "region": "eu-west-2",
+  "sagemaker_role": "arn:aws:iam::389890955141:role/NordflyttSageMakerExecutionRole",
+  "deployment_method": "sklearn_model",
+  "features": [
+    "living_area",
+    "team_size",
+    "distance_km",
+    "floors",
+    "weather_score",
+    "customer_preparation",
+    "enhanced_v21_estimate",
+    "property_type_villa",
+    "property_type_kontor",
+    "elevator_ingen",
+    "elevator_liten"
+  ],
+  "deployment_timestamp": "2025-07-31T01:12:02.674210",
+  "status": "deploying"
+}

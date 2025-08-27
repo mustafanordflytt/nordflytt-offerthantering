@@ -19,18 +19,109 @@ import { translations, type Language } from "./i18n/translations"
 import FurnitureValuationForm from "./components/FurnitureValuationForm"
 import LanguageSwitcher from "./components/LanguageSwitcher"
 import Script from "next/script"
+import { useRouter } from "next/navigation"
+import type { MoveFormData, FormField } from '../types/form'
+
+// Validation function for Step 4
+const validateStep4Data = (formData: MoveFormData): boolean => {
+  // Base required fields
+  const requiredFields: FormField[] = [
+    'moveDate',
+    'moveTime',
+    'startAddress',
+    'endAddress',
+    'startLivingArea',
+    'endLivingArea',
+    'startPropertyType',
+    'endPropertyType'
+  ];
+
+  // Debug logging
+  console.log('🔍 Validating Step 4 form data:', {
+    moveDate: formData.moveDate,
+    moveTime: formData.moveTime,
+    startAddress: formData.startAddress,
+    endAddress: formData.endAddress,
+    startLivingArea: formData.startLivingArea,
+    endLivingArea: formData.endLivingArea,
+    startPropertyType: formData.startPropertyType,
+    endPropertyType: formData.endPropertyType,
+    startParkingDistance: formData.startParkingDistance,
+    endParkingDistance: formData.endParkingDistance,
+    startFloor: formData.startFloor,
+    endFloor: formData.endFloor,
+    startElevator: formData.startElevator,
+    endElevator: formData.endElevator
+  });
+
+  // Check base fields
+  const baseValid = requiredFields.every(field => {
+    const value = formData[field];
+    const isValid = value !== undefined && value !== null && String(value).trim() !== '';
+    if (!isValid) {
+      console.log(`❌ Field '${field}' is invalid:`, value);
+    }
+    return isValid;
+  });
+
+  if (!baseValid) {
+    console.log('❌ Base validation failed');
+    return false;
+  }
+
+  // Check parking distances
+  if (formData.startParkingDistance === undefined || formData.startParkingDistance === '') {
+    console.log('❌ startParkingDistance is invalid:', formData.startParkingDistance);
+    return false;
+  }
+  if (formData.endParkingDistance === undefined || formData.endParkingDistance === '') {
+    console.log('❌ endParkingDistance is invalid:', formData.endParkingDistance);
+    return false;
+  }
+
+  // Only check floor and elevator for apartments
+  if (formData.startPropertyType === 'apartment') {
+    if (!formData.startFloor || formData.startFloor === '') {
+      console.log('❌ startFloor is required for apartment but invalid:', formData.startFloor);
+      return false;
+    }
+    if (!formData.startElevator || formData.startElevator === '') {
+      console.log('❌ startElevator is required for apartment but invalid:', formData.startElevator);
+      return false;
+    }
+  }
+
+  if (formData.endPropertyType === 'apartment') {
+    if (!formData.endFloor || formData.endFloor === '') {
+      console.log('❌ endFloor is required for apartment but invalid:', formData.endFloor);
+      return false;
+    }
+    if (!formData.endElevator || formData.endElevator === '') {
+      console.log('❌ endElevator is required for apartment but invalid:', formData.endElevator);
+      return false;
+    }
+  }
+
+  console.log('✅ All validation passed!');
+  return true;
+};
 
 export default function BookingForm() {
+  const router = useRouter()
   const [step, setStep] = useState(1)
   const [language, setLanguage] = useState<Language>("sv")
-  const [formData, setFormData] = useState({
-    // Previous form data
+  const [formData, setFormData] = useState<MoveFormData>({
+    // Customer information
     customerType: "",
     name: "",
     email: "",
     phone: "",
+    
+    // Service information
     serviceType: "",
     serviceTypes: [] as string[],
+    
+    // Move details
     moveDate: "",
     moveTime: "08:00",
     startAddress: "",
@@ -39,13 +130,24 @@ export default function BookingForm() {
     endAddress: "",
     endFloor: "",
     endElevator: "none",
-    parkingDistance: "", // Legacy field
-    startParkingDistance: "",
-    endParkingDistance: "",
     startLivingArea: "",
     endLivingArea: "",
     startPropertyType: "apartment" as "apartment" | "house" | "storage",
     endPropertyType: "apartment" as "apartment" | "house" | "storage",
+    startParkingDistance: "",
+    endParkingDistance: "",
+    
+    // Form state
+    step: 1,
+    
+    // Optional fields with default values
+    valuationTime: "08:00",
+    valuationComment: "",
+
+    // Previous form data
+    parkingDistance: "", // Legacy field
+    startParkingDistance: "",
+    endParkingDistance: "",
     startDoorCode: "",
     endDoorCode: "",
     largeItems: [] as string[],
@@ -100,15 +202,20 @@ export default function BookingForm() {
     valuationElevator: "none" as "big" | "small" | "none",
     valuationTimePreference: "asap" as "asap" | "specific",
     valuationDate: "",
-    valuationTime: "08:00",
     valuationComment: "",
   })
+  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [invalidFields, setInvalidFields] = useState<FormField[]>([])
+  const [isClient, setIsClient] = useState(false)
 
   // Använd en ref för att förhindra uppdateringslooppar
   const isUpdatingRef = useRef(false)
 
-  // Load saved language preference
+  // Use useEffect to handle client-side initialization
   useEffect(() => {
+    setIsClient(true)
+    
+    // Load saved language preference only on client side
     try {
       const savedLanguage = localStorage.getItem("preferredLanguage") as Language | null
       if (savedLanguage && (savedLanguage === "sv" || savedLanguage === "en")) {
@@ -138,10 +245,7 @@ export default function BookingForm() {
   const prevStep = () => setStep(step - 1)
   const goToStep = (stepNumber: number) => setStep(stepNumber)
 
-  // Replace the handleChange function with this completely rewritten version
-  // that has much stronger protection against update loops
-
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: FormField, value: string | boolean | string[]) => {
     // For all fields
     if (isUpdatingRef.current) return
 
@@ -194,50 +298,45 @@ export default function BookingForm() {
   }
 
   // Ersätt den befintliga handleSubmit-funktionen med denna:
+  const handleSubmit = async (e: React.FormEvent) => {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault()
+    }
+    
+    const isValid = validateStep4Data(formData);
+    if (!isValid) {
+      setFormSubmitted(true);
+      return;
+    }
 
-  const handleSubmit = async () => {
     try {
-      // Visa laddningsindikator eller liknande här
-      console.log("Skickar formulärdata:", JSON.stringify(formData))
-
-      // Skicka data till API-endpointen
-      const response = await fetch("/api/submit-booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-
-      // Kontrollera om vi fått svar från API:et
-      if (!response.ok) {
-        const result = await response.json()
-        console.error("API returnerade felstatus:", response.status, result)
-        
-        // Visa detaljerat felmeddelande
-        let errorMessage = "Något gick fel vid bokningen"
-        if (result.details) {
-          errorMessage = result.details
-        } else if (result.error) {
-          errorMessage = result.error
-        }
-        
-        throw new Error(errorMessage)
+      // Förhindra dubbla inskickningar genom att kontrollera om vi redan är i processen
+      if (formSubmitted) {
+        console.log('Form already submitted, preventing double submission');
+        return;
       }
 
-      const result = await response.json()
-      console.log("Bokning sparad:", result)
-
-      // Navigera till bekräftelsesidan
-      setStep(9)
+      setFormSubmitted(true);
+      
+      // Uppdatera bara steget i state istället för att navigera
+      setStep(step + 1);
     } catch (error) {
-      console.error("Error submitting booking:", error)
-      // Visa detaljerat felmeddelande till användaren 
-      alert(`Ett fel uppstod när bokningen skulle skickas: Kunde inte skapa kund: TypeError: fetch failed`)
+      console.error('Error submitting form:', error);
+      alert('Ett fel uppstod. Försök igen.');
+    } finally {
+      // Återställ formSubmitted efter en kort fördröjning
+      setTimeout(() => {
+        setFormSubmitted(false);
+      }, 1000);
     }
-  }
+  };
 
   const renderStep = () => {
+    // Only render content on client-side to avoid hydration mismatch
+    if (!isClient) {
+      return <div className="min-h-screen bg-sand" />;
+    }
+
     switch (step) {
       case 1:
         return (
@@ -337,10 +436,10 @@ export default function BookingForm() {
             <Step4MoveDetails
               formData={formData}
               handleChange={handleChange}
-              nextStep={nextStep}
+              handleSubmit={handleSubmit}
+              formSubmitted={formSubmitted}
+              invalidFields={invalidFields}
               prevStep={prevStep}
-              language={language}
-              t={t}
             />
           )
         }
@@ -453,10 +552,26 @@ export default function BookingForm() {
     }
   }
 
+  // Render a minimal shell until client-side code is ready
+  if (!isClient) {
+    return (
+      <main className="min-h-screen bg-sand">
+        <nav className="bg-white border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center h-full">
+                <NordflyttLogo />
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" />
+      </main>
+    )
+  }
+
   return (
     <main className="min-h-screen bg-sand">
-      {/* Ta bort Google Maps API Script då det nu finns i layout.tsx */}
-      
       <nav className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">

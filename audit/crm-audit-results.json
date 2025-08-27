@@ -1,0 +1,248 @@
+{
+  "auditDate": "2025-08-10T20:58:00.734Z",
+  "loginSuccess": true,
+  "modules": {
+    "Dashboard": {
+      "name": "Dashboard",
+      "path": "/crm/dashboard",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 6,
+        "links": 33,
+        "forms": 0,
+        "inputs": 0,
+        "tables": 0,
+        "cards": 7
+      },
+      "issues": []
+    },
+    "Kunder": {
+      "name": "Kunder",
+      "path": "/crm/kunder",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 6,
+        "links": 28,
+        "forms": 0,
+        "inputs": 0,
+        "tables": 0,
+        "cards": 1
+      },
+      "issues": []
+    },
+    "Leads": {
+      "name": "Leads",
+      "path": "/crm/leads",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 11,
+        "links": 29,
+        "forms": 0,
+        "inputs": 1,
+        "tables": 0,
+        "cards": 9
+      },
+      "issues": []
+    },
+    "Uppdrag": {
+      "name": "Uppdrag",
+      "path": "/crm/uppdrag",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 6,
+        "links": 28,
+        "forms": 0,
+        "inputs": 0,
+        "tables": 0,
+        "cards": 1
+      },
+      "issues": []
+    },
+    "Offerter": {
+      "name": "Offerter",
+      "path": "/crm/offerter",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 172,
+        "links": 192,
+        "forms": 0,
+        "inputs": 1,
+        "tables": 1,
+        "cards": 5
+      },
+      "issues": []
+    },
+    "Ekonomi": {
+      "name": "Ekonomi",
+      "path": "/crm/ekonomi",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 10,
+        "links": 28,
+        "forms": 0,
+        "inputs": 0,
+        "tables": 0,
+        "cards": 5
+      },
+      "issues": []
+    },
+    "Anställda": {
+      "name": "Anställda",
+      "path": "/crm/anstallda",
+      "critical": true,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 30,
+        "links": 43,
+        "forms": 0,
+        "inputs": 1,
+        "tables": 1,
+        "cards": 7
+      },
+      "issues": []
+    },
+    "Kalender": {
+      "name": "Kalender",
+      "path": "/crm/kalender",
+      "critical": false,
+      "status": "success",
+      "loadTime": 2001,
+      "hasContent": true,
+      "elements": {
+        "buttons": 5,
+        "links": 28,
+        "forms": 0,
+        "inputs": 0,
+        "tables": 0,
+        "cards": 0
+      },
+      "issues": []
+    },
+    "Rapporter": {
+      "name": "Rapporter",
+      "path": "/crm/rapporter",
+      "critical": false,
+      "status": "success",
+      "loadTime": 2002,
+      "hasContent": true,
+      "elements": {
+        "buttons": 13,
+        "links": 28,
+        "forms": 0,
+        "inputs": 0,
+        "tables": 0,
+        "cards": 6
+      },
+      "issues": []
+    }
+  },
+  "businessLogic": {
+    "Create New Customer": {
+      "name": "Create New Customer",
+      "status": "error",
+      "error": "SyntaxError: Failed to execute 'querySelector' on 'Document': 'button:has-text(\"Ny\"), button:has-text(\"Lägg till\"), button[class*=\"add\"]' is not a valid selector."
+    },
+    "Create New Lead": {
+      "name": "Create New Lead",
+      "status": "error",
+      "error": "SyntaxError: Failed to execute 'querySelector' on 'Document': 'button:has-text(\"Ny\"), button:has-text(\"Lägg till\"), button[class*=\"add\"]' is not a valid selector."
+    },
+    "View Job Details": {
+      "name": "View Job Details",
+      "status": "not-working"
+    }
+  },
+  "errors": [
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": "http://localhost:3000/crm/kunder"
+    },
+    {
+      "type": "console",
+      "message": "Error fetching customers: JSHandle@error",
+      "location": "http://localhost:3000/crm/kunder"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": "http://localhost:3000/crm/leads"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": "http://localhost:3000/crm/uppdrag"
+    },
+    {
+      "type": "console",
+      "message": "Error fetching financial data: JSHandle@error",
+      "location": "http://localhost:3000/crm/ekonomi"
+    },
+    {
+      "type": "console",
+      "message": "Error fetching events: JSHandle@error",
+      "location": "http://localhost:3000/crm/kalender"
+    },
+    {
+      "type": "console",
+      "message": "Error fetching resources: JSHandle@error",
+      "location": "http://localhost:3000/crm/kalender"
+    },
+    {
+      "type": "console",
+      "message": "Error fetching overview: JSHandle@error",
+      "location": "http://localhost:3000/crm/rapporter"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": "http://localhost:3000/crm/kunder"
+    },
+    {
+      "type": "console",
+      "message": "Error fetching customers: JSHandle@error",
+      "location": "http://localhost:3000/crm/kunder"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": "http://localhost:3000/crm/leads"
+    },
+    {
+      "type": "console",
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": "http://localhost:3000/crm/uppdrag"
+    }
+  ],
+  "warnings": [],
+  "recommendations": [
+    "⚠️ Most business workflows are not working. Implement CRUD operations.",
+    "\n📋 Specific improvements needed:",
+    "1. Add actual content to empty modules",
+    "2. Implement CRUD operations (Create, Read, Update, Delete)",
+    "3. Add real data or mock data for testing",
+    "4. Implement search and filtering functionality",
+    "5. Add form validation and error handling"
+  ],
+  "healthScore": 100
+}

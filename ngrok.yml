@@ -1,0 +1,9 @@
+version: "2"
+authtoken: # Add your authtoken here if you have one
+tunnels:
+  nordflytt:
+    proto: http
+    addr: 3000
+    schemes:
+      - https
+    host_header: "localhost:3000"

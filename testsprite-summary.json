@@ -1,0 +1,445 @@
+{
+  "project": {
+    "name": "Nordflytt Booking Form & CRM System",
+    "type": "Progressive Web App (PWA)",
+    "description": "Comprehensive moving company management system with customer booking, staff management, CRM, and AI-powered features",
+    "version": "0.1.0",
+    "status": "MVP with production-ready staff app"
+  },
+  "tech_stack": {
+    "frontend": {
+      "framework": "Next.js 15.2.4 (App Router)",
+      "language": "TypeScript",
+      "styling": ["Tailwind CSS", "CSS Modules"],
+      "ui_components": ["shadcn/ui", "Radix UI"],
+      "state_management": ["React Hooks", "Zustand", "LocalStorage"],
+      "form_handling": ["React Hook Form", "Formik", "Zod"],
+      "routing": "Next.js App Router",
+      "charts": ["Chart.js", "React Chart.js 2", "Recharts"]
+    },
+    "backend": {
+      "runtime": "Node.js",
+      "framework": "Next.js API Routes",
+      "database": "Supabase (PostgreSQL)",
+      "authentication": ["Supabase Auth", "JWT", "OTP", "BankID"],
+      "storage": "Supabase Storage",
+      "realtime": "Supabase Realtime",
+      "email": ["SendGrid", "Nodemailer", "Resend"],
+      "sms": "Twilio",
+      "payment": "Swish Integration"
+    },
+    "ai_ml": {
+      "llm": "OpenAI GPT",
+      "ml_platform": "AWS SageMaker",
+      "ml_library": "TensorFlow.js",
+      "ai_features": [
+        "Customer service chatbot",
+        "Lead scoring",
+        "Price optimization",
+        "Route optimization",
+        "Demand forecasting",
+        "Churn prediction"
+      ]
+    },
+    "integrations": {
+      "maps": "Google Maps API",
+      "analytics": ["Google Analytics 4", "Facebook Pixel", "Google Tag Manager"],
+      "crm": ["Fortnox", "Creditsafe"],
+      "monitoring": ["Sentry", "Web Vitals"],
+      "deployment": ["Vercel", "Cloudflare"],
+      "testing": ["Jest", "Puppeteer", "TestSprite MCP"]
+    },
+    "pwa_features": {
+      "offline_support": true,
+      "service_worker": true,
+      "push_notifications": true,
+      "app_manifest": true
+    }
+  },
+  "features": {
+    "customer_facing": {
+      "booking_form": {
+        "description": "Multi-step booking form for moving services",
+        "steps": [
+          "Customer type selection",
+          "Contact information",
+          "Service type selection",
+          "Move details and addresses",
+          "Inventory selection",
+          "Additional services",
+          "Extra services",
+          "Summary and pricing",
+          "Confirmation"
+        ],
+        "features": [
+          "Real-time price calculation",
+          "Address autocomplete",
+          "Distance calculation",
+          "Volume estimation",
+          "RUT deduction calculation",
+          "Multi-language support"
+        ]
+      },
+      "offer_viewer": {
+        "description": "Customer offer presentation page",
+        "features": [
+          "Interactive service selection",
+          "Price breakdown with RUT",
+          "Timeline visualization",
+          "Accept/decline functionality",
+          "Direct payment integration",
+          "Chat support"
+        ]
+      },
+      "order_confirmation": {
+        "description": "Post-booking confirmation page",
+        "features": [
+          "Order summary",
+          "Service details",
+          "Timeline",
+          "Additional services display",
+          "Customer support chat"
+        ]
+      }
+    },
+    "staff_app": {
+      "description": "Mobile-first app for moving personnel",
+      "authentication": ["Phone + OTP", "Quick login buttons"],
+      "dashboard": {
+        "views": ["Card view", "List view"],
+        "features": [
+          "Today's jobs display",
+          "Job status management",
+          "Quick actions",
+          "Filter and search"
+        ]
+      },
+      "job_management": {
+        "features": [
+          "Pre-start checklist",
+          "GPS location modal",
+          "Time tracking",
+          "Photo documentation",
+          "Additional services",
+          "Volume adjustment",
+          "Smart pricing engine",
+          "Service-specific actions"
+        ]
+      },
+      "modals": [
+        "PreStartChecklistModal",
+        "GPSLocationModal",
+        "AddServiceModal",
+        "PhotoReminderModal",
+        "JobDetailsModal"
+      ]
+    },
+    "crm_system": {
+      "modules": {
+        "dashboard": {
+          "features": [
+            "Key metrics overview",
+            "Revenue charts",
+            "Lead pipeline",
+            "Staff performance",
+            "Real-time updates"
+          ]
+        },
+        "customers": {
+          "features": [
+            "Customer management",
+            "Booking history",
+            "Communication log",
+            "Credit check integration",
+            "Document storage"
+          ]
+        },
+        "leads": {
+          "features": [
+            "Lead pipeline management",
+            "AI lead scoring",
+            "Automated assignment",
+            "Email parsing",
+            "Conversion tracking"
+          ]
+        },
+        "jobs": {
+          "features": [
+            "Job scheduling",
+            "Staff assignment",
+            "Route optimization",
+            "Status tracking",
+            "Invoice generation"
+          ]
+        },
+        "staff": {
+          "features": [
+            "Employee management",
+            "Onboarding workflow",
+            "Contract generation",
+            "Asset assignment",
+            "Performance tracking",
+            "Time reports"
+          ]
+        },
+        "calendar": {
+          "features": [
+            "Resource booking",
+            "Availability management",
+            "Conflict detection",
+            "Multi-view calendar"
+          ]
+        },
+        "offers": {
+          "features": [
+            "Offer creation",
+            "Template management",
+            "Status tracking",
+            "PDF generation",
+            "Email sending"
+          ]
+        },
+        "finance": {
+          "features": [
+            "Invoice management",
+            "Payment tracking",
+            "Expense management",
+            "Financial reports",
+            "Fortnox integration"
+          ]
+        },
+        "inventory": {
+          "features": [
+            "Asset management",
+            "Storage facilities",
+            "Customer storage",
+            "Reorder alerts",
+            "Valuation tracking"
+          ]
+        },
+        "suppliers": {
+          "features": [
+            "Supplier management",
+            "Contract tracking",
+            "Risk assessment",
+            "Procurement automation"
+          ]
+        }
+      }
+    },
+    "ai_features": {
+      "customer_service": {
+        "description": "AI-powered customer support",
+        "features": [
+          "Multi-channel chat (web, SMS, email)",
+          "GPT-powered responses",
+          "Context awareness",
+          "Ticket creation",
+          "Analytics dashboard"
+        ]
+      },
+      "marketing_optimization": {
+        "features": [
+          "Campaign generation",
+          "A/B testing",
+          "ROI tracking",
+          "Content creation",
+          "SEO optimization"
+        ]
+      },
+      "operational_ai": {
+        "features": [
+          "Route optimization (VRP)",
+          "Team size optimization",
+          "Price optimization",
+          "Demand forecasting",
+          "Anomaly detection"
+        ]
+      },
+      "recruitment_ai": {
+        "features": [
+          "CV parsing and scoring",
+          "Automated screening",
+          "Interview scheduling",
+          "Personality assessment",
+          "Lowisa AI assistant"
+        ]
+      }
+    },
+    "automation": {
+      "workflows": [
+        "Lead assignment automation",
+        "Invoice generation",
+        "Follow-up emails",
+        "Review requests",
+        "Staff scheduling",
+        "Document generation"
+      ],
+      "triggers": [
+        "Booking confirmation",
+        "Job completion",
+        "Payment received",
+        "Lead creation",
+        "Status changes"
+      ]
+    },
+    "security": {
+      "authentication": [
+        "JWT tokens",
+        "OTP verification",
+        "BankID integration",
+        "Role-based access control"
+      ],
+      "data_protection": [
+        "Encryption at rest",
+        "HTTPS enforcement",
+        "Input validation",
+        "XSS protection",
+        "CSRF protection"
+      ],
+      "compliance": [
+        "GDPR compliant",
+        "Data masking",
+        "Audit logging",
+        "Access control"
+      ]
+    },
+    "analytics_reporting": {
+      "dashboards": [
+        "Business overview",
+        "Financial metrics",
+        "Staff performance",
+        "Customer insights",
+        "Marketing ROI"
+      ],
+      "reports": [
+        "Revenue reports",
+        "Job analytics",
+        "Lead conversion",
+        "Staff utilization",
+        "Customer satisfaction"
+      ],
+      "integrations": [
+        "Google Analytics 4",
+        "Custom event tracking",
+        "Conversion tracking",
+        "Web vitals monitoring"
+      ]
+    },
+    "mobile_features": {
+      "pwa_capabilities": [
+        "Offline functionality",
+        "App-like experience",
+        "Push notifications",
+        "Camera access",
+        "GPS location"
+      ],
+      "responsive_design": [
+        "Mobile-first approach",
+        "Touch-optimized (44px targets)",
+        "Swipe gestures",
+        "Optimized modals"
+      ]
+    },
+    "integrations_apis": {
+      "external_services": {
+        "payment": ["Swish", "Fortnox invoicing"],
+        "communication": ["SendGrid", "Twilio", "Resend"],
+        "maps": ["Google Maps", "Geocoding", "Distance Matrix"],
+        "credit": ["Creditsafe"],
+        "storage": ["Supabase Storage"],
+        "analytics": ["GA4", "GTM", "Facebook Pixel"]
+      },
+      "internal_apis": {
+        "endpoints": [
+          "/api/bookings",
+          "/api/customers",
+          "/api/jobs",
+          "/api/staff",
+          "/api/offers",
+          "/api/leads",
+          "/api/ai/*",
+          "/api/notifications",
+          "/api/analytics"
+        ]
+      }
+    }
+  },
+  "database_schema": {
+    "core_tables": [
+      "customers",
+      "bookings",
+      "jobs",
+      "offers",
+      "quotes",
+      "reviews",
+      "follow_ups"
+    ],
+    "crm_tables": [
+      "crm_users",
+      "employees",
+      "leads",
+      "calendar_events",
+      "calendar_resources",
+      "notifications"
+    ],
+    "financial_tables": [
+      "invoices",
+      "payments",
+      "expenses",
+      "financial_summary"
+    ],
+    "ai_tables": [
+      "ai_customer_conversations",
+      "ai_decisions",
+      "ai_metrics",
+      "ml_predictions"
+    ],
+    "support_tables": [
+      "documents",
+      "file_attachments",
+      "supplier_contracts",
+      "assets",
+      "inventory_items"
+    ]
+  },
+  "testing": {
+    "unit_tests": "Jest",
+    "e2e_tests": "Puppeteer",
+    "mcp_integration": "TestSprite MCP",
+    "test_commands": [
+      "npm test",
+      "npm run test:e2e",
+      "npm run testsprite"
+    ]
+  },
+  "deployment": {
+    "hosting": "Vercel",
+    "database": "Supabase",
+    "cdn": "Cloudflare",
+    "monitoring": "Sentry",
+    "ci_cd": "GitHub Actions"
+  },
+  "development_status": {
+    "completed": [
+      "Staff app (100%)",
+      "Job management",
+      "Photo documentation",
+      "Smart pricing",
+      "Basic CRM structure",
+      "Database schema"
+    ],
+    "in_progress": [
+      "Customer booking form",
+      "Offer viewer",
+      "AI integrations",
+      "Payment processing"
+    ],
+    "planned": [
+      "Full offline support",
+      "Advanced analytics",
+      "Mobile apps",
+      "International expansion"
+    ]
+  }
+}

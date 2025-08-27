@@ -1,0 +1,81 @@
+{
+  "testDate": "2025-08-04T15:24:18.988Z",
+  "testName": "Staff App UX Demo - Starta Jobb",
+  "device": "iPhone 12 Pro (390x844)",
+  "screenshots": [
+    {
+      "filename": "ux-demo-1-login.png",
+      "description": "Loginskärm för personal"
+    },
+    {
+      "filename": "ux-demo-2-login-typed.png",
+      "description": "E-post ifylld"
+    },
+    {
+      "filename": "ux-demo-3-dashboard-loaded.png",
+      "description": "Dashboard med dagens jobb"
+    },
+    {
+      "filename": "ux-demo-4-card-view.png",
+      "description": "Kortvy aktiverad - bättre för mobil"
+    },
+    {
+      "filename": "ux-demo-5-job-card-visible.png",
+      "description": "Batman Packhjälp synligt"
+    },
+    {
+      "filename": "ux-demo-6-start-button-highlighted.png",
+      "description": "Starta tid-knapp markerad"
+    },
+    {
+      "filename": "ux-demo-7-gps-modal.png",
+      "description": "GPS-bekräftelse visas"
+    },
+    {
+      "filename": "ux-demo-8-gps-modal-highlighted.png",
+      "description": "\"Starta ändå\" knapp markerad"
+    },
+    {
+      "filename": "ux-demo-9-job-active.png",
+      "description": "Jobbet är nu aktivt"
+    },
+    {
+      "filename": "ux-demo-10-photo-modal.png",
+      "description": "Fotopåminnelse visas"
+    }
+  ],
+  "flow": [
+    {
+      "step": "Login",
+      "time": "2s",
+      "status": "✅ Enkelt och snabbt"
+    },
+    {
+      "step": "Hitta jobb",
+      "time": "3s",
+      "status": "✅ Tydlig kortvy"
+    },
+    {
+      "step": "Starta tid",
+      "time": "1s",
+      "status": "✅ Stor grön knapp"
+    },
+    {
+      "step": "GPS-bekräftelse",
+      "time": "2s",
+      "status": "✅ \"Starta ändå\" primär"
+    },
+    {
+      "step": "Aktivt jobb",
+      "time": "N/A",
+      "status": "✅ Timer och funktioner"
+    }
+  ],
+  "strengths": [
+    "Tydliga CTA-knappar",
+    "Mobile-first design",
+    "Snabb GPS-fallback",
+    "Visuell feedback"
+  ],
+  "totalTime": "~8 sekunder från login till aktivt jobb"
+}

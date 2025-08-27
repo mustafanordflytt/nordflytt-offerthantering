@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,7 +20,7 @@ interface AddressDistanceProps {
 }
 
 // Debounce utility function to limit API calls
-function debounce<F extends (...args: any[]) => any>(func: F, wait: number) {
+function debounce<F extends (...args: any[]) => any>(func: F, wait: number = 1000) {
   let timeout: NodeJS.Timeout | null = null
 
   return ((...args: Parameters<F>) => {
@@ -68,17 +68,17 @@ export default function AddressDistance({
   }, []);
   
   // Initialisera Google Maps-tjänster
-  const initGoogleMaps = () => {
-    // Kontrollera att Google Maps API är laddad
+  const initGoogleMaps = useCallback(() => {
     if (typeof google === "undefined" || !google.maps || !google.maps.places) {
-      setError("Google Maps API är inte tillgänglig. Kontrollera din internetanslutning.")
+      setError("Google Maps API är inte tillgänglig")
       return
     }
     
     if (fromInputRef.current && !fromAutocompleteRef.current) {
       fromAutocompleteRef.current = new google.maps.places.Autocomplete(fromInputRef.current, {
         componentRestrictions: { country: "se" },
-        fields: ["formatted_address"],
+        fields: ["formatted_address", "geometry"],
+        types: ["address"]
       })
       
       fromAutocompleteRef.current.addListener("place_changed", () => {
@@ -92,7 +92,8 @@ export default function AddressDistance({
     if (toInputRef.current && !toAutocompleteRef.current) {
       toAutocompleteRef.current = new google.maps.places.Autocomplete(toInputRef.current, {
         componentRestrictions: { country: "se" },
-        fields: ["formatted_address"],
+        fields: ["formatted_address", "geometry"],
+        types: ["address"]
       })
       
       toAutocompleteRef.current.addListener("place_changed", () => {
@@ -103,49 +104,26 @@ export default function AddressDistance({
       })
     }
     
-    // Initialisera distanstjänsten
     if (!distanceMatrixRef.current) {
-      distanceMatrixRef.current = new google.maps.DistanceMatrixService();
+      distanceMatrixRef.current = new google.maps.DistanceMatrixService()
     }
-  }
+  }, [])
   
-  // Uppdatera adresser när initialvärdena ändras
-  useEffect(() => {
-    if (initialFromAddress && initialFromAddress !== fromAddress) {
-      setFromAddress(initialFromAddress)
-    }
-    if (initialToAddress && initialToAddress !== toAddress) {
-      setToAddress(initialToAddress)
-    }
-  }, [initialFromAddress, initialToAddress, fromAddress, toAddress])
-  
-  // Debounced function to calculate distance
-  const debouncedCalculateDistance = useCallback(
-    debounce(() => {
-      calculateDistance()
-    }, 1000),
-    [fromAddress, toAddress]
-  )
-  
-  // Calculate distance when both addresses are filled
-  useEffect(() => {
-    if (fromAddress && toAddress) {
-      debouncedCalculateDistance()
+  // Optimera adressuppdatering
+  const handleAddressChange = useCallback((
+    value: string,
+    type: 'from' | 'to'
+  ) => {
+    if (type === 'from') {
+      setFromAddress(value)
     } else {
-      // Reset distance if either address is empty
-      setDistance(null)
+      setToAddress(value)
     }
-  }, [fromAddress, toAddress, debouncedCalculateDistance])
+  }, [])
   
-  // Beräkna avstånd
-  const calculateDistance = () => {
-    if (!fromAddress || !toAddress) {
-      setError("Både från- och tilladress krävs för att beräkna avstånd.")
-      return
-    }
-    
-    if (!distanceMatrixRef.current) {
-      setError("Google Maps tjänst är inte tillgänglig.")
+  // Optimera distansberäkning med memoization
+  const calculateDistance = useCallback(() => {
+    if (!fromAddress || !toAddress || !distanceMatrixRef.current) {
       return
     }
     
@@ -181,7 +159,6 @@ export default function AddressDistance({
           
           setDistance(distanceData)
           
-          // Call the callback with the calculated distance data
           if (onDistanceCalculated) {
             onDistanceCalculated({
               distance: distanceData.meters,
@@ -196,7 +173,37 @@ export default function AddressDistance({
         }
       }
     )
-  }
+  }, [fromAddress, toAddress, onDistanceCalculated])
+  
+  // Optimera debounced calculation
+  const debouncedCalculateDistance = useMemo(
+    () => debounce(calculateDistance, 1000),
+    [calculateDistance]
+  )
+  
+  // Optimera useEffect hooks
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.google && window.google.maps) {
+      initGoogleMaps()
+    }
+  }, [initGoogleMaps])
+  
+  useEffect(() => {
+    if (initialFromAddress && initialFromAddress !== fromAddress) {
+      setFromAddress(initialFromAddress)
+    }
+    if (initialToAddress && initialToAddress !== toAddress) {
+      setToAddress(initialToAddress)
+    }
+  }, [initialFromAddress, initialToAddress])
+  
+  useEffect(() => {
+    if (fromAddress && toAddress) {
+      debouncedCalculateDistance()
+    } else {
+      setDistance(null)
+    }
+  }, [fromAddress, toAddress, debouncedCalculateDistance])
   
   return (
     <Card className={`p-4 mb-4 ${className}`}>
@@ -212,7 +219,7 @@ export default function AddressDistance({
               ref={fromInputRef}
               placeholder="Ange startadress"
               value={fromAddress}
-              onChange={(e) => setFromAddress(e.target.value)}
+              onChange={(e) => handleAddressChange(e.target.value, 'from')}
               className="pl-10"
               required
             />
@@ -231,7 +238,7 @@ export default function AddressDistance({
               ref={toInputRef}
               placeholder="Ange destinationsadress"
               value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
+              onChange={(e) => handleAddressChange(e.target.value, 'to')}
               className="pl-10"
               required
             />
