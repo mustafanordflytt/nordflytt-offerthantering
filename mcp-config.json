@@ -1,0 +1,63 @@
+{
+  "name": "nordflytts-crm-context",
+  "version": "1.0.0",
+  "description": "Model Context Protocol configuration for Nordflytt CRM",
+  "context": {
+    "projectType": "Progressive Web App",
+    "domain": "Moving Company CRM",
+    "stack": {
+      "frontend": "Next.js 15.2.4 with App Router",
+      "ui": "shadcn/ui",
+      "language": "TypeScript",
+      "database": "Supabase",
+      "styling": "Tailwind CSS"
+    },
+    "businessRules": {
+      "pricing": {
+        "volumeAdjustment": "240 kr/m³ after RUT deduction",
+        "parkingDistance": "99 kr/meter over 5m",
+        "materials": {
+          "boxes": 79,
+          "tape": 99,
+          "plasticBags": 20
+        }
+      },
+      "workflow": {
+        "photoDocumentation": ["before", "during", "after"],
+        "requiredPhotos": ["truck_before", "truck_after", "cleaning_if_applicable"],
+        "checklistItems": "dynamic based on job data"
+      }
+    },
+    "architectureDecisions": {
+      "stateManagement": "React hooks + localStorage",
+      "authentication": "Simple localStorage for demo",
+      "apiPattern": "Next.js API routes with mock responses",
+      "mobileFirst": true,
+      "offlineCapable": false
+    },
+    "currentFeatures": {
+      "staffApp": {
+        "login": "Email/password with localStorage",
+        "dashboard": "Simplified job cards with modal details",
+        "jobManagement": {
+          "preStartChecklist": "Dynamic based on job data",
+          "photoReminders": "Smart workflow system",
+          "serviceAddition": "With smart pricing engine",
+          "volumeAdjustment": "Automatic calculation"
+        },
+        "ui": {
+          "mobileOptimized": true,
+          "stickyActionBar": "4-column grid with quick actions",
+          "modals": "For detailed views and workflows"
+        }
+      }
+    },
+    "codePatterns": {
+      "components": "Functional components with TypeScript",
+      "styling": "Tailwind utility classes",
+      "icons": "lucide-react",
+      "forms": "Controlled components with useState",
+      "validation": "Client-side with business logic"
+    }
+  }
+}

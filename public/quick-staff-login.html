@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snabbinloggning Staff</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #002A5C;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button:hover {
+            background: #003875;
+        }
+        .success {
+            background: #28a745;
+        }
+        .success:hover {
+            background: #218838;
+        }
+        .message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e8f4f8;
+            color: #002A5C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚛 Nordflytt Staff</h1>
+        <h2>Snabbinloggning</h2>
+        
+        <div id="message"></div>
+        
+        <button onclick="loginAndGo('Anders Andersson', 'anders@nordflytt.se', 'team_leader')">
+            👷‍♂️ Logga in som Anders (Teamledare)
+        </button>
+        
+        <button onclick="loginAndGo('Björn Björnsson', 'bjorn@nordflytt.se', 'mover')">
+            👷 Logga in som Björn (Flyttare)
+        </button>
+        
+        <button onclick="loginAndGo('Test Användare', 'test@nordflytt.se', 'staff')">
+            🧪 Logga in som Testanvändare
+        </button>
+        
+        <button onclick="directToDashboard()" class="success">
+            🚀 Gå direkt till Dashboard
+        </button>
+    </div>
+
+    <script>
+        function loginAndGo(name, email, role) {
+            // Create auth object
+            const auth = {
+                id: 'staff-' + Date.now(),
+                name: name,
+                email: email,
+                role: role,
+                avatar: role === 'team_leader' ? '👷‍♂️' : '👷',
+                loginTime: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('staff_auth', JSON.stringify(auth));
+            
+            // Show message
+            document.getElementById('message').innerHTML = `
+                <div class="message">
+                    ✅ Inloggad som ${name}!<br>
+                    Omdirigerar till dashboard...
+                </div>
+            `;
+            
+            // Redirect after short delay
+            setTimeout(() => {
+                window.location.href = '/staff/dashboard';
+            }, 1000);
+        }
+        
+        function directToDashboard() {
+            // Quick login with default user
+            loginAndGo('Snabb Användare', 'quick@nordflytt.se', 'staff');
+        }
+        
+        // Check if already logged in
+        const existingAuth = localStorage.getItem('staff_auth');
+        if (existingAuth) {
+            try {
+                const auth = JSON.parse(existingAuth);
+                document.getElementById('message').innerHTML = `
+                    <div class="message">
+                        ℹ️ Du är redan inloggad som ${auth.name}<br>
+                        <a href="/staff/dashboard">Gå till dashboard →</a>
+                    </div>
+                `;
+            } catch (e) {
+                // Invalid auth data
+            }
+        }
+    </script>
+</body>
+</html>

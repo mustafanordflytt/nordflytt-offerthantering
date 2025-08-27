@@ -92,7 +92,7 @@ export default function CleaningForm({ formData, handleChange, nextStep, prevSte
   // Uppdatera state-variabler och lägg till en ny för att hålla reda på det aktuella steget
   const [currentStep, setCurrentStep] = useState(1)
   const [showServiceSelection, setShowServiceSelection] = useState(true)
-  const [cleaningType, setCleaningType] = useState<"moving" | "home" | "windows">(formData.cleaningType || "")
+  const [cleaningType, setCleaningType] = useState<"moving" | "home" | "windows">(formData.cleaningType || "home")
   const [windowRecurring, setWindowRecurring] = useState<boolean>(formData.windowRecurring || false)
   const [selectedServices, setSelectedServices] = useState<string[]>(formData.serviceTypes || [])
   const [showWindowCleaningPopup, setShowWindowCleaningPopup] = useState(false)
@@ -172,8 +172,8 @@ export default function CleaningForm({ formData, handleChange, nextStep, prevSte
 
   const backToServiceSelection = () => {
     setShowServiceSelection(true)
-    setCleaningType("")
-    handleChange("cleaningType", "")
+    setCleaningType("home")
+    handleChange("cleaningType", "home")
   }
 
   // Custom window icons for inside/outside options
@@ -633,7 +633,7 @@ export default function CleaningForm({ formData, handleChange, nextStep, prevSte
               onClick={() => {
                 setCurrentStep(1)
                 setShowServiceSelection(true)
-                setCleaningType("")
+                setCleaningType("home")
               }}
               className="flex items-center text-blue-600 border-blue-200 hover:bg-blue-50"
             >

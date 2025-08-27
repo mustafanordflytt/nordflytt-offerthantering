@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anställningsavtal - {{companyBrand}}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #002A5C;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .company-logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #002A5C;
+            margin-bottom: 10px;
+        }
+        
+        .company-info {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .contract-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 30px 0;
+            color: #002A5C;
+        }
+        
+        .parties {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .party {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .party-title {
+            font-weight: bold;
+            color: #002A5C;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .content-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #002A5C;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .highlight-box {
+            background: #f8f9fa;
+            border-left: 4px solid #002A5C;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .bonus-box {
+            background: #e8f5e8;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .bonus-box h4 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        
+        .quality-requirements {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .quality-requirements h4 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .quality-requirements ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .quality-requirements li {
+            margin-bottom: 5px;
+            color: #856404;
+        }
+        
+        .gdpr-box {
+            background: #f3e5f5;
+            border: 2px solid #9c27b0;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .gdpr-box h4 {
+            color: #7b1fa2;
+            margin-top: 0;
+        }
+        
+        .security-box {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .security-box h4 {
+            color: #d32f2f;
+            margin-top: 0;
+        }
+        
+        .signature-section {
+            margin-top: 50px;
+            page-break-inside: avoid;
+        }
+        
+        .signature-boxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 30px;
+        }
+        
+        .signature-box {
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            text-align: center;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        
+        .contract-id {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        @media print {
+            body { margin: 0; }
+            .page-break { page-break-before: always; }
+        }
+        
+        .numbered-section {
+            counter-reset: section-counter;
+        }
+        
+        .numbered-section .section-title {
+            counter-increment: section-counter;
+        }
+        
+        .numbered-section .section-title::before {
+            content: counter(section-counter) ". ";
+            font-weight: bold;
+            color: #002A5C;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-logo">{{companyBrand}}</div>
+        <div class="company-info">
+            {{companyName}}<br>
+            {{companyAddress}}<br>
+            Org.nr: {{companyOrgNumber}} | Tel: {{companyPhone}}
+        </div>
+    </div>
+
+    <div class="contract-title">ANSTÄLLNINGSAVTAL - FLYTTVERKET SVERIGE AB</div>
+    <div style="text-align: center; font-weight: bold; color: #002A5C; margin-bottom: 20px;">Varumärke: Nordflytt</div>
+    
+    <div class="highlight-box">
+        <strong>Avtals-ID:</strong> <span class="contract-id">{{contractId}}</span><br>
+        <strong>Datum:</strong> {{currentDate}}<br>
+        <strong>Position:</strong> {{contractType}}
+    </div>
+
+    <div class="numbered-section">
+        <div class="content-section">
+            <div class="section-title">Arbetsgivare</div>
+            <p><strong>Företag:</strong> Flyttverket Sverige AB<br>
+            <strong>Adress:</strong> Östermalmstorg 1, 114 42 Stockholm<br>
+            <strong>Org.nr:</strong> 559215-5484, <strong>Tel:</strong> 010-555 12 89</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">Arbetstagare</div>
+            <p><strong>Namn:</strong> {{employeeName}}<br>
+            <strong>E-post:</strong> {{employeeEmail}}</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">Anställningsform</div>
+            <p>Anställningen är en <strong>BEHOVSANSTÄLLNING</strong> som innebär att arbetstagaren anställs vid behov när uppdrag finns tillgängliga.</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">Anställningens startdatum</div>
+            <p>{{currentDate}}</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">Arbetsuppgifter</div>
+            <p>{{jobDescription}}</p>
+            
+            <div class="quality-requirements">
+                <h4>KVALITETSKRAV:</h4>
+                <ul>
+                    {{qualityRequirementsList}}
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">Arbetstid</div>
+            <p>Arbetstiden är varierande och baseras på tillgängliga projekt. Starttider varierar enligt kundbehov.</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">Lön och betalningsvillkor</div>
+            <p><strong>Timlön:</strong> {{hourlyRate}} kr/timme <strong>(INKLUSIVE semesterersättning)</strong></p>
+            
+            <div class="bonus-box">
+                <h4>AUTOMATISKT BONUSSYSTEM:</h4>
+                <ul>
+                    <li><strong>5 stjärnor kundbetyg</strong> = 200 kr bonus automatiskt</li>
+                    <li><strong>5% provision</strong> på materialförsäljning via Staff App</li>
+                    <li><strong>5% provision</strong> på tillvalstjänster via Staff App</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">TRANSPORTTILLÄGG OCH RESLÖN</div>
+            <p><strong>Lokal transport (inom 50km från Stockholm):</strong><br>
+            Ingen reslön utgår. Arbetstagaren får lön från avtalad starttid hos kunden.</p>
+            
+            <p><strong>Långdistansuppdrag (över 50km från Stockholm):</strong></p>
+            <ul>
+                <li>50% av ordinarie timlön utgår under färdtid till och från uppdragsplatsen</li>
+                <li>Färdtid räknas från företagets bas i Stockholm</li>
+                <li>Vid övernattning står företaget för logi, traktamente enligt överenskommelse</li>
+            </ul>
+            
+            <p><strong>Fordonshämtning:</strong><br>
+            Chaufförer erhåller full timlön från bilhämtning till återlämning.</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">KVITTOHANTERING OCH FÖRETAGSKÖP</div>
+            <p><strong>Obligatorisk kvittoredovisning:</strong></p>
+            <ul>
+                <li>Alla kvitton fotograferas via Staff App inom 24h</li>
+                <li>Förlorade kvitton = personlig kostnad</li>
+                <li>Personliga köp på företagskort är förbjudet och leder till löneavdrag</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">DATASKYDD OCH INTEGRITET (GDPR)</div>
+            <div class="gdpr-box">
+                <h4>VIKTIGA REGLER:</h4>
+                <ul>
+                    <li><strong>Konfidentialitet:</strong> All kundinfo är strikt konfidentiell</li>
+                    <li><strong>Fotografering:</strong> Endast tillåtna arbetsbilder</li>
+                    <li><strong>Sociala medier:</strong> Publicering av kundbilder förbjudet</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">SÄKERHET OCH ARBETSMILJÖ</div>
+            <div class="security-box">
+                <h4>SÄKERHETSREGLER:</h4>
+                <ul>
+                    <li>SOS-system i Staff App vid nödsituationer</li>
+                    <li>Alla arbetsskador rapporteras inom 1 timme</li>
+                    <li><strong>Nolltolerans alkohol/droger</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">TEKNISK UTRUSTNING</div>
+            <ul>
+                <li>Staff App hålls uppdaterad</li>
+                <li>Responstid på meddelanden: 2h under arbetstid</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">KUNDRELATIONER</div>
+            <ul>
+                <li>Grundläggande svenska krävs</li>
+                <li>Konflikteskalering till arbetsledning</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">SEMESTER OCH SEMESTERERSÄTTNING</div>
+            <p><strong>Semesterhantering för behovsanställda:</strong></p>
+            <ul>
+                <li>12% semesterersättning ingår redan i timlönen</li>
+                <li>Ingen rätt till semester-ledighet (endast semesterersättning)</li>
+                <li>Semesterersättning betalas ut löpande med månadslönen</li>
+            </ul>
+            
+            <p><strong>Vid önskemål om ledighet:</strong></p>
+            <ul>
+                <li>Ledighet kan begäras men är ej garanterad</li>
+                <li>Inga särskilda semesterperioder för behovsanställda</li>
+                <li>Planerad ledighet ska meddelas minst 2 veckor i förväg</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">SJUKFRÅNVARO</div>
+            <p><strong>Sjukdom under pågående uppdrag:</strong></p>
+            <ul>
+                <li>Omedelbar anmälan till arbetsledning via telefon</li>
+                <li>Uppdrag avbryts och ersättning tillkallas om möjligt</li>
+            </ul>
+            
+            <p><strong>Sjukersättning:</strong></p>
+            <ul>
+                <li>Ingen sjuklön från arbetsgivare (behovsanställning)</li>
+                <li>Sjukpenning från Försäkringskassan enligt deras regler</li>
+                <li>Läkarintyg kan krävas vid upprepade sjukdomsfall</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">ARBETSTID OCH FLEXIBILITET</div>
+            <p><strong>Arbetstid för behovsanställda:</strong></p>
+            <ul>
+                <li>Arbetstid per uppdrag enligt överenskommelse</li>
+                <li>Timlön: samma pris oavsett tid på dygnet, veckodag eller uppdragslängd</li>
+                <li>Personal kan tacka nej till alla uppdrag utan konsekvenser</li>
+            </ul>
+            
+            <p><strong>Uppdragstyper:</strong></p>
+            <ul>
+                <li>Helgarbete: Tillåtet och frivilligt, samma timlön</li>
+                <li>Kvällsarbete: Tillåtet och frivilligt, samma timlön</li>
+                <li>Långa uppdrag: Tillåtet och frivilligt, samma timlön</li>
+                <li>Nattarbete: Endast efter särskild överenskommelse, samma timlön</li>
+            </ul>
+            
+            <p><strong>Arbetsmiljö:</strong></p>
+            <ul>
+                <li>Ingen garanterad vila mellan uppdrag (frivillig anmälan till uppdrag)</li>
+                <li>Kontinuerlig betalning under hela uppdraget</li>
+                <li>Personal ansvarar för egen säkerhet och begränsningar</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">UPPDRAGSFÖRDELNING OCH TILLGÄNGLIGHET</div>
+            <p><strong>Fördelning av uppdrag:</strong></p>
+            <ul>
+                <li>Uppdrag erbjuds baserat på tillgänglighet, kompetens och geografisk närhet</li>
+                <li>Arbetstagaren kan tacka nej till uppdrag utan negativa konsekvenser</li>
+                <li>Upprepat avböjande kan påverka framtida uppdragserbjudanden</li>
+            </ul>
+            
+            <p><strong>Tillgänglighet och responstid:</strong></p>
+            <ul>
+                <li>Förväntad responstid på uppdragserbjudanden: 2 timmar vardagar 08:00-18:00</li>
+                <li>Ingen skyldighet att vara tillgänglig kvällar, helger eller under semester</li>
+                <li>Planerad otillgänglighet ska meddelas i förväg</li>
+            </ul>
+            
+            <p><strong>Garantier:</strong></p>
+            <ul>
+                <li>Ingen garanterad minsta arbetstid per månad</li>
+                <li>Ingen garanterad regelbundenhet i uppdrag</li>
+                <li>Verksamhetens behov styr uppdragsvolymen</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">SKADEANSVAR OCH EKONOMISKA KONSEKVENSER</div>
+            <p><strong>Omedelbar rapportering:</strong><br>
+            Alla incidenter, skador och tillbud rapporteras omedelbart via Staff App.</p>
+            
+            <p><strong>Arbetstagarens ekonomiska ansvar vid vårdslöshet:</strong></p>
+            <ul>
+                <li><strong>Kundskador:</strong> Kostnad för reparation/ersättning kan dras från lön vid bevisad vårdslöshet</li>
+                <li><strong>Trafikböter:</strong> Personal ansvarar för egna böter vid felparkeringar eller trafikförseelser</li>
+                <li><strong>Fordonsskador:</strong> Självrisk 2000kr vid skador på företagets fordon genom vårdslöshet</li>
+                <li><strong>Materialförlust:</strong> Kostnad för förlorat eller skadat material dras från lön</li>
+                <li><strong>Grov vårdslöshet:</strong> Fullt ersättningsansvar vid uppsåt eller grov oaktsamhet</li>
+            </ul>
+            
+            <p><strong>Försäkringsskydd:</strong><br>
+            Företagets ansvarsförsäkring gäller vid normalt utförande av arbetsuppgifter.</p>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">PROVANSTÄLLNING OCH UTVECKLING</div>
+            <p><strong>Provanställningsperiod:</strong></p>
+            <ul>
+                <li>De första 3 månaderna utgör provanställning</li>
+                <li>Utvärdering och återkoppling efter 30, 60 och 90 dagar</li>
+                <li>Under provanställning: 14 dagars ömsesidig uppsägningstid</li>
+            </ul>
+            
+            <p><strong>Kompetensutveckling och lönetrappor:</strong></p>
+            <ul>
+                <li>Löneökning möjlig efter prestationsutvärdering vid 3, 6 och 12 månader</li>
+                <li>Bedömning baseras på: kundbetyg, effektivitet, kvalitetsindex och tillförlitlighet</li>
+                <li>Utbildning inom säkerhet och kvalitet erbjuds kontinuerligt</li>
+                <li>Karriärvägar: Specialist → Teamledare → Arbetsledare</li>
+            </ul>
+            
+            <p><strong>Prestationskrav:</strong></p>
+            <ul>
+                <li>Genomsnittligt kundbetyg över 4.0/5.0</li>
+                <li>Färre än 2 kvalitetsklagomål per 6-månadersperiod</li>
+                <li>95% närvaro vid accepterade uppdrag</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">UPPSÄGNING OCH ANSTÄLLNINGSSKYDD</div>
+            <p><strong>Under provanställning (första 3 månaderna):</strong></p>
+            <ul>
+                <li>Ömsesidig uppsägningstid: 14 dagar</li>
+                <li>Uppsägning kan ske utan särskild anledning från båda parter</li>
+            </ul>
+            
+            <p><strong>Efter provanställning (enligt LAS):</strong></p>
+            <ul>
+                <li><strong>Från arbetstagares sida:</strong> 1 månads uppsägningstid</li>
+                <li><strong>Från arbetsgivares sida:</strong></li>
+                <li style="margin-left: 20px;">0-6 månader anställning: 1 månad</li>
+                <li style="margin-left: 20px;">6 månader-2 år: 2 månader</li>
+                <li style="margin-left: 20px;">2-5 år: 3 månader</li>
+                <li style="margin-left: 20px;">5+ år: 6 månader</li>
+            </ul>
+            
+            <p><strong>Omedelbar uppsägning (utan uppsägningstid):</strong></p>
+            <ul>
+                <li>Alkohol/droger under arbetstid</li>
+                <li>Stöld, bedrägeri eller annan brottslig gärning</li>
+                <li>Grov vårdslöshet som skadar företaget eller kunder</li>
+                <li>Upprepade allvarliga kvalitetsbrister trots varningar</li>
+                <li>Brott mot tystnadsplikt eller säkerhetsrutiner</li>
+            </ul>
+            
+            <p><strong>Uppsägning vid arbetsbrist:</strong></p>
+            <ul>
+                <li>Turordningsregler enligt LAS</li>
+                <li>Företräde till återanställning inom 9 månader</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <div class="section-title">TVISTEHANTERING OCH TILLÄMPLIG LAG</div>
+            <p><strong>Konfliktlösning:</strong></p>
+            <ul>
+                <li>Tvister löses i första hand genom dialog mellan parterna</li>
+                <li>Vid fortsatt oenighet: Medling genom Arbetsdomstolen eller ombud</li>
+                <li>Sista utväg: Stockholms tingsrätt</li>
+            </ul>
+            
+            <p><strong>Tillämplig lag:</strong></p>
+            <ul>
+                <li>Detta avtal regleras av svensk arbetsrätt</li>
+                <li>LAS (Lagen om anställningsskydd) tillämpas efter 6 månaders anställning</li>
+                <li>Arbetsmiljölagen och övrig svensk arbetslagstiftning gäller</li>
+            </ul>
+            
+            <p><strong>Avtalsändringar:</strong></p>
+            <ul>
+                <li>Ändringar av detta avtal ska göras skriftligt</li>
+                <li>Muntliga överenskommelser är inte bindande</li>
+                <li>Detta avtal upphäver alla tidigare avtal mellan parterna</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+    
+    <div class="signature-section">
+        <div class="section-title">UNDERTECKNANDE</div>
+        <p>Detta avtal har upprättats i två exemplar varav parterna tagit var sitt.</p>
+        
+        <p><strong>Ort och datum:</strong> Stockholm, {{currentDate}}</p>
+        
+        <div class="signature-boxes">
+            <div class="signature-box">
+                <div style="margin-bottom: 30px;">För {{companyBrand}}:</div>
+                <div>_________________________</div>
+                <div style="margin-top: 5px; font-size: 12px;">Företagsledning</div>
+            </div>
+            <div class="signature-box">
+                <div style="margin-bottom: 30px;">Arbetstagare:</div>
+                <div>_________________________</div>
+                <div style="margin-top: 5px; font-size: 12px;">{{employeeName}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Detta avtal är upprättat enligt svensk arbetsrätt och {{companyBrand}}s anställningsvillkor.</p>
+        <p>För frågor kontakta HR: {{companyPhone}}</p>
+        <div class="contract-id" style="margin-top: 10px;">Avtals-ID: {{contractId}}</div>
+    </div>
+</body>
+</html>

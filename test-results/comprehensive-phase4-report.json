@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-07-14T19:15:02.438Z",
+  "phase": "Phase 4 Enhanced Business Intelligence System",
+  "testDuration": 33880,
+  "totalTests": 11,
+  "passed": 2,
+  "failed": 6,
+  "warnings": 1,
+  "partial": 2,
+  "results": [
+    {
+      "test": "Main Dashboard",
+      "status": "PASS",
+      "details": {
+        "title": "",
+        "url": "http://localhost:3000"
+      }
+    },
+    {
+      "test": "Enhanced BI Dashboard",
+      "status": "FAIL",
+      "error": "Title not found"
+    },
+    {
+      "test": "Enhanced BI Components",
+      "status": "PARTIAL",
+      "details": {
+        "buttons": 0,
+        "charts": 0
+      }
+    },
+    {
+      "test": "Customer Navigation",
+      "status": "PARTIAL"
+    },
+    {
+      "test": "Enhanced BI API",
+      "status": "FAIL",
+      "details": {
+        "error": "Unexpected token 'I', \"Internal S\"... is not valid JSON"
+      }
+    },
+    {
+      "test": "A/B Experiments API",
+      "status": "FAIL",
+      "details": {
+        "error": "Unexpected token 'I', \"Internal S\"... is not valid JSON"
+      }
+    },
+    {
+      "test": "Team Dashboard",
+      "status": "FAIL",
+      "details": {
+        "elements": 0
+      }
+    },
+    {
+      "test": "CRM Dashboard",
+      "status": "FAIL",
+      "details": {
+        "elements": 0
+      }
+    },
+    {
+      "test": "Staff Dashboard",
+      "status": "FAIL",
+      "details": {
+        "elements": 0
+      }
+    },
+    {
+      "test": "Mobile Responsiveness",
+      "status": "PASS"
+    },
+    {
+      "test": "Console Errors",
+      "status": "WARN",
+      "errors": 1,
+      "errorSamples": [
+        "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+      ]
+    }
+  ],
+  "features": {
+    "Cloud ML Forecasting": "Implemented",
+    "Customer Segmentation": "Implemented",
+    "IoT Vehicle Monitoring": "Implemented",
+    "A/B Testing Framework": "Implemented",
+    "Interactive BI Dashboard": "Implemented",
+    "Real-time Updates": "Implemented"
+  },
+  "coverage": {
+    "dashboards": [
+      "Main",
+      "Enhanced BI",
+      "Team",
+      "CRM",
+      "Staff"
+    ],
+    "apiEndpoints": [
+      "Enhanced BI API",
+      "A/B Experiments API"
+    ],
+    "responsiveDesign": "Mobile Tested",
+    "errorHandling": "Console Monitored"
+  },
+  "screenshots": 8,
+  "apiTests": 2,
+  "dashboardTests": 5
+}

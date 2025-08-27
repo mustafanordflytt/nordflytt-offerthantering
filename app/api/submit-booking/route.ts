@@ -1,17 +1,90 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
 import { sendOfferNotifications } from '@/lib/notifications'
+import { 
+  authenticateAPI, 
+  AuthLevel, 
+  apiError, 
+  apiResponse, 
+  validateInput,
+  sanitizeHTML,
+  logAPIAccess 
+} from '@/lib/api-auth'
+import { encryptObject, SENSITIVE_FIELDS } from '@/lib/encryption'
 
 // Skapa ett submissionCache för att förhindra dubletter
 const submissionCache = new Map();
 
-export async function POST(request: Request) {
+// Input validation schema
+const bookingSchema = {
+  customerInfo: {
+    type: 'object' as const,
+    required: false
+  },
+  email: {
+    type: 'string' as const,
+    required: false,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  },
+  phone: {
+    type: 'string' as const,
+    required: false,
+    pattern: /^[\d\s\-\+\(\)]+$/
+  },
+  name: {
+    type: 'string' as const,
+    required: false,
+    min: 2,
+    max: 100
+  },
+  customerType: {
+    type: 'string' as const,
+    required: false,
+    enum: ['private', 'company']
+  },
+  serviceType: {
+    type: 'string' as const,
+    required: false,
+    enum: ['moving', 'cleaning', 'office_moving', 'storage']
+  },
+  moveDate: {
+    type: 'string' as const,
+    required: false,
+    pattern: /^\d{4}-\d{2}-\d{2}$/
+  },
+  startAddress: {
+    type: 'string' as const,
+    required: false,
+    max: 200
+  },
+  endAddress: {
+    type: 'string' as const,
+    required: false,
+    max: 200
+  }
+}
+
+export async function POST(request: NextRequest) {
+  // Authenticate - public endpoint but with rate limiting
+  const auth = await authenticateAPI(request, AuthLevel.PUBLIC)
+  if (!auth.authorized) {
+    return auth.response!
+  }
+
   // Skapa ett unikt ID för denna request för att spåra duplicerade anrop
   const requestId = Math.random().toString(36).substring(2, 10);
   console.log(`[${requestId}] Ny bokningsförfrågan mottagen`);
   
+  let response: NextResponse
+  
   try {
     const data = await request.json();
+    
+    // Validate input
+    const validation = validateInput(data, bookingSchema)
+    if (!validation.valid) {
+      return apiError(`Invalid input: ${validation.errors.join(', ')}`, 400, 'VALIDATION_ERROR')
+    }
     
     // Generera ett fingeravtryck baserat på kunddata
     const customerEmail = data.customerInfo?.email || data.email || "";
@@ -44,13 +117,13 @@ export async function POST(request: Request) {
     
     console.log(`[${requestId}] Mottagen bokningsdata:`, JSON.stringify(data))
     
-    // Skapa ett korrekt formaterat bookingData-objekt
+    // Skapa ett korrekt formaterat bookingData-objekt med sanitized data
     const customerData = {
-      name: data.customerInfo?.name || data.name || "",
+      name: sanitizeHTML(data.customerInfo?.name || data.name || ""),
       email: data.customerInfo?.email || data.email || "",
       phone: data.customerInfo?.phone || data.phone || "",
       customer_type: data.customerType || "private",
-      notes: data.specialInstructions || data.customerInfo?.notes || data.notes || null
+      notes: sanitizeHTML(data.specialInstructions || data.customerInfo?.notes || data.notes || "")
     }
     
     console.log(`[${requestId}] Försöker skapa eller uppdatera kund:`, JSON.stringify(customerData))
@@ -106,25 +179,43 @@ export async function POST(request: Request) {
     // Beräkna totalpriset
     const totalPrice = calculateTotalPrice(data)
     
-    // Skapa bokning direkt med supabase client
+    // Prepare booking data with sanitization
     const bookingData = {
       customer_id: customerId,
       service_type: data.serviceType || "",
       service_types: data.serviceTypes || [],
       move_date: data.moveDate || data.moveDetails?.moveDate || null,
       move_time: data.moveTime || "08:00",
-      start_address: data.startAddress || data.moveDetails?.startAddress || null,
-      end_address: data.endAddress || data.moveDetails?.endAddress || null,
+      start_address: sanitizeHTML(data.startAddress || data.moveDetails?.startAddress || ""),
+      end_address: sanitizeHTML(data.endAddress || data.moveDetails?.endAddress || ""),
       status: "pending",
       total_price: totalPrice,
       created_at: new Date().toISOString(),
+      // Lägg till all detaljerad information i details fältet
+      details: {
+        ...data, // Spara all formulärdata
+        customerName: customerData.name,
+        totalPrice: totalPrice,
+        reference: `NF-${Date.now()}`
+      }
+    }
+    
+    // Encrypt sensitive fields before storing
+    const encryptedBookingData = encryptObject(bookingData, ['start_address', 'end_address'])
+    
+    // Also encrypt sensitive customer data if present
+    if (bookingData.details.customerInfo) {
+      bookingData.details.customerInfo = encryptObject(
+        bookingData.details.customerInfo,
+        ['email', 'phone', 'address']
+      )
     }
     
     console.log(`[${requestId}] Försöker skapa bokning:`, JSON.stringify(bookingData))
     
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
-      .insert(bookingData)
+      .insert(encryptedBookingData)
       .select()
       .single()
     
@@ -155,17 +246,26 @@ export async function POST(request: Request) {
     }
 
     console.log(`[${requestId}] Returnerar svar till klienten för bokning ${booking.id}`);
-    return NextResponse.json({
+    response = apiResponse({
       message: "Bokning mottagen och sparad",
       bookingId: booking.id,
       bookingDetails: booking,
     })
+    
+    // Log API access
+    logAPIAccess(request, response)
+    return response
   } catch (error) {
     console.error(`[${requestId}] Error submitting booking:`, error)
-    return NextResponse.json({ 
-      error: "Kunde inte spara bokningen", 
-      details: (error as Error).message 
-    }, { status: 500 })
+    response = apiError(
+      "Kunde inte spara bokningen", 
+      500,
+      'BOOKING_ERROR'
+    )
+    
+    // Log API access even on error
+    logAPIAccess(request, response)
+    return response
   }
 }
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordflytt Mobile Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background: #f0f0f0;
+        }
+        .test-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .success {
+            color: green;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .links {
+            margin-top: 30px;
+        }
+        .links a {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            background: #002A5C;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-box">
+        <div class="success">✅</div>
+        <h1>Anslutning fungerar!</h1>
+        <p>Din mobil kan nå servern på port 3002</p>
+        
+        <div class="links">
+            <a href="/staff">Gå till Staff Login</a>
+            <a href="/staff/dashboard">Gå direkt till Dashboard</a>
+        </div>
+        
+        <hr style="margin: 30px 0;">
+        
+        <h3>Debug-info:</h3>
+        <p>IP: <span id="ip"></span></p>
+        <p>User Agent: <span id="ua"></span></p>
+        <p>Tid: <span id="time"></span></p>
+    </div>
+    
+    <script>
+        document.getElementById('ua').textContent = navigator.userAgent;
+        document.getElementById('time').textContent = new Date().toLocaleString('sv-SE');
+        document.getElementById('ip').textContent = window.location.host;
+    </script>
+</body>
+</html>

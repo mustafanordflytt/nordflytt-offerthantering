@@ -55,6 +55,17 @@ export interface FormData {
   additionalServices: AdditionalService[]
   totalPrice: number
   step: number
+  // Credit check fields
+  paymentMethod?: "invoice" | "direct" | "invoice_with_deposit" | "swish_prepayment"
+  personalNumber?: string
+  creditCheckId?: string
+  creditCheckStatus?: "approved" | "rejected"
+  creditCheckReason?: string
+  depositAmount?: number
+  // Swish payment fields
+  bookingReference?: string
+  swishPaymentId?: string
+  paymentStatus?: "pending" | "prepaid" | "paid"
 }
 
 export interface QuoteSubmission {

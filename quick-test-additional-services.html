@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Snabbtest - Tilläggstjänster</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        pre {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #002A5C;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #003D7A; }
+    </style>
+</head>
+<body>
+    <h1>Snabbtest - Tilläggstjänster på Bekräftelsesidan</h1>
+    
+    <div>
+        <h2>1. Test API direkt</h2>
+        <button onclick="testAPI('b87bc970-d99f-45ae-aa8f-1fb8bb44c3e4')">
+            Test API för bokning b87bc970...
+        </button>
+        <button onclick="testAPI('6cb25b02-22e4-4e19-9ea0-9d67870cc9b2')">
+            Test API för bokning 6cb25b02...
+        </button>
+        <div id="apiResult"></div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h2>2. Öppna bekräftelsesidor</h2>
+        <button onclick="window.open('http://localhost:3000/order-confirmation/b87bc970-d99f-45ae-aa8f-1fb8bb44c3e4', '_blank')">
+            Öppna bekräftelse b87bc970... →
+        </button>
+        <button onclick="window.open('http://localhost:3000/order-confirmation/6cb25b02-22e4-4e19-9ea0-9d67870cc9b2', '_blank')">
+            Öppna bekräftelse 6cb25b02... →
+        </button>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h2>3. Vad ska jag titta efter?</h2>
+        <div class="result">
+            <p><strong>I Developer Console (F12):</strong></p>
+            <ul>
+                <li>🔄 Hämtar tilläggstjänster för bokning: [ID]</li>
+                <li>📡 API Response status: 200</li>
+                <li>✅ Tilläggstjänster från databas: {...}</li>
+                <li>📊 Setting dbAdditionalServices with: [...]</li>
+                <li>🔍 Debug dbAdditionalServices state: {...}</li>
+            </ul>
+            <p><strong>På sidan:</strong></p>
+            <ul>
+                <li>Leta efter rubriken <strong>"Tilläggstjänster under uppdraget:"</strong></li>
+                <li>Under den ska du se blå boxar med tjänster som:
+                    <ul>
+                        <li>Packhjälp - 700 kr</li>
+                        <li>Flyttkartonger - 1185 kr</li>
+                    </ul>
+                </li>
+                <li>En blå ruta med totalsumma för tilläggstjänster</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI(bookingId) {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<div class="result">Testar API...</div>';
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/bookings/${bookingId}/additional-services`);
+                const data = await response.json();
+                
+                if (response.ok && data.additionalServices && data.additionalServices.length > 0) {
+                    let html = '<div class="result success">';
+                    html += '<h3>✅ API returnerar tilläggstjänster!</h3>';
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    html += '<p><strong>Sammanfattning:</strong></p>';
+                    html += '<ul>';
+                    data.additionalServices.forEach(service => {
+                        html += `<li>${service.service_name}: ${service.total_price} kr (${service.quantity} ${service.unit || 'st'})</li>`;
+                    });
+                    html += '</ul>';
+                    html += `<p><strong>Total kostnad tilläggstjänster: ${data.totalAdditionalCost} kr</strong></p>`;
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = '<div class="result error">❌ Inga tilläggstjänster hittades i API-svaret</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="result error">❌ Fel vid API-anrop: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

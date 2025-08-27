@@ -2,14 +2,16 @@
 
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { AddressDistance } from "./AddressDistance"
+import AddressDistance from "./AddressDistance"
 import { Button } from "@/components/ui/button"
 import Script from "next/script"
 
 interface DistanceData {
-  meters: number
-  text: string
+  distance: number
+  distanceText: string
   duration: string
+  fromAddress: string
+  toAddress: string
 }
 
 export function AddressDistanceExample() {
@@ -24,7 +26,7 @@ export function AddressDistanceExample() {
   const handleDistanceCalculated = (distanceData: DistanceData) => {
     setFormState(prev => ({
       ...prev,
-      calculatedDistance: distanceData.meters
+      calculatedDistance: distanceData.distance
     }))
     
     console.log("Distance calculated:", distanceData)
@@ -48,7 +50,7 @@ export function AddressDistanceExample() {
         
         {/* Load Google Maps API */}
         <Script 
-          src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyChAUwFV4q2SQUbHjjw_QIK1I5I3mee8b0&libraries=places&callback=Function.prototype`}
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&callback=Function.prototype`}
           onLoad={handleGoogleApiLoaded}
         />
         

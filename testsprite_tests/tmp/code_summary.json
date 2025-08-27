@@ -1,0 +1,586 @@
+{
+  "tech_stack": ["TypeScript", "Next.js 15.2.4", "PostgreSQL (Supabase)", "Node.js", "JWT", "OpenAI", "AWS SageMaker", "Twilio", "SendGrid", "Google Maps API"],
+  "features": [
+    {
+      "name": "Authentication API",
+      "description": "Handles user authentication with OTP, JWT tokens, and CRM login",
+      "files": ["app/api/auth/send-otp/route.ts", "app/api/auth/verify-otp/route.ts", "app/api/auth/crm-login/route.ts", "app/api/auth/login/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/auth/send-otp": {
+            "post": {
+              "summary": "Send OTP to phone number",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "phone": {"type": "string", "pattern": "^\\+46\\d{9}$"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "OTP sent successfully"},
+                "429": {"description": "Rate limit exceeded"}
+              }
+            }
+          },
+          "/api/auth/verify-otp": {
+            "post": {
+              "summary": "Verify OTP and generate JWT",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "phone": {"type": "string"},
+                        "code": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "JWT token generated"},
+                "401": {"description": "Invalid OTP"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Booking Management API",
+      "description": "Handles customer bookings, confirmations, and updates",
+      "files": ["app/api/submit-booking/route.ts", "app/api/confirm-booking/route.ts", "app/api/update-booking/route.ts", "app/api/bookings/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/submit-booking": {
+            "post": {
+              "summary": "Create new booking",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "customerType": {"type": "string", "enum": ["private", "company"]},
+                        "contactInfo": {"type": "object"},
+                        "moveDetails": {"type": "object"},
+                        "services": {"type": "array", "items": {"type": "string"}},
+                        "additionalServices": {"type": "array", "items": {"type": "string"}}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Booking created"},
+                "400": {"description": "Validation error"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Staff Management API",
+      "description": "Staff app endpoints for job management, photos, and time tracking",
+      "files": ["app/api/staff/jobs/route.ts", "app/api/staff/auth/route.ts", "app/api/staff/add-service-to-order/route.ts", "app/api/staff/checkin/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/staff/jobs": {
+            "get": {
+              "summary": "Get staff member's assigned jobs",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "200": {"description": "List of jobs"},
+                "401": {"description": "Unauthorized"}
+              }
+            }
+          },
+          "/api/staff/add-service-to-order": {
+            "post": {
+              "summary": "Add additional service to active job",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "jobId": {"type": "string"},
+                        "service": {"type": "string"},
+                        "price": {"type": "number"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Service added"},
+                "400": {"description": "Invalid request"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Jobs Management API",
+      "description": "Job scheduling, assignment, status updates, and photo management",
+      "files": ["app/api/jobs/route.ts", "app/api/jobs/[id]/route.ts", "app/api/jobs/[id]/status/route.ts", "app/api/jobs/[id]/photos/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/jobs": {
+            "get": {
+              "summary": "List all jobs with filters",
+              "security": [{"bearerAuth": []}],
+              "parameters": [
+                {"name": "status", "in": "query", "schema": {"type": "string"}},
+                {"name": "date", "in": "query", "schema": {"type": "string"}}
+              ],
+              "responses": {
+                "200": {"description": "List of jobs"}
+              }
+            },
+            "post": {
+              "summary": "Create new job",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "201": {"description": "Job created"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Customer Management API",
+      "description": "Customer CRUD operations with credit check integration",
+      "files": ["app/api/customers/route.ts", "app/api/customers/[id]/route.ts", "app/api/credit-check/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/customers": {
+            "get": {
+              "summary": "List customers",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "200": {"description": "Customer list"}
+              }
+            }
+          },
+          "/api/credit-check": {
+            "post": {
+              "summary": "Perform credit check via Creditsafe",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "organizationNumber": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Credit report"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Invoice & Payment API",
+      "description": "Invoice generation, Fortnox integration, and Swish payments",
+      "files": ["app/api/generate-invoice/route.ts", "app/api/swish/create-payment/route.ts", "app/api/financial/invoices/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/generate-invoice": {
+            "post": {
+              "summary": "Generate invoice via Fortnox",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "jobId": {"type": "string"},
+                        "customerData": {"type": "object"},
+                        "services": {"type": "array"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Invoice created"}
+              }
+            }
+          },
+          "/api/swish/create-payment": {
+            "post": {
+              "summary": "Create Swish payment request",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {"type": "number"},
+                        "customerPhone": {"type": "string"},
+                        "bookingReference": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Payment created"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "AI & ML Services API",
+      "description": "AI chatbot, lead scoring, price optimization, and route optimization",
+      "files": ["app/api/ai/customer-service/route.ts", "app/api/ai/lead-scoring/route.ts", "app/api/ai/price-estimate/route.ts", "app/api/ai/optimize-team/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/ai/customer-service": {
+            "post": {
+              "summary": "AI chatbot response",
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "message": {"type": "string"},
+                        "context": {"type": "object"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "AI response"}
+              }
+            }
+          },
+          "/api/ai/lead-scoring": {
+            "post": {
+              "summary": "Calculate lead quality score",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "leadData": {"type": "object"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Lead score 0-100"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Notification Services API",
+      "description": "Email via SendGrid, SMS via Twilio, and push notifications",
+      "files": ["app/api/send-notifications/route.ts", "app/api/notifications/send/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/send-notifications": {
+            "post": {
+              "summary": "Send multi-channel notification",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "type": {"type": "string", "enum": ["email", "sms", "push"]},
+                        "recipient": {"type": "string"},
+                        "template": {"type": "string"},
+                        "data": {"type": "object"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Notification sent"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "CRM Dashboard API",
+      "description": "Analytics, metrics, and real-time dashboard data",
+      "files": ["app/api/crm/dashboard/route.ts", "app/api/dashboard/metrics/route.ts", "app/api/analytics/data/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/crm/dashboard": {
+            "get": {
+              "summary": "Get dashboard metrics",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "200": {
+                  "description": "Dashboard data",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "revenue": {"type": "object"},
+                          "jobs": {"type": "object"},
+                          "leads": {"type": "object"},
+                          "staff": {"type": "object"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Lead Management API", 
+      "description": "Lead creation, conversion, assignment, and pipeline management",
+      "files": ["app/api/leads/route.ts", "app/api/leads/[id]/route.ts", "app/api/leads/process-to-offer/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/leads": {
+            "get": {
+              "summary": "List leads with filters",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "200": {"description": "Lead list"}
+              }
+            },
+            "post": {
+              "summary": "Create new lead",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "201": {"description": "Lead created"}
+              }
+            }
+          },
+          "/api/leads/process-to-offer": {
+            "post": {
+              "summary": "Convert lead to offer",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "leadId": {"type": "string"},
+                        "offerDetails": {"type": "object"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Offer created from lead"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Storage & Upload API",
+      "description": "File upload to Supabase Storage, document management",
+      "files": ["app/api/storage/upload/route.ts", "app/api/employee-documents/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/storage/upload": {
+            "post": {
+              "summary": "Upload file to Supabase Storage",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "multipart/form-data": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "file": {"type": "string", "format": "binary"},
+                        "bucket": {"type": "string"},
+                        "path": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "File uploaded"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Calendar & Scheduling API",
+      "description": "Resource booking, availability management, conflict detection",
+      "files": ["app/api/crm/calendar/events/route.ts", "app/api/crm/calendar/resources/route.ts", "app/api/crm/calendar/availability/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/crm/calendar/events": {
+            "get": {
+              "summary": "Get calendar events",
+              "security": [{"bearerAuth": []}],
+              "parameters": [
+                {"name": "start", "in": "query", "schema": {"type": "string"}},
+                {"name": "end", "in": "query", "schema": {"type": "string"}}
+              ],
+              "responses": {
+                "200": {"description": "Calendar events"}
+              }
+            },
+            "post": {
+              "summary": "Create calendar event",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "201": {"description": "Event created"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Offer Management API",
+      "description": "Create, send, and track customer offers",
+      "files": ["app/api/offers/route.ts", "app/api/offers/[id]/route.ts", "app/api/offers/[id]/send/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/offers": {
+            "post": {
+              "summary": "Create new offer",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "customerId": {"type": "string"},
+                        "services": {"type": "array"},
+                        "validUntil": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "201": {"description": "Offer created"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Employee Management API",
+      "description": "Employee CRUD, contracts, onboarding workflows",
+      "files": ["app/api/employees/route.ts", "app/api/employees/[id]/route.ts", "app/api/employees/[id]/contracts/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/employees": {
+            "get": {
+              "summary": "List employees",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "200": {"description": "Employee list"}
+              }
+            },
+            "post": {
+              "summary": "Create new employee",
+              "security": [{"bearerAuth": []}],
+              "responses": {
+                "201": {"description": "Employee created"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Contract Management API",
+      "description": "Generate, send, and track digital contracts",
+      "files": ["app/api/contracts/generate/route.ts", "app/api/contracts/send/route.ts", "app/api/contracts/sign/route.ts"],
+      "api_doc": {
+        "openapi": "3.0.0",
+        "paths": {
+          "/api/contracts/generate": {
+            "post": {
+              "summary": "Generate contract PDF",
+              "security": [{"bearerAuth": []}],
+              "requestBody": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "type": {"type": "string"},
+                        "employeeId": {"type": "string"},
+                        "terms": {"type": "object"}
+                      }
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {"description": "Contract generated"}
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

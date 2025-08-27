@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kreditkontroll Demo - Nordflytt</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f5f0;
+        }
+        .demo-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        .flow-step {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #002A5C;
+        }
+        .flow-step h3 {
+            color: #002A5C;
+            margin-top: 0;
+        }
+        .screenshot {
+            margin: 15px 0;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #666;
+        }
+        .button {
+            background: #002A5C;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .button:hover {
+            background: #003d7a;
+        }
+        .button.secondary {
+            background: #4CAF50;
+        }
+        .button.secondary:hover {
+            background: #388E3C;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .modal-demo {
+            background: rgba(0,0,0,0.5);
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+        }
+        .modal-content {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>🧪 Kreditkontroll Demo - Nordflytt</h1>
+        
+        <div class="flow-step">
+            <h3>📋 Steg 1: Sammanfattning med Faktura vald</h3>
+            <p>När användaren kommer till sammanfattningen och väljer <strong>Faktura</strong> som betalmetod:</p>
+            <div class="screenshot">
+                <div>
+                    <p><strong>Sammanfattning av din bokning</strong></p>
+                    <p>Betalmetod: ✅ Faktura (vald)</p>
+                    <button class="button">Boka flytthjälp →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <h3>🔐 Steg 2: BankID-modal visas direkt</h3>
+            <p>När användaren klickar "Boka flytthjälp":</p>
+            <div class="modal-demo">
+                <div class="modal-content">
+                    <h4>Identifiering krävs för faktura</h4>
+                    <p>För att kunna erbjuda faktura som betalningsalternativ behöver vi verifiera din identitet med BankID.</p>
+                    <br>
+                    <p>🔄 Väntar på BankID...</p>
+                    <br>
+                    <button class="button">Avbryt</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <h3>✅ Steg 3A: Om kreditkontroll godkänns</h3>
+            <p>Användaren kommer till vanlig bekräftelsesida med konfetti:</p>
+            <div class="screenshot">
+                <p>🎉 Din offert är på väg! 🎉</p>
+                <p>Betalmetod: Faktura</p>
+            </div>
+        </div>
+
+        <div class="flow-step">
+            <h3>❌ Steg 3B: Om kreditkontroll nekas</h3>
+            <p>Användaren omdirigeras till bekräftelsesida med varning:</p>
+            <div class="warning">
+                <strong>⚠️ Betalningsmetod har ändrats</strong><br>
+                För att säkra din bokning behöver vi förskottsbetalning med Swish. 
+                Du kommer få instruktioner för betalning inom kort. 
+                Din flytt är fortfarande bokad och bekräftad!
+            </div>
+            <div class="screenshot">
+                <p>✅ Din offert är på väg!</p>
+                <p>Betalmetod: Swish (ändrad från faktura)</p>
+            </div>
+            <p><small>URL innehåller: <code>?creditRejected=true&paymentMethod=swish</code></small></p>
+        </div>
+
+        <div class="flow-step">
+            <h3>🎯 Sammanfattning av flödet</h3>
+            <ol>
+                <li><strong>Privatperson + Faktura</strong> → BankID-modal visas automatiskt</li>
+                <li><strong>Kreditkontroll i bakgrunden</strong> → Ingen synlig väntetid</li>
+                <li><strong>Alltid vidare till bekräftelse</strong> → Med eller utan varning</li>
+                <li><strong>Swish som fallback</strong> → Automatisk växling vid nekad kredit</li>
+            </ol>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center;">
+            <button class="button secondary" onclick="window.location.href='http://localhost:3000'">
+                Testa live →
+            </button>
+            <button class="button secondary" onclick="window.location.href='http://localhost:3000/test-credit-check.html'">
+                Öppna testverktyg →
+            </button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Login</title>
+</head>
+<body>
+    <h1>Debug Login</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <pre id="result"></pre>
+    
+    <script>
+        async function testLogin() {
+            const result = document.getElementById('result');
+            
+            try {
+                result.textContent = 'Testing login...\n';
+                
+                const response = await fetch('/api/auth/crm-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'mustafa@nordflytt.se',
+                        password: 'mustafa123'
+                    })
+                });
+                
+                const data = await response.json();
+                result.textContent += 'Response: ' + JSON.stringify(data, null, 2) + '\n';
+                
+                if (data.success) {
+                    localStorage.setItem('crm-user', JSON.stringify(data.user));
+                    localStorage.setItem('crm-token', data.token);
+                    result.textContent += '\n✅ Saved to localStorage!\n';
+                    result.textContent += '\nRedirecting to dashboard in 2 seconds...';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/crm/dashboard';
+                    }, 2000);
+                }
+            } catch (error) {
+                result.textContent += '\nError: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

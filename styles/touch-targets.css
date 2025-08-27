@@ -1,0 +1,164 @@
+/* Touch Target Fixes for Staff App */
+
+/* Ensure all interactive elements meet 44px minimum */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* Button size fixes */
+.btn-touch {
+  min-height: 44px;
+  padding: 8px 16px;
+  touch-action: manipulation;
+}
+
+/* Checkbox fixes */
+.checkbox-touch {
+  min-height: 44px;
+  min-width: 44px;
+  position: relative;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.checkbox-touch input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 12px; /* Centers the actual checkbox within the 44px target */
+  cursor: pointer;
+}
+
+/* Icon button fixes */
+.icon-btn-touch {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 8px;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
+}
+
+.icon-btn-touch:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.icon-btn-touch:active {
+  transform: scale(0.98);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Small button upgrades */
+.btn-sm-touch {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Navigation touch targets */
+.nav-item-touch {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  touch-action: manipulation;
+}
+
+/* Form element touch targets */
+.form-element-touch {
+  min-height: 44px;
+  padding: 12px;
+  touch-action: manipulation;
+}
+
+/* List item touch targets */
+.list-item-touch {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.list-item-touch:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.list-item-touch:active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Action button improvements */
+.action-btn-touch {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  font-weight: 500;
+  border-radius: 8px;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
+}
+
+/* Chat button fixes */
+.chat-btn-touch {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+/* Responsive touch targets */
+@media (max-width: 768px) {
+  .touch-target,
+  .btn-touch,
+  .icon-btn-touch,
+  .action-btn-touch {
+    min-height: 48px; /* Slightly larger on mobile */
+  }
+  
+  .checkbox-touch {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Utility classes for spacing with touch targets */
+.touch-safe-spacing {
+  margin: 4px; /* Prevents accidental touches */
+}
+
+.touch-row {
+  display: flex;
+  gap: 8px; /* Ensure space between touch targets */
+}
+
+/* Focus improvements for keyboard navigation */
+.touch-target:focus-visible,
+.btn-touch:focus-visible,
+.icon-btn-touch:focus-visible {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* High contrast mode improvements */
+@media (prefers-contrast: high) {
+  .touch-target,
+  .btn-touch,
+  .icon-btn-touch {
+    border: 2px solid currentColor;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "endpoint_name": "nordflytt-time-estimation-015831",
+  "region": "eu-west-2",
+  "instance_type": "ml.m5.large",
+  "deployment_type": "fresh_deployment_after_cleanup",
+  "timestamp": "2025-07-31T01:58:35.898500",
+  "optimizations": [
+    "Complete resource cleanup",
+    "Minimal model (3 estimators)",
+    "Health check optimization",
+    "Unique naming to avoid conflicts",
+    "ml.m5.large instance"
+  ]
+}

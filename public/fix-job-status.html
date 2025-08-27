@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Job Status - Nordflytt</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        button {
+            background: #002A5C;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #003872;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .warning {
+            background: #fff3cd;
+            border-color: #ffeeba;
+            color: #856404;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        pre {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .job-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: white;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .upcoming {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .in-progress {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .completed {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Nordflytt - Fix Job Status Issues</h1>
+        
+        <div class="section">
+            <h2>📊 Current Status</h2>
+            <div id="current-status">Checking...</div>
+        </div>
+        
+        <div class="section">
+            <h2>🎯 Quick Actions</h2>
+            <button onclick="setupMockData()">1. Setup Test Data</button>
+            <button onclick="clearAllData()">2. Clear All Data</button>
+            <button onclick="fixStatusIssue()">3. Fix Status Issue</button>
+            <button onclick="goToDashboard()">4. Go to Dashboard</button>
+        </div>
+        
+        <div class="section">
+            <h2>📋 Current Jobs</h2>
+            <div id="jobs-list">Loading...</div>
+        </div>
+        
+        <div class="section">
+            <h2>🗄️ LocalStorage Data</h2>
+            <pre id="storage-data">Loading...</pre>
+        </div>
+    </div>
+    
+    <script>
+        // Check current status
+        function checkStatus() {
+            const mockJobs = localStorage.getItem('mockJobs')
+            const jobStatuses = localStorage.getItem('mockJobStatuses')
+            const savedServices = localStorage.getItem('staff_jobs_with_services')
+            
+            const statusDiv = document.getElementById('current-status')
+            
+            if (!mockJobs) {
+                statusDiv.className = 'section error'
+                statusDiv.innerHTML = '<strong>❌ No mock jobs found!</strong><br>Click "Setup Test Data" to add test jobs.'
+            } else {
+                const jobs = JSON.parse(mockJobs)
+                const statuses = JSON.parse(jobStatuses || '{}')
+                
+                statusDiv.className = 'section success'
+                statusDiv.innerHTML = `
+                    <strong>✅ Mock data found!</strong><br>
+                    Jobs: ${jobs.length}<br>
+                    Persisted statuses: ${Object.keys(statuses).length}<br>
+                    Services saved: ${savedServices ? 'Yes' : 'No'}
+                `
+                
+                // Check for the specific issue
+                const hasStatusIssue = Object.keys(statuses).some(jobId => 
+                    statuses[jobId] === 'in_progress'
+                )
+                
+                if (hasStatusIssue) {
+                    statusDiv.className = 'section warning'
+                    statusDiv.innerHTML += '<br><br><strong>⚠️ Found jobs stuck in "in_progress" status!</strong>'
+                }
+            }
+            
+            updateJobsList()
+            updateStorageData()
+        }
+        
+        // Update jobs list
+        function updateJobsList() {
+            const jobsDiv = document.getElementById('jobs-list')
+            const mockJobs = localStorage.getItem('mockJobs')
+            
+            if (!mockJobs) {
+                jobsDiv.innerHTML = '<em>No jobs found</em>'
+                return
+            }
+            
+            const jobs = JSON.parse(mockJobs)
+            const statuses = JSON.parse(localStorage.getItem('mockJobStatuses') || '{}')
+            
+            jobsDiv.innerHTML = jobs.map(job => {
+                const persistedStatus = statuses[job.id]
+                const effectiveStatus = persistedStatus || job.status
+                
+                return `
+                    <div class="job-card">
+                        <strong>${job.customerName}</strong> - ${job.services.join(', ')}
+                        <span class="status-badge ${effectiveStatus.replace('_', '-')}">${effectiveStatus}</span>
+                        ${persistedStatus ? '<span style="color: red; margin-left: 10px;">(persisted)</span>' : ''}
+                        <br>
+                        <small>ID: ${job.id} | ${job.moveDate} ${job.moveTime}</small>
+                    </div>
+                `
+            }).join('')
+        }
+        
+        // Update storage data display
+        function updateStorageData() {
+            const dataDiv = document.getElementById('storage-data')
+            const data = {
+                mockJobs: JSON.parse(localStorage.getItem('mockJobs') || 'null'),
+                mockJobStatuses: JSON.parse(localStorage.getItem('mockJobStatuses') || '{}'),
+                staff_jobs_with_services: JSON.parse(localStorage.getItem('staff_jobs_with_services') || '{}')
+            }
+            
+            dataDiv.textContent = JSON.stringify(data, null, 2)
+        }
+        
+        // Setup mock data
+        function setupMockData() {
+            const today = new Date().toISOString().split('T')[0]
+            const tomorrow = new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0]
+            
+            const mockJobs = [
+                {
+                    id: '1',
+                    bookingNumber: 'BK2024001',
+                    customerName: 'Anna Holm',
+                    customerPhone: '070-123 45 67',
+                    fromAddress: 'Vasagatan 10, Stockholm',
+                    toAddress: 'Kungsgatan 20, Stockholm',
+                    moveDate: today,
+                    moveTime: '09:00',
+                    endTime: '13:00',
+                    status: 'upcoming',
+                    estimatedHours: 4,
+                    teamMembers: ['Sofia Lindqvist', 'Marcus Johansson'],
+                    priority: 'high',
+                    distance: 3.5,
+                    serviceType: 'moving',
+                    services: ['Flytt', 'Flytthjälp', 'Packning'],
+                    specialRequirements: ['Piano', 'Ömtåliga föremål'],
+                    locationInfo: {
+                        doorCode: '1234',
+                        floor: 3,
+                        elevator: false,
+                        elevatorStatus: 'Ingen hiss',
+                        parkingDistance: 15,
+                        accessNotes: 'Ring på dörren'
+                    },
+                    customerNotes: 'Var försiktiga med pianot',
+                    equipment: ['Flyttkartonger', 'Bärselar'],
+                    volume: 35,
+                    boxCount: 25
+                },
+                {
+                    id: '2',
+                    bookingNumber: 'BK2024002',
+                    customerName: 'Erik Svensson',
+                    customerPhone: '070-234 56 78',
+                    fromAddress: 'Sveavägen 50, Stockholm',
+                    toAddress: 'Birger Jarlsgatan 100, Stockholm',
+                    moveDate: today,
+                    moveTime: '14:00',
+                    endTime: '18:00',
+                    status: 'upcoming',
+                    estimatedHours: 4,
+                    teamMembers: ['Sofia Lindqvist'],
+                    priority: 'medium',
+                    distance: 2.1,
+                    serviceType: 'moving',
+                    services: ['Flytt', 'Bärhjälp'],
+                    specialRequirements: [],
+                    locationInfo: {
+                        doorCode: '5678',
+                        floor: 2,
+                        elevator: true,
+                        elevatorStatus: 'Fungerar',
+                        parkingDistance: 5,
+                        accessNotes: ''
+                    },
+                    customerNotes: '',
+                    equipment: ['Flyttkartonger'],
+                    volume: 25,
+                    boxCount: 20
+                }
+            ]
+            
+            localStorage.setItem('mockJobs', JSON.stringify(mockJobs))
+            localStorage.removeItem('mockJobStatuses')
+            localStorage.removeItem('staff_jobs_with_services')
+            
+            alert('✅ Test data added successfully!')
+            checkStatus()
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            localStorage.removeItem('mockJobs')
+            localStorage.removeItem('mockJobStatuses')
+            localStorage.removeItem('staff_jobs_with_services')
+            
+            alert('✅ All data cleared!')
+            checkStatus()
+        }
+        
+        // Fix status issue
+        function fixStatusIssue() {
+            localStorage.removeItem('mockJobStatuses')
+            alert('✅ Status issue fixed! All jobs reset to their default status.')
+            checkStatus()
+        }
+        
+        // Go to dashboard
+        function goToDashboard() {
+            window.location.href = '/staff/dashboard'
+        }
+        
+        // Initial check
+        checkStatus()
+        
+        // Auto-refresh every 2 seconds
+        setInterval(checkStatus, 2000)
+    </script>
+</body>
+</html>

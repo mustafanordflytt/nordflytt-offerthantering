@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { FormData } from "@/types/formData"
+import { ButtonLoadingSpinner, LoadingSpinner } from "@/components/ui/loading-spinner"
 
 interface Step2Props {
   formData: FormData
@@ -16,6 +17,8 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
   const [endAddress, setEndAddress] = useState(formData.moveDetails.endAddress)
   const [moveDate, setMoveDate] = useState(formData.moveDetails.moveDate || "")
   const [moveSize, setMoveSize] = useState(formData.moveDetails.moveSize)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isLoadingDistance, setIsLoadingDistance] = useState(false)
 
   const [startFloor, setStartFloor] = useState(formData.moveDetails.floors.start)
   const [endFloor, setEndFloor] = useState(formData.moveDetails.floors.end)
@@ -53,9 +56,18 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
     return valid
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      updateFormData({
+      setIsProcessing(true)
+      try {
+        // Simulera distansberäkning om adresser har ändrats
+        if (startAddress && endAddress) {
+          setIsLoadingDistance(true)
+          await new Promise(resolve => setTimeout(resolve, 500))
+          setIsLoadingDistance(false)
+        }
+        
+        updateFormData({
         moveDetails: {
           moveType,
           startAddress,
@@ -77,7 +89,10 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
           hasBalcony,
         },
       })
-      nextStep()
+        nextStep()
+      } finally {
+        setIsProcessing(false)
+      }
     }
   }
 
@@ -89,32 +104,35 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Typ av flytt</label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div
-              className={`moving-type-card ${moveType === "local" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveType === "local" ? "selected" : ""}`}
               onClick={() => setMoveType("local")}
             >
               <div className="card-icon">🏙️</div>
               <h3>Lokalflytt</h3>
               <p>Inom samma stad</p>
-            </div>
+            </button>
 
-            <div
-              className={`moving-type-card ${moveType === "distance" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveType === "distance" ? "selected" : ""}`}
               onClick={() => setMoveType("distance")}
             >
               <div className="card-icon">🚚</div>
               <h3>Distansflytt</h3>
               <p>Mellan städer i Sverige</p>
-            </div>
+            </button>
 
-            <div
-              className={`moving-type-card ${moveType === "international" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveType === "international" ? "selected" : ""}`}
               onClick={() => setMoveType("international")}
             >
               <div className="card-icon">✈️</div>
               <h3>Utlandsflytt</h3>
               <p>Till eller från utlandet</p>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -125,7 +143,7 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
               type="text"
               value={startAddress}
               onChange={(e) => setStartAddress(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
               placeholder="Gatuadress, postnummer, ort"
             />
             {errors.startAddress && <p className="text-red-500 text-sm mt-1">{errors.startAddress}</p>}
@@ -137,7 +155,7 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
               type="text"
               value={endAddress}
               onChange={(e) => setEndAddress(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
               placeholder="Gatuadress, postnummer, ort"
             />
             {errors.endAddress && <p className="text-red-500 text-sm mt-1">{errors.endAddress}</p>}
@@ -150,7 +168,8 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
             type="date"
             value={moveDate}
             onChange={(e) => setMoveDate(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            min={new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString().split('T')[0]}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
           />
           {errors.moveDate && <p className="text-red-500 text-sm mt-1">{errors.moveDate}</p>}
         </div>
@@ -158,41 +177,45 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Storlek på flytt</label>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div
-              className={`moving-type-card ${moveSize === "small" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveSize === "small" ? "selected" : ""}`}
               onClick={() => setMoveSize("small")}
             >
               <div className="card-icon">🏠</div>
               <h3>Liten</h3>
               <p>1 rum</p>
-            </div>
+            </button>
 
-            <div
-              className={`moving-type-card ${moveSize === "medium" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveSize === "medium" ? "selected" : ""}`}
               onClick={() => setMoveSize("medium")}
             >
               <div className="card-icon">🏡</div>
               <h3>Mellan</h3>
               <p>2-3 rum</p>
-            </div>
+            </button>
 
-            <div
-              className={`moving-type-card ${moveSize === "large" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveSize === "large" ? "selected" : ""}`}
               onClick={() => setMoveSize("large")}
             >
               <div className="card-icon">🏘️</div>
               <h3>Stor</h3>
               <p>4+ rum</p>
-            </div>
+            </button>
 
-            <div
-              className={`moving-type-card ${moveSize === "office" ? "selected" : ""}`}
+            <button
+              type="button"
+              className={`moving-type-card min-h-[120px] cursor-pointer ${moveSize === "office" ? "selected" : ""}`}
               onClick={() => setMoveSize("office")}
             >
               <div className="card-icon">🏢</div>
               <h3>Kontor</h3>
               <p>Företagsflytt</p>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -205,7 +228,7 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
               <select
                 value={startFloor}
                 onChange={(e) => setStartFloor(Number(e.target.value))}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
               >
                 <option value={0}>Bottenvåning</option>
                 <option value={1}>1:a våningen</option>
@@ -236,7 +259,7 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
                 value={startParkingDistance}
                 onChange={(e) => setStartParkingDistance(Number(e.target.value))}
                 min={0}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
               />
             </div>
           </div>
@@ -249,7 +272,7 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
               <select
                 value={endFloor}
                 onChange={(e) => setEndFloor(Number(e.target.value))}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
               >
                 <option value={0}>Bottenvåning</option>
                 <option value={1}>1:a våningen</option>
@@ -280,7 +303,7 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
                 value={endParkingDistance}
                 onChange={(e) => setEndParkingDistance(Number(e.target.value))}
                 min={0}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
               />
             </div>
           </div>
@@ -300,15 +323,22 @@ export default function Step2MovingInfo({ formData, updateFormData, nextStep, pr
         </div>
       </div>
 
-      <div className="flex justify-between mt-6">
+      <div className="step-form-navigation">
         <button
           onClick={prevStep}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 min-h-[44px] min-w-[100px]"
+          disabled={isProcessing}
         >
           Tillbaka
         </button>
-        <button onClick={handleSubmit} className="next-button">
-          Nästa steg
+        <button 
+          onClick={handleSubmit} 
+          className="next-button min-h-[44px] min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
+          disabled={isProcessing}
+        >
+          <ButtonLoadingSpinner loading={isProcessing} loadingText="Beräknar...">
+            Nästa steg
+          </ButtonLoadingSpinner>
         </button>
       </div>
     </div>

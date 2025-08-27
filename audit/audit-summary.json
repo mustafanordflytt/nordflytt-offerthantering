@@ -1,0 +1,30 @@
+{
+  "auditDate": "2025-07-25T13:51:43.963Z",
+  "totalPages": 3,
+  "totalErrors": 0,
+  "totalSuccesses": 0,
+  "healthScore": 0,
+  "criticalPages": [],
+  "workingPages": [],
+  "topErrors": [
+    {
+      "error": "page.waitForTimeout is not a function",
+      "count": 1
+    },
+    {
+      "error": "No element found for selector",
+      "count": 1
+    },
+    {
+      "error": "SyntaxError",
+      "count": 1
+    }
+  ],
+  "recommendations": [
+    "Fix critical pages first",
+    "Implement proper form validation",
+    "Add error boundaries",
+    "Improve mobile responsiveness",
+    "Optimize page load times"
+  ]
+}

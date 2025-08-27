@@ -1,0 +1,558 @@
+[
+  {
+    "id": "TC001",
+    "title": "Multi-step Booking Form - Normal Flow",
+    "description": "Verify the multi-step booking form allows a customer to successfully complete a booking with valid data, including real-time price calculation, address autocompletion, and volume estimation.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the booking form URL"
+      },
+      {
+        "type": "action",
+        "description": "Select customer type"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid contact information"
+      },
+      {
+        "type": "action",
+        "description": "Select moving service type"
+      },
+      {
+        "type": "action",
+        "description": "Input move details including origin and destination addresses using address autocomplete"
+      },
+      {
+        "type": "action",
+        "description": "Select inventory items and additional services"
+      },
+      {
+        "type": "action",
+        "description": "Verify volume estimation and RUT deduction calculations are updated in real-time"
+      },
+      {
+        "type": "action",
+        "description": "Review summary and pricing details"
+      },
+      {
+        "type": "action",
+        "description": "Confirm and submit booking"
+      },
+      {
+        "type": "assertion",
+        "description": "Booking is completed successfully with correct price and move details"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Multi-step Booking Form - Address Autocomplete Edge Case",
+    "description": "Validate that the address autocomplete handles invalid or incomplete addresses gracefully and provides appropriate user feedback.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the booking form"
+      },
+      {
+        "type": "action",
+        "description": "Enter partial or incorrectly spelled address into the origin field"
+      },
+      {
+        "type": "assertion",
+        "description": "Autocomplete suggestions appear relevant and are updated dynamically"
+      },
+      {
+        "type": "action",
+        "description": "Select an invalid address from suggestions or attempt to proceed without selecting"
+      },
+      {
+        "type": "assertion",
+        "description": "Form displays validation error preventing progression to next step"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Offer Viewer - Accept Offer and Payment Processing",
+    "description": "Verify that a customer can view an offer, inspect price breakdown including RUT deductions, accept the offer, and complete payment via integrated payment system.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access the offer viewer page with a valid booking ID"
+      },
+      {
+        "type": "assertion",
+        "description": "Offer details, timeline visualization, and price breakdown with RUT deductions are displayed accurately"
+      },
+      {
+        "type": "action",
+        "description": "Interact with service selections (e.g., toggle additional services)"
+      },
+      {
+        "type": "assertion",
+        "description": "Price breakdown updates accordingly in real-time"
+      },
+      {
+        "type": "action",
+        "description": "Click the accept offer button"
+      },
+      {
+        "type": "action",
+        "description": "Complete payment using the direct payment integration (Swish)"
+      },
+      {
+        "type": "assertion",
+        "description": "Payment is processed successfully and confirmation is shown"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Offer Viewer - Decline Offer",
+    "description": "Test that a customer can decline an offer and appropriate system updates occur including status change and notification triggers.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to offer viewer page for a pending offer"
+      },
+      {
+        "type": "action",
+        "description": "Click on the decline offer button"
+      },
+      {
+        "type": "assertion",
+        "description": "Offer status updates to declined and user receives confirmation"
+      },
+      {
+        "type": "assertion",
+        "description": "System triggers appropriate workflow notifications to sales/admin teams"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Post-booking Order Confirmation Page Verification",
+    "description": "Verify that after booking confirmation, the order confirmation page displays correctly with all required job details, timeline, additional services, and customer support chat functionality.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete a booking and arrive at the order confirmation page"
+      },
+      {
+        "type": "assertion",
+        "description": "Order summary with all job details is displayed accurately"
+      },
+      {
+        "type": "assertion",
+        "description": "Timeline visualization matches booking data"
+      },
+      {
+        "type": "assertion",
+        "description": "Additional services selected during booking are displayed correctly"
+      },
+      {
+        "type": "assertion",
+        "description": "Customer support chat widget is accessible and functional"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Staff App - Phone + OTP Authentication - Success",
+    "description": "Ensure that staff can log in to the mobile staff app using their phone number and OTP successfully.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the staff mobile app login screen"
+      },
+      {
+        "type": "action",
+        "description": "Enter a registered phone number"
+      },
+      {
+        "type": "action",
+        "description": "Request OTP and receive it"
+      },
+      {
+        "type": "action",
+        "description": "Enter valid OTP"
+      },
+      {
+        "type": "assertion",
+        "description": "User is logged in successfully and redirected to the job dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Staff App - Phone + OTP Authentication - Invalid OTP",
+    "description": "Validate that entering an invalid or expired OTP during staff login prevents access and shows appropriate error messages.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open staff app and enter registered phone number"
+      },
+      {
+        "type": "action",
+        "description": "Request OTP"
+      },
+      {
+        "type": "action",
+        "description": "Enter an incorrect OTP"
+      },
+      {
+        "type": "assertion",
+        "description": "Login is denied and clear error message is shown"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Staff App - Job Dashboard Filters and Views",
+    "description": "Test that staff can toggle between card and list views on the job dashboard, and apply filters and searches to find relevant jobs effectively.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login to staff app"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the job dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Switch between card view and list view"
+      },
+      {
+        "type": "assertion",
+        "description": "Jobs are displayed correctly in both views"
+      },
+      {
+        "type": "action",
+        "description": "Apply filters for job status and search by job ID or customer name"
+      },
+      {
+        "type": "assertion",
+        "description": "Filtered and searched jobs match criteria accurately"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Staff App - Pre-Start Checklist Completion",
+    "description": "Verify that staff can complete the pre-start checklist modal for jobs, and that completion status is saved and reflected correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open a job from the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Open the PreStartChecklistModal"
+      },
+      {
+        "type": "action",
+        "description": "Complete all required checklist items"
+      },
+      {
+        "type": "action",
+        "description": "Submit the checklist"
+      },
+      {
+        "type": "assertion",
+        "description": "Checklist completion is saved and visible in job details"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Staff App - Photo Documentation Upload",
+    "description": "Ensure staff members can take photos as part of the photo reminder modal and upload them successfully to Supabase Storage with correct tagging.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start a job and open the PhotoReminderModal"
+      },
+      {
+        "type": "action",
+        "description": "Use device camera to take required photos"
+      },
+      {
+        "type": "action",
+        "description": "Upload photos"
+      },
+      {
+        "type": "assertion",
+        "description": "Photos appear in job details and are stored securely in Supabase Storage"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "CRM System - Lead Pipeline AI Scoring Accuracy",
+    "description": "Verify that the AI lead scoring feature assigns scores to leads and that the predicted lead quality accuracy is at least 85%.",
+    "category": "ai integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access CRM leads module"
+      },
+      {
+        "type": "action",
+        "description": "Create or import multiple leads with known outcome data"
+      },
+      {
+        "type": "action",
+        "description": "Trigger AI lead scoring process"
+      },
+      {
+        "type": "assertion",
+        "description": "Lead scores are assigned and can be compared against actual lead conversion data"
+      },
+      {
+        "type": "assertion",
+        "description": "AI scoring accuracy meets or exceeds 85% prediction threshold"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Automation Workflow - Booking Confirmation Trigger",
+    "description": "Validate that upon booking confirmation, the automation workflow triggers lead assignment, invoicing, and follow-up email generation without errors.",
+    "category": "automation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete a booking and confirm it"
+      },
+      {
+        "type": "assertion",
+        "description": "Lead assignment automation assigns correct sales user"
+      },
+      {
+        "type": "assertion",
+        "description": "Invoice is generated and accessible in CRM finance module"
+      },
+      {
+        "type": "assertion",
+        "description": "Follow-up email is sent to customer"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Security - Role-Based Access Control Enforcement",
+    "description": "Verify that role-based access control prevents unauthorized users from accessing restricted CRM modules and sensitive data.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as a user with limited permissions"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access restricted modules like financial reports or staff management"
+      },
+      {
+        "type": "assertion",
+        "description": "Access is denied and user receives proper error or redirection"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Security - Input Validation and XSS Protection on Booking Form",
+    "description": "Test that the booking form input fields validate inputs correctly and protect against cross-site scripting (XSS) attacks.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Enter malicious XSS payloads into booking form fields such as contact name and addresses"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to submit the form"
+      },
+      {
+        "type": "assertion",
+        "description": "Form rejects malicious inputs or sanitizes them to prevent script execution"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "PWA Offline Support Functionality",
+    "description": "Verify that when offline, the PWA service worker caches necessary assets and data allowing staff app and booking form to maintain basic functionality.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Load the booking form or staff app online to cache assets"
+      },
+      {
+        "type": "action",
+        "description": "Switch device/network to offline mode"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to navigate the booking form or staff app pages cached"
+      },
+      {
+        "type": "assertion",
+        "description": "The application loads and allows entry where applicable, queuing data for sync when online"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Push Notifications - Receipt and Interaction in Staff App",
+    "description": "Check that push notifications are received by the staff app for job updates and that interacting with notifications navigates to correct screens.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger a job status update for a staff user"
+      },
+      {
+        "type": "assertion",
+        "description": "Staff app receives push notification"
+      },
+      {
+        "type": "action",
+        "description": "Click the push notification"
+      },
+      {
+        "type": "assertion",
+        "description": "App navigates to the relevant job detail or dashboard screen"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "CRM - Staff Onboarding Workflow Completion",
+    "description": "Verify that HR staff can complete the staff onboarding workflow including contract generation, asset assignment, and performance tracking setup.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access the staff management module and initiate new employee onboarding"
+      },
+      {
+        "type": "action",
+        "description": "Fill out required information and generate employment contract"
+      },
+      {
+        "type": "assertion",
+        "description": "Generated contract is accurate and stored in the document module"
+      },
+      {
+        "type": "action",
+        "description": "Assign assets and complete onboarding checklist"
+      },
+      {
+        "type": "assertion",
+        "description": "Employee record reflects assigned assets and onboarding status"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "AI Operational Route Optimization Accuracy",
+    "description": "Test that the operational AI module provides route optimization solutions improving estimated travel time and costs, with at least 85% accuracy compared to baseline routes.",
+    "category": "ai integration",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Import or select multiple jobs scheduled for a day"
+      },
+      {
+        "type": "action",
+        "description": "Request AI to optimize routes for staff assignments"
+      },
+      {
+        "type": "assertion",
+        "description": "Route suggestions reduce estimated travel time or distance compared to initial assignments"
+      },
+      {
+        "type": "assertion",
+        "description": "Optimization accuracy meets or exceeds 85% benchmark against historical data"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Analytics Dashboard Data Accuracy and Visualization",
+    "description": "Verify all analytics and reporting dashboards in the CRM display accurate, real-time data with correct charts and metrics reflecting backend data.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access the business overview and financial metrics dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Displayed key metrics and charts match data from database within acceptable latency"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to staff performance and customer insights dashboards"
+      },
+      {
+        "type": "assertion",
+        "description": "Charts and tables render correctly with proper legends and updated data"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Performance - AI Chatbot Response Time",
+    "description": "Ensure that the AI-powered customer service chatbot responds to queries within 2 seconds, maintaining a smooth user experience.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the customer service chatbot on booking confirmation or offer viewer page"
+      },
+      {
+        "type": "action",
+        "description": "Send a typical customer query to the chatbot"
+      },
+      {
+        "type": "assertion",
+        "description": "Chatbot responds within 2 seconds with relevant, context-aware reply"
+      }
+    ]
+  }
+]

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Optimering Manual Test</title>
+</head>
+<body>
+    <h1>Manual Test for AI-Optimering Page</h1>
+    <p>Open this file in your browser and click the button to navigate to the AI-Optimering page.</p>
+    
+    <button onclick="window.open('http://localhost:3001/crm/ai-optimering', '_blank')" style="
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #002A5C;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    ">
+        Open AI-Optimering Page
+    </button>
+    
+    <hr>
+    
+    <h2>Expected Features:</h2>
+    <ul>
+        <li>✅ Command Center tab (first tab, default)</li>
+        <li>✅ Decision Stream tab (second tab)</li>
+        <li>✅ 10 total tabs instead of 7</li>
+        <li>✅ Mode switcher in Command Center (Suggest/Auto/Full)</li>
+        <li>✅ Glassmorphism design in Command Center</li>
+        <li>✅ AI Module Coordination in Autonoma Beslut tab</li>
+        <li>✅ Enhanced Learning Insights tab</li>
+        <li>✅ System Configuration tab (last tab)</li>
+    </ul>
+    
+    <h2>If page shows "Loading..." forever:</h2>
+    <p>The component should fall back to mock data after API errors. Check browser console for errors.</p>
+</body>
+</html>

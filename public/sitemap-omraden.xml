@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Stockholm Area Pages - Critical for Local SEO -->
+  
+  <!-- Main Stockholm Page -->
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Stockholm Inner City Areas -->
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm/ostermalm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm/vasastan</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm/sodermalm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm/kungsholmen</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm/gamla-stan</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/stockholm/norrmalm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Popular Stockholm Suburbs -->
+  <url>
+    <loc>https://nordflytt.se/omraden/bromma</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/taby</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/lidingo</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/solna</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/sundbyberg</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/nacka</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/sollentuna</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/danderyd</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Southern Stockholm Areas -->
+  <url>
+    <loc>https://nordflytt.se/omraden/huddinge</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/botkyrka</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/haninge</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/tyreso</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Northern Stockholm Areas -->
+  <url>
+    <loc>https://nordflytt.se/omraden/jarfalla</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/upplands-vasby</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/sigtuna</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/omraden/vallentuna</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Service + Area Combination Pages -->
+  <url>
+    <loc>https://nordflytt.se/flyttfirma-stockholm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/kontorsflytt-stockholm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nordflytt.se/flyttstadning-stockholm</loc>
+    <lastmod>2025-01-31T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

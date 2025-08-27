@@ -1,0 +1,1337 @@
+"use client"
+
+import type React from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Home, Clock, Building2, MapPin, AlertTriangle, Info, Warehouse, Calendar } from "lucide-react"
+import { LargeElevatorIcon, SmallElevatorIcon, StairsIcon } from "./icons"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { FormField, MoveFormData } from '../../types/form'
+import { Suspense } from "react"
+import { ErrorBoundary } from "./ErrorBoundary"
+import { LoadingSpinner } from "./ui/LoadingSpinner"
+import { toast } from "sonner"
+
+interface ElevatorOption {
+  id: "big" | "small" | "none"
+  icon: React.ReactNode
+  label: string
+  description: string
+}
+
+const elevatorOptions: ElevatorOption[] = [
+  {
+    id: "big",
+    icon: <LargeElevatorIcon />,
+    label: "Fullstor hiss",
+    description: "Rymmer större möbler",
+  },
+  {
+    id: "small",
+    icon: <SmallElevatorIcon />,
+    label: "Liten hiss",
+    description: "Kan rymma mindre föremål",
+  },
+  {
+    id: "none",
+    icon: <StairsIcon />,
+    label: "Ingen hiss",
+    description: "Bärs via trappor",
+  },
+]
+
+interface Step4Props {
+  formData: MoveFormData
+  handleChange: (field: FormField, value: string | boolean) => void
+  handleSubmit: (e: React.FormEvent) => void
+  formSubmitted: boolean
+  invalidFields: FormField[]
+  prevStep: () => void
+}
+
+const timeOptions = [
+  {
+    id: "08:00",
+    icon: <Clock className="w-6 h-6" />,
+    label: "08:00",
+    time: "08:00",
+  },
+  {
+    id: "14:00",
+    icon: <Clock className="w-6 h-6" />,
+    label: "14:00",
+    time: "14:00",
+  },
+  {
+    id: "flexible",
+    icon: <Clock className="w-6 h-6" />,
+    label: "Valfri tid",
+    description: "(mellan 08:00-18:00)",
+    tooltip: "Om du väljer detta alternativ, planerar vi in flytten under dagen och återkommer med en exakt tid.",
+    time: "Flexibel",
+  },
+]
+
+// Component to render required field indicator
+const RequiredFieldIndicator = () => (
+  <span className="text-red-500 ml-1" aria-label="Obligatoriskt fält">
+    *
+  </span>
+)
+
+// 🔧 FÖRBÄTTRAD DEBOUNCE - Mer aggressiv för att stoppa API-spam
+function debounce<F extends (...args: any[]) => any>(func: F, wait: number = 800) {
+  let timeout: NodeJS.Timeout | null = null
+  let lastExecuted = 0
+
+  return ((...args: Parameters<F>) => {
+    const now = Date.now()
+    
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+
+    // 🔧 LÄNGRE VÄNTETID - Förhindra för många anrop
+    if (now - lastExecuted > wait * 3) { // Ändrat från *2 till *3
+      lastExecuted = now
+      func(...args)
+      return
+    }
+
+    timeout = setTimeout(() => {
+      lastExecuted = Date.now()
+      func(...args)
+    }, wait)
+  }) as F
+}
+
+export default function Step4MoveDetails({ 
+  formData, 
+  handleChange, 
+  handleSubmit: propHandleSubmit,
+  formSubmitted,
+  invalidFields,
+  prevStep,
+}: Step4Props) {
+  // Lokal state för omedelbar UI-feedback
+  const [localStartAddress, setLocalStartAddress] = useState(formData.startAddress || "")
+  const [localEndAddress, setLocalEndAddress] = useState(formData.endAddress || "")
+  const [localStartLivingArea, setLocalStartLivingArea] = useState(formData.startLivingArea || "")
+  const [localEndLivingArea, setLocalEndLivingArea] = useState(formData.endLivingArea || "")
+  const [localStartParkingDistance, setLocalStartParkingDistance] = useState(formData.startParkingDistance || "")
+  const [localEndParkingDistance, setLocalEndParkingDistance] = useState(formData.endParkingDistance || "")
+  
+  const [startElevator, setStartElevator] = useState<"big" | "small" | "none">(formData.startElevator)
+  const [endElevator, setEndElevator] = useState<"big" | "small" | "none">(formData.endElevator)
+  const [distanceError, setDistanceError] = useState<string | null>(null)
+  const [isCalculating, setIsCalculating] = useState(false)
+  const [isFlexibleDate, setIsFlexibleDate] = useState<boolean>(formData.flexibleMoveDate || false)
+  const [isClient, setIsClient] = useState(false)
+  
+  // 🔧 ANTI-SPAM STATE - Förhindra onödiga API-anrop
+  const [lastDistanceCalculation, setLastDistanceCalculation] = useState<string>("")
+  const [isFormValidating, setIsFormValidating] = useState(false)
+  
+  // Alternativ för flexibelt datumintervall
+  const flexibleDateOptions = [
+    { value: "1-3", label: "1–3 dagar" },
+    { value: "7-14", label: "1–2 veckor" },
+    { value: "14-21", label: "2–3 veckor" },
+    { value: "28-42", label: "4–6 veckor" },
+  ]
+
+  // Get today's date in YYYY-MM-DD format for min date attribute
+  const today = new Date().toISOString().split("T")[0]
+
+  // Add required refs for input elements
+  const fromInputRef = useRef<HTMLInputElement>(null);
+  const toInputRef = useRef<HTMLInputElement>(null);
+  
+  // Handle client-side initialization
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // 🔧 ELIMINERAT DEBUG SPAM - Bara vid submit
+  useEffect(() => {
+    if (formSubmitted && formData.startPropertyType && formData.endPropertyType) {
+      console.log('🔍 Step4 Property Types:', {
+        start: formData.startPropertyType,
+        end: formData.endPropertyType,
+        startFloor: formData.startFloor,
+        endFloor: formData.endFloor,
+      });
+    }
+  }, [formSubmitted]); // ← Bara vid submit
+
+  // Sync lokal state med form data vid ändringar utifrån
+  useEffect(() => {
+    setLocalStartAddress(formData.startAddress || "")
+    setLocalEndAddress(formData.endAddress || "")
+    setLocalStartLivingArea(formData.startLivingArea || "")
+    setLocalEndLivingArea(formData.endLivingArea || "")
+    setLocalStartParkingDistance(formData.startParkingDistance || "")
+    setLocalEndParkingDistance(formData.endParkingDistance || "")
+  }, [formData.startAddress, formData.endAddress, formData.startLivingArea, formData.endLivingArea, formData.startParkingDistance, formData.endParkingDistance])
+
+  // Initialize parking distances if they don't exist
+  useEffect(() => {
+    if (formData.startParkingDistance === undefined && formData.endParkingDistance === undefined) {
+      if ((formData as any).parkingDistance) {
+        handleChange("startParkingDistance", (formData as any).parkingDistance)
+        handleChange("endParkingDistance", (formData as any).parkingDistance)
+        handleChange("parkingDistance", "")
+      } else {
+        handleChange("startParkingDistance", "")
+        handleChange("endParkingDistance", "")
+      }
+    }
+  }, []) // ← Tom dependency array - bara körs en gång
+
+  // 🔧 OPTIMERAD AUTO-VÅNING - Bara vid property type ändringar och bara en gång
+  useEffect(() => {
+    let shouldUpdate = false;
+    
+    if (formData.startPropertyType === "house" || formData.startPropertyType === "storage") {
+      if (startElevator !== "none") {
+        setStartElevator("none");
+        handleChange("startElevator", "none");
+        shouldUpdate = true;
+      }
+      if (!formData.startFloor || formData.startFloor === "") {
+        handleChange("startFloor", "0");
+        shouldUpdate = true;
+      }
+    }
+    
+    if (formData.endPropertyType === "house" || formData.endPropertyType === "storage") {
+      if (endElevator !== "none") {
+        setEndElevator("none");
+        handleChange("endElevator", "none");
+        shouldUpdate = true;
+      }
+      if (!formData.endFloor || formData.endFloor === "") {
+        handleChange("endFloor", "0");
+        shouldUpdate = true;
+      }
+    } else if (formData.endPropertyType === "apartment" && !formData.endElevator) {
+      setEndElevator("big");
+      handleChange("endElevator", "big");
+      shouldUpdate = true;
+    }
+    
+    if (shouldUpdate) {
+      console.log('🏠 Auto-setting elevator/floor for property types');
+    }
+  }, [formData.startPropertyType, formData.endPropertyType]); // ← Bara vid property type ändringar
+
+  // 🔧 FIXAD DEBOUNCED UPDATES - Längre delays för mindre API-spam
+  const debouncedUpdateStartAddress = useCallback(
+    debounce((value: string) => {
+      handleChange('startAddress', value)
+    }, 1000), // Ökad från 600ms till 1000ms
+    [handleChange]
+  )
+
+  const debouncedUpdateEndAddress = useCallback(
+    debounce((value: string) => {
+      handleChange('endAddress', value)
+    }, 1000), // Ökad från 600ms till 1000ms
+    [handleChange]
+  )
+
+  // 🔧 ANTI-SPAM VOLYMBERÄKNING - Bara körs när nödvändigt
+  const debouncedUpdateStartLivingArea = useCallback(
+    debounce((value: string) => {
+      // 🔧 BARA UPPDATERA OM VÄRDET VERKLIGEN ÄNDRATS
+      if (value === formData.startLivingArea) return;
+      
+      handleChange('startLivingArea', value)
+      
+      if (value) {
+        const livingArea = Number(value) || 0;
+        let estimatedVolume = 0;
+        
+        if (formData.startPropertyType === "storage") {
+          estimatedVolume = Math.ceil(livingArea * 3.0);
+          console.log('📦 Magasin volymberäkning:', {
+            kvm: livingArea,
+            takhöjd: '3.0m',
+            beräknadVolym: estimatedVolume,
+            formel: `${livingArea} kvm × 3.0m = ${estimatedVolume} m³`
+          });
+        }
+        else if (formData.startPropertyType === "house") {
+          if (livingArea <= 50) estimatedVolume = 19;
+          else if (livingArea <= 70) estimatedVolume = 28;
+          else if (livingArea <= 100) estimatedVolume = 38;
+          else if (livingArea <= 130) estimatedVolume = 57;
+          else if (livingArea <= 160) estimatedVolume = 76;
+          else if (livingArea <= 200) estimatedVolume = 95;
+          else estimatedVolume = Math.ceil(livingArea * 0.5);
+          
+          console.log('🏘️ Villa/Radhus volymberäkning:', {
+            kvm: livingArea,
+            beräknadVolym: estimatedVolume,
+            volymPerKvm: (estimatedVolume / livingArea).toFixed(2) + ' m³/kvm'
+          });
+        }
+        else {
+          if (livingArea <= 20) estimatedVolume = 5;
+          else if (livingArea <= 35) estimatedVolume = 10;
+          else if (livingArea <= 50) estimatedVolume = 15;
+          else if (livingArea <= 70) estimatedVolume = 19;
+          else if (livingArea <= 95) estimatedVolume = 28;
+          else if (livingArea <= 130) estimatedVolume = 38;
+          else estimatedVolume = 57;
+          
+          console.log('🏢 Lägenhet volymberäkning:', {
+            kvm: livingArea,
+            beräknadVolym: estimatedVolume,
+            volymPerKvm: (estimatedVolume / livingArea).toFixed(2) + ' m³/kvm'
+          });
+        }
+
+        handleChange('estimatedVolume', estimatedVolume.toString());
+      }
+    }, 1200), // Längre debounce för volymberäkning
+    [handleChange, formData.startPropertyType, formData.startLivingArea]
+  )
+
+  const debouncedUpdateEndLivingArea = useCallback(
+    debounce((value: string) => {
+      handleChange('endLivingArea', value)
+    }, 800),
+    [handleChange]
+  )
+
+  const debouncedUpdateStartParkingDistance = useCallback(
+    debounce((value: string) => {
+      handleChange('startParkingDistance', value)
+    }, 600),
+    [handleChange]
+  )
+
+  const debouncedUpdateEndParkingDistance = useCallback(
+    debounce((value: string) => {
+      handleChange('endParkingDistance', value)
+    }, 600),
+    [handleChange]
+  )
+
+  // 🔧 ANTI-SPAM DISTANCE CALCULATION - Bara körs när verkligen nödvändigt
+  const debouncedCalculateDistance = useCallback(
+    debounce(async (origin: string, destination: string) => {
+      // 🔧 FÖRHINDRA SAMMA BERÄKNING FLERA GÅNGER
+      const distanceKey = `${origin}-${destination}`;
+      if (distanceKey === lastDistanceCalculation) {
+        console.log('🚫 Duplicate distance calculation prevented');
+        return;
+      }
+      
+      if (!origin || !destination || origin.length < 15 || destination.length < 15) return;
+      
+      setLastDistanceCalculation(distanceKey);
+      setIsCalculating(true);
+      setDistanceError(null);
+      
+      try {
+        if (!window.google?.maps) {
+          throw new Error('Google Maps inte laddat');
+        }
+
+        const service = new google.maps.DistanceMatrixService();
+        const response = await new Promise<google.maps.DistanceMatrixResponse>((resolve, reject) => {
+          service.getDistanceMatrix(
+            {
+              origins: [origin],
+              destinations: [destination],
+              travelMode: google.maps.TravelMode.DRIVING,
+              unitSystem: google.maps.UnitSystem.METRIC,
+            },
+            (response, status) => {
+              if (status === 'OK' && response?.rows[0]?.elements[0]?.status === 'OK') {
+                resolve(response);
+              } else {
+                reject(new Error(`Kunde inte beräkna avståndet: ${status}`));
+              }
+            }
+          );
+        });
+
+        const distanceResult = response.rows[0].elements[0];
+        if (distanceResult?.distance) {
+          const distanceInKm = (distanceResult.distance.value / 1000).toFixed(1);
+          
+          // 🔍 DEBUG: Logga vad Google Maps returnerar
+          console.log('🔍 GOOGLE MAPS DEBUG:', {
+            origin: origin,
+            destination: destination,
+            distanceValue: distanceResult.distance.value,
+            distanceText: distanceResult.distance.text,
+            distanceInKm: distanceInKm,
+            durationText: distanceResult.duration?.text
+          });
+          
+          handleChange('calculatedDistance', distanceInKm);
+          setDistanceError(null);
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Ett okänt fel uppstod';
+        console.error('Error calculating distance:', errorMessage);
+        setDistanceError(errorMessage);
+      } finally {
+        setIsCalculating(false);
+      }
+    }, 3000), // 🔧 MYCKET LÄNGRE DEBOUNCE för distance - från 2000ms till 3000ms
+    [handleChange, lastDistanceCalculation]
+  );
+
+  // 🔧 OPTIMERAD GOOGLE MAPS - Förhindra re-initialization spam
+  const initializeGoogleMapsServices = useCallback(() => {
+    if (typeof window === "undefined" || !window.google?.maps) return;
+
+    try {
+      const autocompleteOptions = {
+        types: ["address"],
+        componentRestrictions: { country: "se" },
+        fields: ["formatted_address", "geometry"],
+      };
+
+      // 🔧 FÖRHINDRA DUPLICATE INITIALIZATION
+      if (!fromInputRef.current?.hasAttribute('data-google-autocomplete')) {
+        const autocompleteStartAddress = new google.maps.places.Autocomplete(
+          fromInputRef.current as HTMLInputElement,
+          autocompleteOptions
+        );
+        
+        fromInputRef.current?.setAttribute('data-google-autocomplete', 'true');
+        
+        autocompleteStartAddress.addListener("place_changed", () => {
+          const place = autocompleteStartAddress.getPlace();
+          if (place?.formatted_address) {
+            setLocalStartAddress(place.formatted_address);
+            handleChange('startAddress', place.formatted_address);
+            
+            // 🔧 BARA BERÄKNA DISTANCE OM BÅDA ADRESSER ÄR LÄNGRE ÄN 15 TECKEN
+            if (localEndAddress?.length > 15) {
+              debouncedCalculateDistance(place.formatted_address, localEndAddress);
+            }
+          }
+        });
+      }
+      
+      if (!toInputRef.current?.hasAttribute('data-google-autocomplete')) {
+        const autocompleteEndAddress = new google.maps.places.Autocomplete(
+          toInputRef.current as HTMLInputElement,
+          autocompleteOptions
+        );
+        
+        toInputRef.current?.setAttribute('data-google-autocomplete', 'true');
+        
+        autocompleteEndAddress.addListener("place_changed", () => {
+          const place = autocompleteEndAddress.getPlace();
+          if (place?.formatted_address) {
+            setLocalEndAddress(place.formatted_address);
+            handleChange('endAddress', place.formatted_address);
+            
+            // 🔧 BARA BERÄKNA DISTANCE OM BÅDA ADRESSER ÄR LÄNGRE ÄN 15 TECKEN
+            if (localStartAddress?.length > 15) {
+              debouncedCalculateDistance(localStartAddress, place.formatted_address);
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error initializing Google Maps services:", error);
+    }
+  }, [handleChange, localStartAddress, localEndAddress, debouncedCalculateDistance]);
+
+  // Initialize Google Maps services
+  useEffect(() => {
+    if (!isClient) return;
+    
+    if (window.google && window.google.maps) {
+      initializeGoogleMapsServices();
+    }
+  }, [isClient, initializeGoogleMapsServices]);
+
+  // 🔧 ANTI-SPAM FORM VALIDATION - Bara körs när nödvändigt
+  const isFormValid = useMemo(() => {
+    // 🔧 FÖRHINDRA SPAM UNDER VALIDATION
+    if (isFormValidating) return false;
+    
+    const requiredFields = [
+      !!formData.startAddress && formData.startAddress.length > 5,
+      !!formData.endAddress && formData.endAddress.length > 5,
+      !!formData.startLivingArea && Number(formData.startLivingArea) > 0,
+      !!formData.endLivingArea && Number(formData.endLivingArea) > 0,
+      formData.startParkingDistance !== undefined && formData.startParkingDistance !== "",
+      formData.endParkingDistance !== undefined && formData.endParkingDistance !== "",
+      !!formData.startPropertyType,
+      !!formData.endPropertyType,
+      !!formData.moveTime,
+    ];
+
+    // Datum-validering
+    if (!isFlexibleDate) {
+      requiredFields.push(!!formData.moveDate);
+    } else {
+      requiredFields.push(!!formData.flexibleDateRange);
+    }
+
+    // Våningsvalidering
+    if (formData.startPropertyType === "apartment") {
+      requiredFields.push(!!formData.startFloor && formData.startFloor !== "" && formData.startFloor !== "0");
+    } else {
+      requiredFields.push(true);
+    }
+
+    if (formData.endPropertyType === "apartment") {
+      requiredFields.push(!!formData.endFloor && formData.endFloor !== "" && formData.endFloor !== "0");
+    } else {
+      requiredFields.push(true);
+    }
+
+    const isValid = requiredFields.every(field => field);
+    
+    // 🔧 BEGRÄNSAD LOGGING - bara vid form submit
+    if (formSubmitted && !isValid) {
+      console.log('🔍 Form Validation Failed:', {
+        isValid,
+        startFloor: formData.startFloor,
+        endFloor: formData.endFloor,
+        startPropertyType: formData.startPropertyType,
+        endPropertyType: formData.endPropertyType,
+      });
+    }
+    
+    return isValid;
+  }, [
+    // 🔧 OPTIMERADE DEPENDENCIES - färre fält
+    formData.startAddress,
+    formData.endAddress,
+    formData.startPropertyType,
+    formData.endPropertyType,
+    formData.moveTime,
+    formData.moveDate,
+    formData.startFloor,
+    formData.endFloor,
+    formData.startLivingArea,
+    formData.endLivingArea,
+    formData.startParkingDistance,
+    formData.endParkingDistance,
+    isFlexibleDate,
+    formData.flexibleDateRange,
+    formSubmitted,
+    isFormValidating, // ← Anti-spam flag
+  ]);
+
+  // 🔧 ANTI-SPAM INPUT HANDLERS
+  const handleStartAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalStartAddress(value);
+    debouncedUpdateStartAddress(value);
+
+    // 🔧 BARA BERÄKNA DISTANCE OM BÅDA ADRESSER ÄR RIKTIGT LÅNGA
+    if (value.length > 15 && localEndAddress?.length > 15) {
+      debouncedCalculateDistance(value, localEndAddress);
+    }
+  }, [localEndAddress, debouncedUpdateStartAddress, debouncedCalculateDistance]);
+
+  const handleEndAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalEndAddress(value);
+    debouncedUpdateEndAddress(value);
+
+    if (value.length > 15 && localStartAddress?.length > 15) {
+      debouncedCalculateDistance(localStartAddress, value);
+    }
+  }, [localStartAddress, debouncedUpdateEndAddress, debouncedCalculateDistance]);
+
+  const handleStartLivingAreaChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,4}$/.test(value)) {
+      setLocalStartLivingArea(value);
+      debouncedUpdateStartLivingArea(value);
+    }
+  }, [debouncedUpdateStartLivingArea]);
+
+  const handleEndLivingAreaChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d{0,4}$/.test(value)) {
+      setLocalEndLivingArea(value);
+      debouncedUpdateEndLivingArea(value);
+    }
+  }, [debouncedUpdateEndLivingArea]);
+
+  const handleStartParkingDistanceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setLocalStartParkingDistance(value);
+      debouncedUpdateStartParkingDistance(value);
+    }
+  }, [debouncedUpdateStartParkingDistance]);
+
+  const handleEndParkingDistanceChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setLocalEndParkingDistance(value);
+      debouncedUpdateEndParkingDistance(value);
+    }
+  }, [debouncedUpdateEndParkingDistance]);
+
+  const handleElevatorChange = useCallback((location: "start" | "end", value: "big" | "small" | "none") => {
+    console.log('🔍 Hiss vald:', location, value);
+    if (location === "start") {
+      setStartElevator(value)
+      handleChange("startElevator", value)
+    } else {
+      setEndElevator(value)
+      handleChange("endElevator", value)
+    }
+  }, [handleChange]);
+
+  const handlePropertyTypeChange = useCallback((location: "start" | "end", value: string) => {
+    console.log('🔍 Bostadstyp vald:', location, value);
+    
+    if (location === "start") {
+      handleChange("startPropertyType", value);
+    } else {
+      handleChange("endPropertyType", value);
+    }
+  }, [handleChange]);
+
+  const handleTimeChange = useCallback((time: string) => {
+    console.log('🔍 Tid vald:', time);
+    handleChange("moveTime", time);
+  }, [handleChange]);
+
+  const handleFlexibleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = e.target.checked;
+    console.log('🔍 Flexibelt datum:', isChecked);
+    setIsFlexibleDate(isChecked);
+    handleChange("flexibleMoveDate", isChecked.toString());
+    
+    if (!isChecked) {
+      handleChange("flexibleDateRange", "");
+    } else if (flexibleDateOptions.length > 0) {
+      handleChange("flexibleDateRange", flexibleDateOptions[0].value);
+    }
+  }, [handleChange, flexibleDateOptions]);
+  
+  const handleFlexibleDateRangeChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log('🔍 Flexibelt datum intervall:', e.target.value);
+    handleChange("flexibleDateRange", e.target.value);
+  }, [handleChange]);
+
+  // 🔧 ANTI-SPAM FORM SUBMIT
+  const handleFormSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // 🔧 FÖRHINDRA SPAM UNDER VALIDATION
+    if (isFormValidating) return;
+    setIsFormValidating(true);
+    
+    console.log('🔍 Form submission försök:', {
+      isFormValid,
+      formData: {
+        startPropertyType: formData.startPropertyType,
+        endPropertyType: formData.endPropertyType,
+        moveTime: formData.moveTime,
+        moveDate: formData.moveDate,
+        startFloor: formData.startFloor,
+        endFloor: formData.endFloor,
+      }
+    });
+    
+    if (!isFormValid) {
+      toast.error("Vänligen fyll i alla obligatoriska fält", {
+        description: "Kontrollera fälten markerade med *"
+      });
+      setIsFormValidating(false);
+      return;
+    }
+
+    try {
+      // Beräkna avstånd om det behövs
+      if (formData.startAddress && formData.endAddress && (!formData.calculatedDistance || formData.calculatedDistance === "0")) {
+        await debouncedCalculateDistance(formData.startAddress, formData.endAddress);
+      }
+    
+      // Vänta lite för att säkerställa att state har uppdaterats
+      await new Promise(resolve => setTimeout(resolve, 100));
+    
+      console.log('🚀 Calling propHandleSubmit');
+      propHandleSubmit(e);
+    } catch (error) {
+      // 🔧 FIXAT: Bara visa fel om det är ett RIKTIGT fel, inte normala navigation-fel
+      console.error('Error in form submission:', error);
+      
+      // Kontrollera om det är ett navigation/router-fel (normalt) eller riktigt fel
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      if (!errorMessage.includes('navigation') && 
+          !errorMessage.includes('redirect') && 
+          !errorMessage.includes('abort') &&
+          !errorMessage.includes('cancelled')) {
+        
+        toast.error("Ett fel uppstod", {
+          description: "Kunde inte skicka formuläret. Vänligen försök igen."
+        });
+      } else {
+        console.log('🔍 Navigation error (normal):', errorMessage);
+      }
+    } finally {
+      setIsFormValidating(false);
+    }
+  }, [formData, isFormValid, propHandleSubmit, debouncedCalculateDistance, isFormValidating]);
+
+  // Render placeholder tills client-side kod är redo
+  if (!isClient) {
+    return null;
+  }
+
+  return (
+    <ErrorBoundary
+  onError={(error, errorInfo) => {
+    console.error("Step4MoveDetails error:", error, errorInfo);
+    
+    // 🔧 TILLFÄLLIGT AVAKTIVERAT: Kommenterat bort all toast-felhantering
+    // eftersom React DOM-fel inte påverkar funktionaliteten
+    
+    // const errorMessage = error.message || String(error);
+    // 
+    // if (!errorMessage.includes('removeChild') && 
+    //     !errorMessage.includes('insertBefore') &&
+    //     !errorMessage.includes('NotFoundError') &&
+    //     !errorMessage.includes('DOM')) {
+    //   
+    //   toast.error("Ett fel uppstod", {
+    //     description: "Det uppstod ett problem med formuläret. Vänligen försök igen."
+    //   });
+    // } else {
+    //   console.log('🔍 DOM error caught (non-critical):', errorMessage);
+    // }
+  }}
+>
+    
+      <Suspense 
+        fallback={
+          <div className="w-full h-[600px] flex items-center justify-center">
+            <LoadingSpinner size="lg" message="Laddar formulär..." />
+          </div>
+        }
+      >
+        <form 
+          className="w-full max-w-4xl mx-auto"
+          onSubmit={handleFormSubmit}
+        >
+          <div className="space-y-6">
+            {/* Date and Time section */}
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <Calendar className="w-5 h-5 text-gray-600" />
+                <h3 className="text-xl font-semibold">Datum och tid</h3>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                {/* Datum och flexibilitet */}
+                <div className="w-full">
+                  <div className="flex items-center mb-2">
+                    <Label htmlFor="move-date" className="text-sm font-medium">
+                      Flyttdatum
+                    </Label>
+                    <RequiredFieldIndicator />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="w-[200px] text-sm">Välj önskat datum för din flytt.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Input
+                      id="move-date"
+                      type="date"
+                      className={`${
+                        formSubmitted && invalidFields.includes("moveDate") ? "border-red-500" : "border-gray-300"
+                      } ${isFlexibleDate ? "opacity-50" : ""}`}
+                      value={formData.moveDate}
+                      onChange={(e) => handleChange("moveDate", e.target.value)}
+                      min={today}
+                      disabled={isFlexibleDate}
+                    />
+
+                    {formSubmitted && invalidFields.includes("moveDate") && !isFlexibleDate && (
+                      <p className="text-red-500 text-xs mt-1">Välj ett flyttdatum</p>
+                    )}
+                    
+                    <div className="flex flex-col space-y-2 mt-3">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          id="flexible-date"
+                          type="checkbox"
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          checked={isFlexibleDate}
+                          onChange={handleFlexibleDateChange}
+                        />
+                        <Label htmlFor="flexible-date" className="text-sm font-medium">
+                          Flexibelt flyttdatum
+                        </Label>
+                      </div>
+                      
+                      {isFlexibleDate && (
+                        <div className="ml-6 mt-2">
+                          <Label htmlFor="flexible-date-range" className="text-sm font-medium mb-1 block">
+                            Välj tidsintervall
+                          </Label>
+                          <select
+                            id="flexible-date-range"
+                            className={`w-full rounded-md border ${
+                              formSubmitted && invalidFields.includes("flexibleDateRange") 
+                              ? "border-red-500" 
+                              : "border-gray-300"
+                            } p-2 text-sm`}
+                            value={formData.flexibleDateRange || ""}
+                            onChange={handleFlexibleDateRangeChange}
+                          >
+                            <option value="" disabled>Välj intervall</option>
+                            {flexibleDateOptions.map(option => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                          {formSubmitted && invalidFields.includes("flexibleDateRange") && (
+                            <p className="text-red-500 text-xs mt-1">Välj ett tidsintervall</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tidval */}
+                <div className="w-full mt-4">
+                  <Label className="mb-2 block">
+                    Flyttid <RequiredFieldIndicator />
+                  </Label>
+                  <div className="grid grid-cols-3 gap-4 mt-2">
+                    {timeOptions.map((option) => (
+                      <Card
+                        key={option.id}
+                        className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
+                          formData.moveTime === option.time ? "border-2 border-blue-500 bg-blue-50 shadow-lg" : ""
+                        }`}
+                        onClick={() => handleTimeChange(option.time)}
+                      >
+                        <div className="flex flex-col items-center text-center">
+                          <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
+                            {option.icon}
+                          </div>
+                          <span className="text-sm font-medium">{option.label}</span>
+                          {option.description && (
+                            <span className="text-xs text-muted-foreground mt-1">{option.description}</span>
+                          )}
+                          {option.tooltip && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Info className="w-4 h-4 mt-1 text-gray-400 cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="max-w-xs">{option.tooltip}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Från-adress kortet */}
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="flex items-center text-blue-600 font-medium mb-4">
+                <MapPin className="h-5 w-5 mr-2" />
+                Från adress
+              </h3>
+              
+              <div className="mb-4">
+                <Label htmlFor="startAddress" className="flex items-center mb-1">
+                  Adress <RequiredFieldIndicator />
+                </Label>
+                <div className="relative">
+                  <Input
+                    ref={fromInputRef}
+                    id="startAddress"
+                    value={localStartAddress}
+                    onChange={handleStartAddressChange}
+                    placeholder="Sök efter en adress..."
+                    className={formSubmitted && invalidFields.includes("startAddress") ? "border-red-500" : ""}
+                    required
+                  />
+                </div>
+                {formSubmitted && invalidFields.includes("startAddress") && (
+                  <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                )}
+              </div>
+
+              <div className="mt-4">
+                <Label>
+                  Bostadstyp <RequiredFieldIndicator />
+                </Label>
+                <div className="grid grid-cols-3 gap-4 mt-2">
+                  {[
+                    {
+                      id: "apartment",
+                      icon: <Building2 className="w-6 h-6" />,
+                      label: "Lägenhet",
+                      description: "Vanlig bostad i flerfamiljshus",
+                    },
+                    {
+                      id: "house",
+                      icon: <Home className="w-6 h-6" />,
+                      label: "Villa/Radhus",
+                      description: "Fristående eller radhus",
+                    },
+                    {
+                      id: "storage",
+                      icon: <Warehouse className="w-6 h-6" />,
+                      label: "Magasin",
+                      description: "Lager, förråd eller förvaring",
+                    },
+                  ].map((option) => (
+                    <Card
+                      key={option.id}
+                      className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
+                        formData.startPropertyType === option.id ? "border-2 border-blue-500 bg-blue-50 shadow-lg" : ""
+                      }`}
+                      onClick={() => handlePropertyTypeChange("start", option.id)}
+                    >
+                      <div className="flex flex-col items-center text-center">
+                        <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
+                          {option.icon}
+                        </div>
+                        <span className="text-sm font-medium">{option.label}</span>
+                        <span className="text-xs text-muted-foreground mt-1">{option.description}</span>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <Label htmlFor="startLivingArea" className="flex items-center">
+                  {formData.startPropertyType === "storage" ? "Yta (kvm)" : "Boarea (kvm)"} <RequiredFieldIndicator />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">
+                          {formData.startPropertyType === "storage" 
+                            ? "Ange ytan i kvadratmeter för magasinet. Vi räknar automatiskt med 3 meters takhöjd." 
+                            : "Ange boarean i kvadratmeter för en mer exakt offert."
+                          }
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
+                <Input
+                  type="number"
+                  id="startLivingArea"
+                  value={localStartLivingArea}
+                  onChange={handleStartLivingAreaChange}
+                  className={`w-full mt-1 bg-[#F7F7F7] ${formSubmitted && invalidFields.includes("startLivingArea") ? "border-red-500" : ""}`}
+                  placeholder={formData.startPropertyType === "storage" ? "Ex: 12 kvm" : "Ex: 85 kvm"}
+                  max="9999"
+                  required
+                />
+                {formSubmitted && invalidFields.includes("startLivingArea") && (
+                  <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                )}
+              </div>
+
+              {formData.startPropertyType === "apartment" && (
+                <>
+                  <div className="mt-4">
+                    <Label>Hiss</Label>
+                    <div className="grid grid-cols-3 gap-4 mt-2">
+                      {elevatorOptions.map((option) => (
+                        <Card
+                          key={`start-${option.id}`}
+                          className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
+                            startElevator === option.id ? "border-2 border-blue-500 bg-blue-50 shadow-md" : ""
+                          }`}
+                          onClick={() => handleElevatorChange("start", option.id)}
+                        >
+                          <div className="flex flex-col items-center text-center">
+                            <div className="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full text-primary mb-2">
+                              {option.icon}
+                            </div>
+                            <span className="text-sm font-medium">{option.label}</span>
+                            <span className="text-xs text-muted-foreground">{option.description}</span>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <Label htmlFor="startFloor" className="flex items-center">
+                      Våning <RequiredFieldIndicator />
+                    </Label>
+                    <Input
+                      type="number"
+                      id="startFloor"
+                      value={formData.startFloor}
+                      onChange={(e) => handleChange("startFloor", e.target.value)}
+                      className={`w-full mt-1 ${formSubmitted && invalidFields.includes("startFloor") ? "border-red-500" : ""}`}
+                      min="0"
+                      required
+                    />
+                    {formSubmitted && invalidFields.includes("startFloor") && (
+                      <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                    )}
+                  </div>
+
+                  <div className="mt-4">
+                    <Label htmlFor="startDoorCode">Portkod</Label>
+                    <Input
+                      type="text"
+                      id="startDoorCode"
+                      value={formData.startDoorCode}
+                      onChange={(e) => handleChange("startDoorCode", e.target.value)}
+                      className="w-full mt-1"
+                      placeholder="Ex: A123 eller 4567"
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="mt-4">
+                <Label htmlFor="startParkingDistance" className="flex items-center">
+                  Avstånd till parkering (Från adress) <RequiredFieldIndicator />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Ange ungefärligt avstånd från flyttbilen till entrén på denna adress.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
+                <Input
+                  type="number"
+                  id="startParkingDistance"
+                  value={localStartParkingDistance}
+                  onChange={handleStartParkingDistanceChange}
+                  className={`w-full mt-1 ${formSubmitted && invalidFields.includes("startParkingDistance") ? "border-red-500" : ""}`}
+                  min="0"
+                  placeholder="Ange avstånd i meter"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">Ange 0 om flyttbilen kan parkera precis vid entrén.</p>
+                <div className="flex items-center mt-2">
+                  <input
+                    type="checkbox"
+                    id="startParkingUnknown"
+                    className="mr-2"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setLocalStartParkingDistance("10")
+                        handleChange("startParkingDistance", "10")
+                      } else if (formData.startParkingDistance === "10") {
+                        setLocalStartParkingDistance("")
+                        handleChange("startParkingDistance", "")
+                      }
+                    }}
+                  />
+                  <label htmlFor="startParkingUnknown" className="text-sm">
+                    Jag vet inte avståndet, använd standardvärde (10 meter)
+                  </label>
+                </div>
+                {formSubmitted && invalidFields.includes("startParkingDistance") && (
+                  <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Till-adress kortet */}
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="flex items-center text-blue-600 font-medium mb-4">
+                <MapPin className="h-5 w-5 mr-2" />
+                Till adress
+              </h3>
+              
+              <div className="mb-4">
+                <Label htmlFor="endAddress" className="flex items-center mb-1">
+                  Adress <RequiredFieldIndicator />
+                </Label>
+                <div className="relative">
+                  <Input
+                    ref={toInputRef}
+                    id="endAddress"
+                    value={localEndAddress}
+                    onChange={handleEndAddressChange}
+                    placeholder="Sök efter en adress..."
+                    className={formSubmitted && invalidFields.includes("endAddress") ? "border-red-500" : ""}
+                    required
+                  />
+                </div>
+                {formSubmitted && invalidFields.includes("endAddress") && (
+                  <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                )}
+
+                {isCalculating && (
+                  <div className="flex items-center text-blue-600 mt-2">
+                    <div className="animate-spin mr-2 h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                    Beräknar avstånd...
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4">
+                <Label>
+                  Bostadstyp <RequiredFieldIndicator />
+                </Label>
+                <div className="grid grid-cols-3 gap-4 mt-2">
+                  {[
+                    {
+                      id: "apartment",
+                      icon: <Building2 className="w-6 h-6" />,
+                      label: "Lägenhet",
+                      description: "Vanlig bostad i flerfamiljshus",
+                    },
+                    {
+                      id: "house",
+                      icon: <Home className="w-6 h-6" />,
+                      label: "Villa/Radhus",
+                      description: "Fristående eller radhus",
+                    },
+                    {
+                      id: "storage",
+                      icon: <Warehouse className="w-6 h-6" />,
+                      label: "Magasin",
+                      description: "Lager, förråd eller förvaring",
+                    },
+                  ].map((option) => (
+                    <Card
+                      key={option.id}
+                      className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
+                        formData.endPropertyType === option.id ? "border-2 border-blue-500 bg-blue-50 shadow-lg" : ""
+                      }`}
+                      onClick={() => handlePropertyTypeChange("end", option.id)}
+                    >
+                      <div className="flex flex-col items-center text-center">
+                        <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-full text-blue-600 mb-2">
+                          {option.icon}
+                        </div>
+                        <span className="text-sm font-medium">{option.label}</span>
+                        <span className="text-xs text-muted-foreground mt-1">{option.description}</span>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <Label htmlFor="endLivingArea" className="flex items-center">
+                  {formData.endPropertyType === "storage" ? "Yta (kvm)" : "Boarea (kvm)"} <RequiredFieldIndicator />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">
+                          {formData.endPropertyType === "storage" 
+                            ? "Ange ytan i kvadratmeter för magasinet. Vi räknar automatiskt med 3 meters takhöjd." 
+                            : "Ange boarean i kvadratmeter för en mer exakt offert."
+                          }
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
+                <Input
+                  type="number"
+                  id="endLivingArea"
+                  value={localEndLivingArea}
+                  onChange={handleEndLivingAreaChange}
+                  className={`w-full mt-1 bg-[#F7F7F7] ${formSubmitted && invalidFields.includes("endLivingArea") ? "border-red-500" : ""}`}
+                  placeholder={formData.endPropertyType === "storage" ? "Ex: 12 kvm" : "Ex: 85 kvm"}
+                  max="9999"
+                  required
+                />
+                {formSubmitted && invalidFields.includes("endLivingArea") && (
+                  <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                )}
+              </div>
+
+              {formData.endPropertyType === "apartment" && (
+                <>
+                  <div className="mt-4">
+                    <Label>Hiss</Label>
+                    <div className="grid grid-cols-3 gap-4 mt-2">
+                      {elevatorOptions.map((option) => (
+                        <Card
+                          key={`end-${option.id}`}
+                          className={`p-4 cursor-pointer hover:border-accent/50 transition-all ${
+                            endElevator === option.id ? "border-2 border-blue-500 bg-blue-50 shadow-md" : ""
+                          }`}
+                          onClick={() => handleElevatorChange("end", option.id)}
+                        >
+                          <div className="flex flex-col items-center text-center">
+                            <div className="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full text-primary mb-2">
+                              {option.icon}
+                            </div>
+                            <span className="text-sm font-medium">{option.label}</span>
+                            <span className="text-xs text-muted-foreground">{option.description}</span>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <Label htmlFor="endFloor" className="flex items-center">
+                      Våning <RequiredFieldIndicator />
+                    </Label>
+                    <Input
+                      type="number"
+                      id="endFloor"
+                      value={formData.endFloor}
+                      onChange={(e) => handleChange("endFloor", e.target.value)}
+                      className={`w-full mt-1 ${formSubmitted && invalidFields.includes("endFloor") ? "border-red-500" : ""}`}
+                      min="0"
+                      required
+                    />
+                    {formSubmitted && invalidFields.includes("endFloor") && (
+                      <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                    )}
+                  </div>
+
+                  <div className="mt-4">
+                    <Label htmlFor="endDoorCode">Portkod</Label>
+                    <Input
+                      type="text"
+                      id="endDoorCode"
+                      value={formData.endDoorCode}
+                      onChange={(e) => handleChange("endDoorCode", e.target.value)}
+                      className="w-full mt-1"
+                      placeholder="Ex: A123 eller 4567"
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="mt-4">
+                <Label htmlFor="endParkingDistance" className="flex items-center">
+                  Avstånd till parkering (Till adress) <RequiredFieldIndicator />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="w-4 h-4 ml-1 text-gray-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Ange ungefärligt avstånd från flyttbilen till entrén på denna adress.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
+                <Input
+                  type="number"
+                  id="endParkingDistance"
+                  value={localEndParkingDistance}
+                  onChange={handleEndParkingDistanceChange}
+                  className={`w-full mt-1 ${formSubmitted && invalidFields.includes("endParkingDistance") ? "border-red-500" : ""}`}
+                  min="0"
+                  placeholder="Ange avstånd i meter"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">Ange 0 om flyttbilen kan parkera precis vid entrén.</p>
+                <div className="flex items-center mt-2">
+                  <input
+                    type="checkbox"
+                    id="endParkingUnknown"
+                    className="mr-2"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setLocalEndParkingDistance("10")
+                        handleChange("endParkingDistance", "10")
+                      } else if (formData.endParkingDistance === "10") {
+                        setLocalEndParkingDistance("")
+                        handleChange("endParkingDistance", "")
+                      }
+                    }}
+                  />
+                  <label htmlFor="endParkingUnknown" className="text-sm">
+                    Jag vet inte avståndet, använd standardvärde (10 meter)
+                  </label>
+                </div>
+                {formSubmitted && invalidFields.includes("endParkingDistance") && (
+                  <p className="text-red-500 text-xs mt-1">Detta fält måste fyllas i för att fortsätta.</p>
+                )}
+              </div>
+            </div>
+
+            {/* 🔧 DEBUG INFO - Begränsad till development mode */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="bg-gray-100 p-4 rounded-lg text-xs">
+                <h4 className="font-bold mb-2">🔍 Debug Info:</h4>
+                <p>Form Valid: {isFormValid ? '✅' : '❌'}</p>
+                <p>Start Property Type: {formData.startPropertyType || 'Ej vald'}</p>
+                <p>End Property Type: {formData.endPropertyType || 'Ej vald'}</p>
+                <p>Move Time: {formData.moveTime || 'Ej vald'}</p>
+                <p>Move Date: {formData.moveDate || 'Ej vald'}</p>
+                <p>Distance: {formData.calculatedDistance || 'Ej beräknad'}</p>
+                <p>API Spam Protection: {isFormValidating ? '🔒 BLOCKED' : '🟢 ACTIVE'}</p>
+              </div>
+            )}
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={prevStep}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Tillbaka
+              </button>
+              <button
+                type="submit"
+                disabled={!isFormValid || isFormValidating}
+                className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${
+                  isFormValid && !isFormValidating
+                    ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' 
+                    : 'bg-gray-400 cursor-not-allowed'
+                }`}
+              >
+                {isFormValidating ? 'Validerar...' : 'Nästa'}
+                {(!isFormValid || isFormValidating) && (
+                  <AlertTriangle className="ml-2 w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
+      </Suspense>
+    </ErrorBoundary>
+  )
+}

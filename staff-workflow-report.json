@@ -1,0 +1,72 @@
+{
+  "testDate": "2025-08-04T15:12:24.156Z",
+  "testName": "Staff Workflow - Starta Batmans Packhjälp",
+  "device": "iPhone 12 Pro (390x844)",
+  "steps": [
+    {
+      "step": 1,
+      "name": "Login",
+      "status": "PASS"
+    },
+    {
+      "step": 2,
+      "name": "Dashboard",
+      "status": "PASS"
+    },
+    {
+      "step": 3,
+      "name": "Hitta jobb",
+      "status": "FAIL"
+    },
+    {
+      "step": 4,
+      "name": "Starta tid",
+      "status": "PASS"
+    },
+    {
+      "step": 5,
+      "name": "GPS-hantering",
+      "status": "FAIL"
+    },
+    {
+      "step": 6,
+      "name": "Jobb aktivt",
+      "status": "PASS"
+    }
+  ],
+  "screenshots": [
+    {
+      "filename": "workflow-1-login.png",
+      "description": "Staff login sida",
+      "timestamp": "2025-08-04T15:12:17.626Z"
+    },
+    {
+      "filename": "workflow-2-dashboard.png",
+      "description": "Dashboard efter inloggning",
+      "timestamp": "2025-08-04T15:12:20.999Z"
+    },
+    {
+      "filename": "workflow-3-job-found.png",
+      "description": "Batman packhjälp hittad",
+      "timestamp": "2025-08-04T15:12:22.066Z"
+    },
+    {
+      "filename": "workflow-4-gps-modal.png",
+      "description": "GPS bekräftelse modal",
+      "timestamp": "2025-08-04T15:12:24.126Z"
+    },
+    {
+      "filename": "workflow-5-job-active.png",
+      "description": "Jobbet är aktivt",
+      "timestamp": "2025-08-04T15:12:24.155Z"
+    }
+  ],
+  "issues": [
+    "GPS-modal saknar \"Starta ändå\" knapp"
+  ],
+  "recommendations": [
+    "Gör \"Starta ändå\" till primär knapp (grön/stor)",
+    "Visa tydlig feedback när jobb startar",
+    "Lägg till laddningsindikator vid GPS-kontroll"
+  ]
+}

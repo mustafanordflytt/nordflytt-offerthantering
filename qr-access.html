@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordflytt App - QR Access</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #002A5C; color: white; text-align: center; padding: 30px;
+        }
+        .qr-container { 
+            background: white; padding: 30px; border-radius: 20px; 
+            margin: 20px auto; max-width: 400px; color: #002A5C;
+        }
+        .url-box { 
+            background: #f0f8ff; border: 2px solid #3182ce; 
+            padding: 15px; border-radius: 8px; margin: 20px 0;
+            font-family: monospace; font-size: 16px;
+        }
+        .backup-info {
+            background: rgba(255,255,255,0.1); padding: 20px; 
+            border-radius: 10px; margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚛 Nordflytt Staff App</h1>
+    
+    <div class="qr-container">
+        <h2>📱 Skanna QR-kod</h2>
+        <div id="qrcode"></div>
+        
+        <div class="url-box">
+            http://172.20.10.3:6666
+        </div>
+        
+        <p><strong>Instruktioner:</strong><br>
+        1. Öppna kamera på telefon<br>
+        2. Skanna QR-koden ovan<br>
+        3. Tryck på länken som visas</p>
+    </div>
+    
+    <div class="backup-info">
+        <h3>🔧 Om QR inte fungerar:</h3>
+        <p>
+        1. Skriv URL:en manuellt: <strong>172.20.10.3:6666</strong><br>
+        2. Kontrollera att Personal Hotspot är PÅ<br>
+        3. Kontrollera att Mac är ansluten till iPhone hotspot<br>
+        4. Prova stänga av/på WiFi på iPhone
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        const url = 'http://172.20.10.3:6666';
+        QRCode.toCanvas(document.getElementById('qrcode'), url, {
+            width: 200,
+            margin: 2,
+            color: {
+                dark: '#002A5C',
+                light: '#FFFFFF'
+            }
+        }, function (error) {
+            if (error) {
+                document.getElementById('qrcode').innerHTML = 
+                    '<p style="color: red;">QR-kod kunde inte genereras</p>';
+            }
+        });
+    </script>
+</body>
+</html>

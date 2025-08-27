@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Staff Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .info {
+            color: blue;
+        }
+        button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+        .fix-button {
+            background: #28a745;
+        }
+        .fix-button:hover {
+            background: #218838;
+        }
+        pre {
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Staff Dashboard Debug</h1>
+    
+    <div class="test-section">
+        <h2>1. Kontrollera autentisering</h2>
+        <button onclick="checkAuth()">Testa Auth</button>
+        <button onclick="loginAsTestUser()" class="fix-button">Logga in som testanvändare</button>
+        <div id="auth-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Testa API-anslutning</h2>
+        <button onclick="testAPI()">Testa Jobs API</button>
+        <div id="api-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Kontrollera localStorage</h2>
+        <button onclick="checkLocalStorage()">Visa localStorage</button>
+        <button onclick="clearLocalStorage()" style="background: #dc3545;">Rensa localStorage</button>
+        <div id="storage-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Console Logs</h2>
+        <button onclick="showConsoleLogs()">Visa Console</button>
+        <div id="console-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Quick Fix</h2>
+        <button onclick="quickFix()" class="fix-button">🔧 Snabbfix - Logga in och gå till dashboard</button>
+    </div>
+
+    <script>
+        // Capture console logs
+        const consoleLogs = [];
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        console.log = function(...args) {
+            consoleLogs.push({type: 'log', message: args.join(' '), time: new Date().toLocaleTimeString()});
+            originalLog.apply(console, args);
+        };
+        console.error = function(...args) {
+            consoleLogs.push({type: 'error', message: args.join(' '), time: new Date().toLocaleTimeString()});
+            originalError.apply(console, args);
+        };
+        console.warn = function(...args) {
+            consoleLogs.push({type: 'warn', message: args.join(' '), time: new Date().toLocaleTimeString()});
+            originalWarn.apply(console, args);
+        };
+
+        function checkAuth() {
+            const authResult = document.getElementById('auth-result');
+            const staffAuth = localStorage.getItem('staff_auth');
+            
+            if (staffAuth) {
+                try {
+                    const auth = JSON.parse(staffAuth);
+                    authResult.innerHTML = `
+                        <p class="success">✅ Autentiserad som: ${auth.name || 'Okänd'}</p>
+                        <p class="info">ID: ${auth.id}</p>
+                        <p class="info">Role: ${auth.role || 'staff'}</p>
+                        <pre>${JSON.stringify(auth, null, 2)}</pre>
+                    `;
+                } catch (e) {
+                    authResult.innerHTML = '<p class="error">❌ Fel vid parsing av auth data</p>';
+                }
+            } else {
+                authResult.innerHTML = `
+                    <p class="error">❌ Ingen autentisering hittad</p>
+                    <p class="info">💡 Tips: Klicka på "Logga in som testanvändare" för att fixa detta</p>
+                `;
+            }
+        }
+
+        function loginAsTestUser() {
+            const testUser = {
+                id: 'test-001',
+                name: 'Test Användare',
+                role: 'staff',
+                avatar: '👷',
+                loggedInAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('staff_auth', JSON.stringify(testUser));
+            document.getElementById('auth-result').innerHTML = `
+                <p class="success">✅ Inloggad som testanvändare!</p>
+                <p class="info">Nu kan du gå till dashboard: <a href="/staff/dashboard">/staff/dashboard</a></p>
+            `;
+        }
+
+        async function testAPI() {
+            const apiResult = document.getElementById('api-result');
+            apiResult.innerHTML = '<p class="info">Testar API...</p>';
+            
+            try {
+                const response = await fetch('/api/staff/jobs', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    apiResult.innerHTML = `
+                        <p class="success">✅ API fungerar!</p>
+                        <p class="info">Antal jobb: ${data.jobs?.length || 0}</p>
+                        <pre>${JSON.stringify(data.jobs?.slice(0, 2), null, 2)}</pre>
+                    `;
+                } else {
+                    apiResult.innerHTML = `
+                        <p class="error">❌ API returnerade fel</p>
+                        <p class="error">Status: ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                apiResult.innerHTML = `
+                    <p class="error">❌ Kunde inte ansluta till API</p>
+                    <p class="error">${error.message}</p>
+                    <p class="info">💡 Tips: Kontrollera att servern körs (npm run dev)</p>
+                `;
+            }
+        }
+
+        function checkLocalStorage() {
+            const storageResult = document.getElementById('storage-result');
+            const items = {};
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    items[key] = JSON.parse(localStorage.getItem(key));
+                } catch {
+                    items[key] = localStorage.getItem(key);
+                }
+            }
+            
+            storageResult.innerHTML = `
+                <p class="info">localStorage innehåll:</p>
+                <pre>${JSON.stringify(items, null, 2)}</pre>
+            `;
+        }
+
+        function clearLocalStorage() {
+            if (confirm('Är du säker? Detta raderar all lokal data.')) {
+                localStorage.clear();
+                document.getElementById('storage-result').innerHTML = '<p class="success">✅ localStorage rensat</p>';
+            }
+        }
+
+        function showConsoleLogs() {
+            const consoleResult = document.getElementById('console-result');
+            
+            if (consoleLogs.length === 0) {
+                consoleResult.innerHTML = '<p class="info">Inga console logs än...</p>';
+            } else {
+                const logsHtml = consoleLogs.map(log => {
+                    const className = log.type === 'error' ? 'error' : log.type === 'warn' ? 'warn' : 'info';
+                    return `<p class="${className}">[${log.time}] ${log.type.toUpperCase()}: ${log.message}</p>`;
+                }).join('');
+                
+                consoleResult.innerHTML = logsHtml;
+            }
+        }
+
+        async function quickFix() {
+            // Step 1: Login
+            loginAsTestUser();
+            
+            // Step 2: Wait a bit
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Step 3: Redirect to dashboard
+            window.location.href = '/staff/dashboard';
+        }
+
+        // Auto-check on load
+        window.onload = () => {
+            checkAuth();
+            showConsoleLogs();
+        };
+
+        // Update console logs every second
+        setInterval(showConsoleLogs, 1000);
+    </script>
+</body>
+</html>

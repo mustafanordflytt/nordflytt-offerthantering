@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "customer multi step booking form functionality",
+    "description": "Verify that the multi-step booking form allows customers to select customer type, enter contact information, choose service types, specify move details and addresses, select inventory and additional services, and view a summary with real-time price calculation and address autocompletion."
+  },
+  {
+    "id": "TC002",
+    "title": "offer viewer interactive features",
+    "description": "Test the offer viewer page to ensure customers can interactively select services, view detailed price breakdowns including RUT deductions, visualize timelines, accept or decline offers, make direct payments, and use chat support."
+  },
+  {
+    "id": "TC003",
+    "title": "order confirmation page display",
+    "description": "Validate that the order confirmation page correctly displays the order summary, service details, timeline, additional services selected, and provides access to customer support chat."
+  },
+  {
+    "id": "TC004",
+    "title": "staff app authentication and dashboard",
+    "description": "Test the staff mobile app login using phone and OTP authentication, and verify that the dashboard displays today's jobs with card and list views, including filtering and searching capabilities."
+  },
+  {
+    "id": "TC005",
+    "title": "staff job management features",
+    "description": "Verify that staff can manage job statuses, complete pre-start checklists, log GPS locations, track time, take photo documentation, request additional services, adjust volumes, and use the smart pricing engine within the job management module."
+  },
+  {
+    "id": "TC006",
+    "title": "crm dashboard and modules functionality",
+    "description": "Ensure the CRM dashboard and modules for customers, leads, jobs, staff, calendar, offers, finance, inventory, and suppliers function correctly with accurate data syncing and real-time updates."
+  },
+  {
+    "id": "TC007",
+    "title": "ai integration accuracy and features",
+    "description": "Test AI-powered features including customer service chatbot, lead scoring, price and route optimization, demand forecasting, and recruitment assistant Lowisa for accuracy and proper integration within the system."
+  },
+  {
+    "id": "TC008",
+    "title": "automation workflows execution",
+    "description": "Verify that automation workflows trigger correctly on booking confirmation, job completion, payment received, lead creation, and status changes, performing associated actions such as lead assignment, invoice generation, and follow-ups without errors."
+  },
+  {
+    "id": "TC009",
+    "title": "security controls enforcement",
+    "description": "Test security features including JWT and OTP authentication, BankID integration, input validation, data encryption, role-based access control, audit logging, and GDPR compliance."
+  },
+  {
+    "id": "TC010",
+    "title": "pwa features and offline support",
+    "description": "Validate PWA capabilities such as offline functionality with service worker caching, push notifications, app-like experience across devices, and responsive, touch-optimized design."
+  }
+]

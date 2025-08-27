@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nordflytt HTTPS Test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #002A5C;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #002A5C;
+        }
+        .button {
+            display: inline-block;
+            background: #002A5C;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 10px 10px 0;
+        }
+        .button:hover {
+            background: #003d7a;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Nordflytt HTTPS Kamera Test</h1>
+        
+        <div class="warning">
+            ⚠️ <strong>Problem:</strong> Ngrok visar en varningssida som blockerar CSS/JS
+        </div>
+        
+        <div class="step">
+            <h3>Steg 1: Öppna Staff App direkt</h3>
+            <p>Klicka på länkarna nedan för att öppna i nytt fönster (kringgår ngrok-varningen):</p>
+            <a href="https://a1fa6afed863.ngrok-free.app/staff" target="_blank" class="button">
+                👷 Staff Login
+            </a>
+            <a href="https://a1fa6afed863.ngrok-free.app/staff/dashboard" target="_blank" class="button">
+                📊 Staff Dashboard  
+            </a>
+        </div>
+        
+        <div class="step">
+            <h3>Steg 2: Om det fortfarande inte fungerar</h3>
+            <p>Prova att lägga till detta i URL:en: <code>?ngrok-skip-browser-warning=true</code></p>
+            <a href="https://a1fa6afed863.ngrok-free.app/staff?ngrok-skip-browser-warning=true" target="_blank" class="button">
+                🔧 Staff med skip parameter
+            </a>
+        </div>
+        
+        <div class="step">
+            <h3>Steg 3: Testa kameran</h3>
+            <ol>
+                <li>Logga in som testanvändare</li>
+                <li>Gå till Dashboard</li>
+                <li>Klicka "Ta foto" på ett jobb</li>
+                <li>Tillåt kameraåtkomst när webbläsaren frågar</li>
+                <li>Ta en testbild!</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <h3>Alternativ: Localtunnel (ingen varning)</h3>
+            <p>Om ngrok fortsätter ha problem, använd localtunnel istället:</p>
+            <code>npm install -g localtunnel && lt --port 3000</code>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"interface ProgressBarProps {
+interface ProgressBarProps {
   currentStep: number
   totalSteps: number
 }
@@ -15,4 +15,3 @@ export default function ProgressBar({ currentStep, totalSteps }: ProgressBarProp
     </div>
   )
 }
-"

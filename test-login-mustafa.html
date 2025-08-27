@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <title>Test Login - Mustafa</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .info {
+            background: #e0f2fe;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        .credentials {
+            margin: 0.5rem 0;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+        .button {
+            background: #002A5C;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .button:hover {
+            background: #001a42;
+        }
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Login - Mustafa</h1>
+        
+        <div class="info">
+            <h3>Dina inloggningsuppgifter:</h3>
+            <div class="credentials">
+                <span class="label">Email:</span> mustafa@nordflytt.se
+            </div>
+            <div class="credentials">
+                <span class="label">Lösenord:</span> mustafa123
+            </div>
+            <div class="credentials">
+                <span class="label">Roll:</span> Admin
+            </div>
+        </div>
+        
+        <button class="button" onclick="testLogin()">Testa Supabase Login</button>
+        <button class="button" onclick="window.location.href='/crm/login'">Gå till CRM Login</button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.1/+esm'
+        
+        const supabaseUrl = 'https://gindcnpiejkntkangpuc.supabase.co'
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpbmRjbnBpZWprbnRrYW5ncHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzMjM2ODYsImV4cCI6MjA1OTg5OTY4Nn0.uHo-Hhm9Rm3PMkpCH2t6PUV_dlRnf1ufVSXcWVc1tKg'
+        
+        const supabase = createClient(supabaseUrl, supabaseAnonKey)
+        
+        window.testLogin = async function() {
+            const statusEl = document.getElementById('status')
+            statusEl.style.display = 'block'
+            statusEl.className = 'status'
+            statusEl.innerHTML = 'Testar login...'
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: 'mustafa@nordflytt.se',
+                    password: 'mustafa123'
+                })
+                
+                if (error) {
+                    statusEl.className = 'status error'
+                    statusEl.innerHTML = `❌ Fel: ${error.message}`
+                    return
+                }
+                
+                if (data.user) {
+                    statusEl.className = 'status success'
+                    statusEl.innerHTML = `
+                        ✅ Login lyckades!<br>
+                        User ID: ${data.user.id}<br>
+                        Email: ${data.user.email}<br>
+                        Session: ${data.session ? 'Aktiv' : 'Ingen session'}
+                    `
+                    
+                    // Spara i localStorage för CRM
+                    const crmUser = {
+                        id: data.user.id,
+                        email: data.user.email,
+                        name: 'Mustafa Abdulkarim',
+                        role: 'admin'
+                    }
+                    localStorage.setItem('crm-user', JSON.stringify(crmUser))
+                    
+                    setTimeout(() => {
+                        window.location.href = '/crm/dashboard'
+                    }, 2000)
+                }
+            } catch (err) {
+                statusEl.className = 'status error'
+                statusEl.innerHTML = `❌ Oväntat fel: ${err.message}`
+            }
+        }
+    </script>
+</body>
+</html>

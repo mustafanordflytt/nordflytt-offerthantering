@@ -1,0 +1,522 @@
+{
+  "timestamp": "2025-07-27T09:20:38.180Z",
+  "modules": [
+    {
+      "path": "/crm/dashboard",
+      "buttons": [
+        {
+          "text": "Uppdatera",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 rounded-md px-3",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Auto-refresh PÅ",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-3",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Uppdatera",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 rounded-md px-3",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Ny Kund",
+          "className": "inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-4 py-2 w-full justify-start",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Ny Lead",
+          "className": "inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-4 py-2 w-full justify-start",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Nytt Uppdrag",
+          "className": "inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-4 py-2 w-full justify-start",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Nytt Ärende",
+          "className": "inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-4 py-2 w-full justify-start",
+          "id": "",
+          "visible": true
+        }
+      ],
+      "tabs": [
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "indeterminate",
+          "ariaSelected": null
+        }
+      ],
+      "forms": [],
+      "errors": []
+    },
+    {
+      "path": "/crm/kunder",
+      "buttons": [],
+      "tabs": [],
+      "forms": [],
+      "errors": [
+        "Navigation timeout of 30000 ms exceeded"
+      ]
+    },
+    {
+      "path": "/crm/leads",
+      "buttons": [
+        {
+          "text": "Ny Lead",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground h-11 px-4 py-2 bg-[#002A5C] hover:bg-[#001a42]",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Pipeline",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-3",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Lista",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 rounded-md px-3",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Alla Källor",
+          "className": "flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-48",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Alla",
+          "className": "flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-48",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Alla Leads",
+          "className": "flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-48",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Anna Svensson8 500 kradmin2025-07-15WebbplatsMedium",
+          "className": "",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-6 w-6 p-0",
+          "id": "radix-«r3»",
+          "visible": true
+        },
+        {
+          "text": "Erik Johansson AB25 000 kradmin2025-07-10ReferensHög",
+          "className": "",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-6 w-6 p-0",
+          "id": "radix-«r5»",
+          "visible": true
+        },
+        {
+          "text": "Maria Lindqvist12 000 kradmin2025-07-05MarknadsföringHög",
+          "className": "",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-6 w-6 p-0",
+          "id": "radix-«r7»",
+          "visible": true
+        },
+        {
+          "text": "Petras Villaservice15 000 kradmin2025-07-20Kall KontaktMedium",
+          "className": "",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-6 w-6 p-0",
+          "id": "radix-«r9»",
+          "visible": true
+        },
+        {
+          "text": "Stockholm Housing Corp45 000 kradmin2025-08-01AnnatHög",
+          "className": "",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-6 w-6 p-0",
+          "id": "radix-«rb»",
+          "visible": true
+        }
+      ],
+      "tabs": [
+        {
+          "text": "Alla Källor",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "Alla",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "Alla Leads",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "No text",
+          "state": "closed",
+          "ariaSelected": null
+        }
+      ],
+      "forms": [],
+      "errors": []
+    },
+    {
+      "path": "/crm/uppdrag",
+      "buttons": [],
+      "tabs": [],
+      "forms": [],
+      "errors": [
+        "Navigation timeout of 30000 ms exceeded"
+      ]
+    },
+    {
+      "path": "/crm/offerter",
+      "buttons": [],
+      "tabs": [],
+      "forms": [],
+      "errors": [
+        "Navigation timeout of 30000 ms exceeded"
+      ]
+    },
+    {
+      "path": "/crm/anstallda",
+      "buttons": [
+        {
+          "text": "Ny Anställd",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground h-11 px-4 py-2 bg-[#002A5C] hover:bg-[#001a42]",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Alla Roller",
+          "className": "flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-48",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Alla Statusar",
+          "className": "flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-48",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "Alla Avdelningar",
+          "className": "flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-48",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        },
+        {
+          "text": "No text",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground rounded-md h-8 w-8 p-0",
+          "id": "",
+          "visible": true
+        }
+      ],
+      "tabs": [
+        {
+          "text": "Alla Roller",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "Alla Statusar",
+          "state": "closed",
+          "ariaSelected": null
+        },
+        {
+          "text": "Alla Avdelningar",
+          "state": "closed",
+          "ariaSelected": null
+        }
+      ],
+      "forms": [],
+      "errors": []
+    },
+    {
+      "path": "/crm/automation",
+      "buttons": [
+        {
+          "text": "Nytt Arbetsflöde",
+          "className": "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-4 py-2",
+          "id": "",
+          "visible": true
+        }
+      ],
+      "tabs": [],
+      "forms": [],
+      "errors": []
+    }
+  ],
+  "totalButtons": 49,
+  "clickedButtons": 10,
+  "errors": [
+    {
+      "module": "/crm/kunder",
+      "error": "Navigation timeout of 30000 ms exceeded"
+    },
+    {
+      "module": "/crm/uppdrag",
+      "error": "Navigation timeout of 30000 ms exceeded"
+    },
+    {
+      "module": "/crm/offerter",
+      "error": "Navigation timeout of 30000 ms exceeded"
+    }
+  ]
+}

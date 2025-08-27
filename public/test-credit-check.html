@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Kreditkontroll - Nordflytt</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f5f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #002A5C;
+        }
+        .button {
+            background: #002A5C;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .button:hover {
+            background: #003d7a;
+        }
+        .button.secondary {
+            background: #4CAF50;
+        }
+        .button.secondary:hover {
+            background: #388E3C;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        .result.success {
+            background: #e6f7ed;
+            border: 1px solid #4CAF50;
+            color: #2e7d32;
+        }
+        .result.error {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+        }
+        .result.info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+        .code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .scenario {
+            margin-bottom: 15px;
+        }
+        .scenario h3 {
+            color: #002A5C;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test av BankID & Kreditkontroll</h1>
+        
+        <div class="test-section">
+            <h2>📋 Snabbtest - Skapa offert</h2>
+            <p>Klicka på knappen nedan för att skapa en test-offert och gå direkt till offert-sidan.</p>
+            <button class="button" onclick="createAndGoToOffer()">Skapa test-offert och öppna</button>
+            <div id="create-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎭 Testscenarier</h2>
+            
+            <div class="scenario">
+                <h3>1. Privatperson + Faktura (triggar BankID)</h3>
+                <button class="button secondary" onclick="createScenario('private', 'invoice')">
+                    Skapa scenario
+                </button>
+                <p>Detta ska visa BankID-modal när du klickar "Boka flytthjälp"</p>
+            </div>
+
+            <div class="scenario">
+                <h3>2. Företag + Faktura (ingen BankID)</h3>
+                <button class="button secondary" onclick="createScenario('business', 'invoice')">
+                    Skapa scenario
+                </button>
+                <p>Detta ska INTE visa BankID-modal</p>
+            </div>
+
+            <div class="scenario">
+                <h3>3. Privatperson + Swish (ingen BankID)</h3>
+                <button class="button secondary" onclick="createScenario('private', 'swish')">
+                    Skapa scenario
+                </button>
+                <p>Detta ska INTE visa BankID-modal</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Direkttest av formuläret</h2>
+            <p>Fyll i huvudformuläret på startsidan med testdata:</p>
+            <button class="button secondary" onclick="fillAndSubmitForm()">
+                Fyll och skicka formulär automatiskt
+            </button>
+            <div id="form-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Direktlänkar</h2>
+            <p>Om du har ett befintligt offert-ID:</p>
+            <input type="text" id="offer-id" placeholder="Ange offert-ID här" style="padding: 8px; width: 300px;">
+            <button class="button" onclick="goToOffer()">Gå till offert</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Mock-data för test</h2>
+            <p>Om databasen inte är ansluten kommer systemet automatiskt använda mock-data.</p>
+            <div class="code">
+// Mock-offert som skapas:
+{
+  customerName: "Test Testsson",
+  email: "test@example.com", 
+  phone: "0701234567",
+  customerType: "private",
+  paymentMethod: "invoice",
+  totalPrice: 8500,
+  moveDate: "+14 dagar",
+  startAddress: "Testgatan 1, Stockholm",
+  endAddress: "Provvägen 2, Stockholm"
+}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function createAndGoToOffer() {
+            const resultDiv = document.getElementById('create-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = 'Skapar test-offert...';
+
+            try {
+                const response = await fetch('/api/test-create-offer');
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        ✅ ${data.message}<br>
+                        Offert-ID: <strong>${data.offerId}</strong><br>
+                        ${data.mock ? '⚠️ Använder mock-data (databas ej ansluten)' : '✅ Sparad i databasen'}<br>
+                        <br>
+                        Omdirigerar om 2 sekunder...
+                    `;
+                    
+                    setTimeout(() => {
+                        window.location.href = `/offer/${data.offerId}`;
+                    }, 2000);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `❌ Fel: ${data.error || 'Kunde inte skapa offert'}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ Fel: ${error.message}`;
+            }
+        }
+
+        async function createScenario(customerType, paymentMethod) {
+            // För nu, använd samma API men vi skulle kunna utöka detta
+            // för att skicka olika parametrar
+            await createAndGoToOffer();
+        }
+
+        function goToOffer() {
+            const offerId = document.getElementById('offer-id').value;
+            if (offerId) {
+                window.location.href = `/offer/${offerId}`;
+            } else {
+                alert('Ange ett offert-ID först!');
+            }
+        }
+
+        async function fillAndSubmitForm() {
+            const resultDiv = document.getElementById('form-result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = 'Förbereder formulärtest...';
+
+            // Skapa test-data för formuläret
+            const testData = {
+                customerType: 'private',
+                name: 'Test Testsson',
+                email: 'test@example.com',
+                phone: '0701234567',
+                serviceTypes: ['moving'],
+                moveDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                moveTime: '08:00',
+                startAddress: 'Testgatan 1, 111 11 Stockholm',
+                endAddress: 'Provvägen 2, 222 22 Stockholm',
+                startPropertyType: 'apartment',
+                endPropertyType: 'apartment',
+                startLivingArea: '75',
+                endLivingArea: '85',
+                startFloor: '2',
+                endFloor: '3',
+                startElevator: 'small',
+                endElevator: 'big',
+                startParkingDistance: '10',
+                endParkingDistance: '5',
+                largeItems: [],
+                packingService: 'Nej tack',
+                cleaningService: 'Nej tack',
+                paymentMethod: 'invoice' // Faktura för att trigga kreditkontroll
+            };
+
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                ✅ Testdata förberedd!<br>
+                <br>
+                <strong>Instruktioner:</strong><br>
+                1. Gå till <a href="/" target="_blank">startsidan</a><br>
+                2. Fyll i formuläret manuellt med denna data<br>
+                3. När du kommer till sista steget och skickar, ska kreditkontroll triggas<br>
+                <br>
+                <strong>Testdata:</strong><br>
+                <pre style="text-align: left; background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">
+${JSON.stringify(testData, null, 2)}
+                </pre>
+            `;
+        }
+
+        // Auto-fokus på input-fältet
+        document.getElementById('offer-id').focus();
+    </script>
+</body>
+</html>

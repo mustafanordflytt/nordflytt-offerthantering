@@ -1,0 +1,486 @@
+{
+  "timestamp": "2025-07-26T02:03:19.309Z",
+  "modules": {
+    "Dashboard": {
+      "path": "/crm/dashboard",
+      "screenshot": "ai-analysis/screenshots/dashboard.png",
+      "hasData": false,
+      "dataTypes": [],
+      "userActions": [
+        "Uppdatera",
+        "Auto-refresh PÅ",
+        "Ny Kund",
+        "Ny Lead",
+        "Nytt Uppdrag",
+        "Nytt Ärende"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [],
+      "pageTitle": "Dashboard",
+      "elementCounts": {
+        "tables": 0,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 6
+      }
+    },
+    "Leads": {
+      "path": "/crm/leads",
+      "screenshot": "ai-analysis/screenshots/leads.png",
+      "hasData": false,
+      "dataTypes": [],
+      "userActions": [
+        "Ny Lead",
+        "Pipeline",
+        "Lista",
+        "Alla Källor",
+        "Alla",
+        "Alla Leads"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [
+        "Manual search",
+        "Manual filtering"
+      ],
+      "pageTitle": "Leads",
+      "elementCounts": {
+        "tables": 0,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 11
+      }
+    },
+    "Uppdrag": {
+      "path": "/crm/uppdrag",
+      "screenshot": "ai-analysis/screenshots/uppdrag.png",
+      "hasData": true,
+      "dataTypes": [
+        {
+          "type": "table",
+          "columns": [
+            "Bokningsnr",
+            "Kund",
+            "Flyttdatum",
+            "Rutt",
+            "Status",
+            "Prioritet",
+            "Personal",
+            "Pris",
+            "Åtgärder"
+          ]
+        }
+      ],
+      "userActions": [
+        "Kalendervy",
+        "Nytt Uppdrag",
+        "Alla Statusar",
+        "Alla Prioriteter",
+        "Uppdatera",
+        "Flyttdatum",
+        "Prioritet",
+        "Pris"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [
+        "Manual search",
+        "Manual filtering"
+      ],
+      "pageTitle": "Uppdrag",
+      "elementCounts": {
+        "tables": 1,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 116
+      }
+    },
+    "Offerter": {
+      "path": "/crm/offerter",
+      "screenshot": "ai-analysis/screenshots/offerter.png",
+      "hasData": true,
+      "dataTypes": [
+        {
+          "type": "table",
+          "columns": [
+            "Offertnummer",
+            "Kund",
+            "Titel",
+            "Belopp",
+            "Status",
+            "Giltig till",
+            "Skapad",
+            "Åtgärder"
+          ]
+        }
+      ],
+      "userActions": [
+        "Skapa ny offert",
+        "Alla statusar",
+        "Datum (nyast först)",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa",
+        "Visa"
+      ],
+      "automationPotential": [
+        "Auto-create Skapa ny offert"
+      ],
+      "currentWorkflow": [
+        "Manual search",
+        "Manual filtering"
+      ],
+      "pageTitle": "Offerter",
+      "elementCounts": {
+        "tables": 1,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 111
+      }
+    },
+    "Anställda": {
+      "path": "/crm/anstallda",
+      "screenshot": "ai-analysis/screenshots/anställda.png",
+      "hasData": true,
+      "dataTypes": [
+        {
+          "type": "table",
+          "columns": [
+            "Anställd",
+            "Roll",
+            "Status",
+            "Betyg",
+            "Slutförda Jobb",
+            "Åtgärder"
+          ]
+        }
+      ],
+      "userActions": [
+        "Ny Anställd",
+        "Alla Roller",
+        "Alla Statusar",
+        "Alla Avdelningar"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [
+        "Manual search",
+        "Manual filtering"
+      ],
+      "pageTitle": "Anställda",
+      "elementCounts": {
+        "tables": 1,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 25
+      }
+    },
+    "AI-Kundtjänst": {
+      "path": "/crm/ai-kundtjanst",
+      "screenshot": "ai-analysis/screenshots/ai-kundtjänst.png",
+      "hasData": false,
+      "dataTypes": [],
+      "userActions": [
+        "Visa Chat Demo",
+        "Legacy Dashboard",
+        "Live GPT Sessions2",
+        "Support Tickets3",
+        "Customer Insights",
+        "API Analytics",
+        "Pause Auto-refresh",
+        "Refresh"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [],
+      "pageTitle": "AI Kundtjänst",
+      "elementCounts": {
+        "tables": 0,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 8
+      }
+    },
+    "AI-Marknadsföring": {
+      "path": "/crm/ai-marknadsforing",
+      "screenshot": "ai-analysis/screenshots/ai-marknadsföring.png",
+      "hasData": false,
+      "dataTypes": [],
+      "userActions": [
+        "Uppdatera",
+        "Exportera rapport",
+        "Översikt",
+        "Kampanjer",
+        "SEO Stockholm",
+        "PPC",
+        "iDraw vykort",
+        "AI-insikter",
+        "Lead-spårning"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [],
+      "pageTitle": "AI-Marknadsföring",
+      "elementCounts": {
+        "tables": 0,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 9
+      }
+    },
+    "Ekonomi": {
+      "path": "/crm/ekonomi",
+      "screenshot": "ai-analysis/screenshots/ekonomi.png",
+      "hasData": false,
+      "dataTypes": [],
+      "userActions": [
+        "Uppdatera status",
+        "Utgående",
+        "Inkommande",
+        "Kvitton",
+        "Analys",
+        "Optimering",
+        "Inställningar"
+      ],
+      "automationPotential": [],
+      "currentWorkflow": [],
+      "pageTitle": "Ekonomi & AI",
+      "elementCounts": {
+        "tables": 0,
+        "cards": 0,
+        "forms": 0,
+        "buttons": 7
+      }
+    }
+  },
+  "workflows": [
+    {
+      "name": "Customer Journey",
+      "steps": [
+        "Lead Generation (AI-Marknadsföring)",
+        "Lead Qualification (Leads)",
+        "Quote Creation (Offerter)",
+        "Customer Conversion (Kunder)",
+        "Job Execution (Uppdrag)",
+        "Customer Service (AI-Kundtjänst)"
+      ],
+      "automationGaps": [
+        "No automatic lead scoring",
+        "Manual quote follow-up",
+        "No predictive customer value",
+        "Manual job assignment"
+      ]
+    }
+  ],
+  "dataModels": [],
+  "integrationPoints": [
+    {
+      "name": "AI Customer Service Integration",
+      "current": "Isolated system at api.nordflytt.se",
+      "potential": "Real-time CRM data enrichment",
+      "benefit": "Instant customer context for AI responses"
+    },
+    {
+      "name": "Marketing Automation Data",
+      "current": "Separate marketing modules",
+      "potential": "Unified customer intelligence",
+      "benefit": "Predictive lead scoring and targeting"
+    },
+    {
+      "name": "Financial Integration",
+      "current": "Manual invoice processing",
+      "potential": "Automated Fortnox sync with RUT",
+      "benefit": "50% reduction in admin work"
+    }
+  ],
+  "businessLogicGaps": [
+    {
+      "module": "Kunder",
+      "error": "Navigation timeout of 30000 ms exceeded",
+      "impact": "Module inaccessible or broken"
+    },
+    {
+      "module": "Dashboard",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    },
+    {
+      "module": "Leads",
+      "gap": "No intelligent search or recommendations",
+      "impact": "Users waste time finding information"
+    },
+    {
+      "module": "Leads",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    },
+    {
+      "module": "Uppdrag",
+      "gap": "No intelligent search or recommendations",
+      "impact": "Users waste time finding information"
+    },
+    {
+      "module": "Uppdrag",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    },
+    {
+      "module": "Offerter",
+      "gap": "No intelligent search or recommendations",
+      "impact": "Users waste time finding information"
+    },
+    {
+      "module": "Offerter",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    },
+    {
+      "module": "Anställda",
+      "gap": "No intelligent search or recommendations",
+      "impact": "Users waste time finding information"
+    },
+    {
+      "module": "AI-Kundtjänst",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    },
+    {
+      "module": "AI-Marknadsföring",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    },
+    {
+      "module": "Ekonomi",
+      "gap": "Too many manual actions required",
+      "impact": "Workflow inefficiency and user fatigue"
+    }
+  ],
+  "automationOpportunities": [
+    {
+      "category": "Predictive Customer Management",
+      "opportunities": [
+        "AI-powered lead scoring based on behavior patterns",
+        "Automatic customer lifetime value prediction",
+        "Churn risk identification and prevention",
+        "Personalized service recommendations"
+      ]
+    },
+    {
+      "category": "Intelligent Workflow Automation",
+      "opportunities": [
+        "Smart job scheduling with resource optimization",
+        "Automatic team assignment based on skills/location",
+        "Dynamic pricing based on demand and capacity",
+        "Predictive maintenance and inventory management"
+      ]
+    },
+    {
+      "category": "Proactive Business Intelligence",
+      "opportunities": [
+        "Real-time competitive threat monitoring",
+        "Market opportunity identification",
+        "Automatic profit margin optimization",
+        "Cash flow prediction and alerts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <title>Test Mustafa Login - Enkel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #002A5C;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #002A5C;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #001a42;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Mustafa Login</h1>
+        
+        <h3>Dina uppgifter:</h3>
+        <pre>
+Email: mustafa@nordflytt.se
+Lösenord: mustafa123
+Roll: Admin
+        </pre>
+        
+        <h3>Testa olika saker:</h3>
+        <button onclick="testSupabaseAuth()">1. Testa Supabase Auth</button>
+        <button onclick="testCRMAuth()">2. Testa CRM Auth (simulerad)</button>
+        <button onclick="testLocalStorage()">3. Kolla localStorage</button>
+        <button onclick="clearAndReload()">4. Rensa cache & ladda om</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.1/+esm'
+        
+        const supabaseUrl = 'https://gindcnpiejkntkangpuc.supabase.co'
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpbmRjbnBpZWprbnRrYW5ncHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzMjM2ODYsImV4cCI6MjA1OTg5OTY4Nn0.uHo-Hhm9Rm3PMkpCH2t6PUV_dlRnf1ufVSXcWVc1tKg'
+        
+        const supabase = createClient(supabaseUrl, supabaseAnonKey)
+        
+        window.testSupabaseAuth = async function() {
+            const resultEl = document.getElementById('result')
+            resultEl.style.display = 'block'
+            resultEl.className = 'result'
+            resultEl.innerHTML = '⏳ Testar Supabase authentication...'
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: 'mustafa@nordflytt.se',
+                    password: 'mustafa123'
+                })
+                
+                if (error) {
+                    resultEl.className = 'result error'
+                    resultEl.innerHTML = `❌ Supabase Auth fel: ${error.message}`
+                    return
+                }
+                
+                resultEl.className = 'result success'
+                resultEl.innerHTML = `
+                    ✅ Supabase Auth lyckades!<br>
+                    User ID: ${data.user.id}<br>
+                    Email: ${data.user.email}<br>
+                    Session: ${data.session ? 'Aktiv' : 'Ingen'}
+                `
+                
+                // Spara för CRM
+                if (data.user) {
+                    const crmUser = {
+                        id: data.user.id,
+                        email: data.user.email,
+                        name: 'Mustafa Abdulkarim',
+                        role: 'admin',
+                        permissions: ['*']
+                    }
+                    localStorage.setItem('crm-user', JSON.stringify(crmUser))
+                    document.cookie = `crm-user=${JSON.stringify(crmUser)}; path=/; max-age=${7*24*60*60}`
+                }
+                
+                await supabase.auth.signOut()
+            } catch (err) {
+                resultEl.className = 'result error'
+                resultEl.innerHTML = `❌ Oväntat fel: ${err.message}`
+            }
+        }
+        
+        window.testCRMAuth = async function() {
+            const resultEl = document.getElementById('result')
+            resultEl.style.display = 'block'
+            resultEl.className = 'result'
+            resultEl.innerHTML = '⏳ Testar CRM authentication via API...'
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'mustafa@nordflytt.se',
+                        password: 'mustafa123'
+                    })
+                })
+                
+                const data = await response.json()
+                
+                if (!response.ok) {
+                    resultEl.className = 'result error'
+                    resultEl.innerHTML = `❌ CRM Auth fel: ${data.error || 'Okänt fel'}`
+                    return
+                }
+                
+                resultEl.className = 'result success'
+                resultEl.innerHTML = `
+                    ✅ CRM Auth simulering lyckades!<br>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `
+            } catch (err) {
+                resultEl.className = 'result error'
+                resultEl.innerHTML = `❌ Kunde inte nå API: ${err.message}<br>
+                <small>Tips: Kontrollera att Next.js servern körs på port 3000</small>`
+            }
+        }
+        
+        window.testLocalStorage = function() {
+            const resultEl = document.getElementById('result')
+            resultEl.style.display = 'block'
+            resultEl.className = 'result'
+            
+            const crmUser = localStorage.getItem('crm-user')
+            const cookies = document.cookie
+            
+            resultEl.innerHTML = `
+                <strong>localStorage crm-user:</strong><br>
+                <pre>${crmUser || 'Tom'}</pre>
+                <br>
+                <strong>Cookies:</strong><br>
+                <pre>${cookies || 'Inga cookies'}</pre>
+            `
+        }
+        
+        window.clearAndReload = function() {
+            // Rensa allt
+            localStorage.clear()
+            sessionStorage.clear()
+            
+            // Rensa cookies
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
+            })
+            
+            // Ladda om med hård cache-rensning
+            location.reload(true)
+        }
+    </script>
+</body>
+</html>
