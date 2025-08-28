@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 // @ts-ignore
-import QRCode from 'qrcode.react';
+import { QRCode } from 'qrcode.react';
 
 interface SwishPaymentProps {
   amount: number;
