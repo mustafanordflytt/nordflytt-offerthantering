@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Home, Search, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -41,6 +43,7 @@ export default function NotFound() {
             className="w-full" 
             size="lg"
             onClick={() => window.history.back()}
+            type="button"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Gå tillbaka
