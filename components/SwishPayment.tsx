@@ -150,7 +150,7 @@ export function SwishPayment({
       <Card className="border-green-200 bg-green-50">
         <CardHeader>
           <div className="flex items-center space-x-2">
-            <CheckCircle className="h-6 w-6 text-green-600" />*/
+            <CheckCircle className="h-6 w-6 text-green-600" />
             <CardTitle className="text-green-900">Betalning genomförd!</CardTitle>
           </div>
           <CardDescription className="text-green-700">
@@ -185,7 +185,7 @@ export function SwishPayment({
       <Card className="border-red-200 bg-red-50">
         <CardHeader>
           <div className="flex items-center space-x-2">
-            <AlertCircle className="h-6 w-6 text-red-600" />*/
+            <AlertCircle className="h-6 w-6 text-red-600" />
             <CardTitle className="text-red-900">Betalningen misslyckades</CardTitle>
           </div>
           <CardDescription className="text-red-700">
@@ -203,7 +203,7 @@ export function SwishPayment({
               </Button>
             )}
           </div>
-          <Separator />*/
+          <Separator />
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-2">Behöver du hjälp?</p>
             <Button variant="link" onClick={() => window.location.href = 'tel:08123456'}>
@@ -217,12 +217,12 @@ export function SwishPayment({
 
   return (
     <div className="space-y-6">
-      {/* Payment header */}
+      {/* Payment header }
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Smartphone className="h-6 w-6 text-primary" />*/
+              <Smartphone className="h-6 w-6 text-primary" />
               <CardTitle>Betala med Swish</CardTitle>
             </div>
             <Badge variant={paymentStatus === 'processing' ? 'default' : 'secondary'}>
@@ -235,7 +235,7 @@ export function SwishPayment({
         </CardHeader>
       </Card>
 
-      {/* Payment amount */}
+      {/* Payment amount }
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Betalningsinformation</CardTitle>
@@ -249,7 +249,7 @@ export function SwishPayment({
             <span className="text-sm text-gray-600">Att betala:</span>
             <span className="text-2xl font-bold">{amount} kr</span>
           </div>
-          <Separator />*/
+          <Separator />
           <Alert>
             <AlertDescription className="text-sm">
               Detta är en förskottsbetalning för din flytt. Slutfaktura skickas efter genomförd flytt.
@@ -258,9 +258,9 @@ export function SwishPayment({
         </CardContent>
       </Card>
 
-      {/* Payment methods */}
+      {/* Payment methods }
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* QR Code method */}
+        {/* QR Code method }
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
@@ -282,11 +282,11 @@ export function SwishPayment({
           </CardContent>
         </Card>
 
-        {/* Manual method */}
+        {/* Manual method }
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Smartphone className="h-5 w-5" />*/
+              <Smartphone className="h-5 w-5" />
               Betala manuellt
             </CardTitle>
             <CardDescription>
@@ -305,7 +305,7 @@ export function SwishPayment({
                     onClick={copySwishNumber}
                     className="h-8 px-2"
                   >
-                    {copied ? <Check className="h-4 w-4" />*/ : <Copy className="h-4 w-4" />}
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   </Button>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export function SwishPayment({
                 <span className="font-semibold">{amount} kr</span>
               </div>
             </div>
-            <Separator />*/
+            <Separator />
             <Button onClick={openSwishApp} className="w-full" size="lg">
               Öppna Swish
             </Button>
@@ -326,21 +326,21 @@ export function SwishPayment({
         </Card>
       </div>
 
-      {/* Status and timer */}
+      {/* Status and timer }
       <Card>
         <CardContent className="py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {paymentStatus === 'processing' ? (
                 <>
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />*/
+                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
                   <span className="text-sm font-medium">Väntar på betalning...</span>
-                </>*/
+                </>
               ) : (
                 <>
-                  <AlertCircle className="h-5 w-5 text-orange-500" />*/
+                  <AlertCircle className="h-5 w-5 text-orange-500" />
                   <span className="text-sm font-medium">Inväntar betalning</span>
-                </>*/
+                </>
               )}
             </div>
             <div className="text-sm text-gray-600">
@@ -350,7 +350,7 @@ export function SwishPayment({
         </CardContent>
       </Card>
 
-      {/* Cancel button */}
+      {/* Cancel button }
       {onCancel && (
         <div className="text-center">
           <Button onClick={onCancel} variant="ghost">
