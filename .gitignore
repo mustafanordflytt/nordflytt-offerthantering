@@ -153,3 +153,6 @@ test-*.png
 test-*.js
 debug-*.js
 .backup-test-files/
+node_modules_backup/
+*.dylib
+*.node
