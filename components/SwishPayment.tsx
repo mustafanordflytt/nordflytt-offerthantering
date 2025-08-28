@@ -350,7 +350,7 @@ export function SwishPayment({
         </CardContent>
       </Card>
 
-      {/* Cancel button }
+      {/* Cancel button */}
       {onCancel && (
         <div className="text-center">
           <Button onClick={onCancel} variant="ghost">
