@@ -36,9 +36,11 @@ export default function TestCalendarAPI() {
   }
   
   const runTests = () => {
-    // Set token if missing
-    if (!localStorage.getItem('crm-token')) {
-      localStorage.setItem('crm-token', 'crm-token-123')
+    // Set token if missing - check for browser environment
+    if (typeof window !== 'undefined') {
+      if (!localStorage.getItem('crm-token')) {
+        localStorage.setItem('crm-token', 'crm-token-123')
+      }
     }
     
     testEndpoint('events', '/api/crm/calendar/events')
@@ -47,7 +49,10 @@ export default function TestCalendarAPI() {
   }
   
   useEffect(() => {
-    runTests()
+    // Only run tests in browser environment
+    if (typeof window !== 'undefined') {
+      runTests()
+    }
   }, [])
   
   return (

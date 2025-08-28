@@ -1,8 +1,13 @@
 // Storage utilities with quota management
+// Safe for SSR - includes browser checks
 export class StorageManager {
   private static readonly MAX_STORAGE_SIZE = 4 * 1024 * 1024; // 4MB safe limit (of 5MB total)
   
   static setItem(key: string, value: string): boolean {
+    if (typeof window === 'undefined') {
+      return false; // No storage available during SSR
+    }
+    
     try {
       // Check storage size before setting
       const estimatedSize = new Blob([value]).size;
@@ -27,6 +32,10 @@ export class StorageManager {
   }
   
   static getItem(key: string): string | null {
+    if (typeof window === 'undefined') {
+      return null; // No storage available during SSR
+    }
+    
     try {
       return localStorage.getItem(key);
     } catch (error) {
@@ -36,6 +45,10 @@ export class StorageManager {
   }
   
   static getStorageUsage(): number {
+    if (typeof window === 'undefined') {
+      return 0; // No storage during SSR
+    }
+    
     let totalSize = 0;
     try {
       for (let key in localStorage) {
@@ -50,6 +63,10 @@ export class StorageManager {
   }
   
   static cleanOldData(currentKey: string): void {
+    if (typeof window === 'undefined') {
+      return; // No storage during SSR
+    }
+    
     try {
       // Clean old photos (keep only last 20)
       if (currentKey === 'staff_photos') {
@@ -90,6 +107,10 @@ export class StorageManager {
   }
   
   static emergencyCleanup(key: string, value: string): boolean {
+    if (typeof window === 'undefined') {
+      return false; // No storage during SSR
+    }
+    
     try {
       console.warn('Emergency storage cleanup initiated');
       
@@ -117,18 +138,31 @@ export class StorageManager {
     } catch (error) {
       console.error('Emergency cleanup failed:', error);
       // Fallback: Use sessionStorage temporarily
-      try {
-        sessionStorage.setItem(key, value);
-        console.warn('Falling back to sessionStorage');
-        return false; // Indicate localStorage failed but data is saved temporarily
-      } catch (sessionError) {
-        console.error('Both localStorage and sessionStorage failed:', sessionError);
-        return false;
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem(key, value);
+          console.warn('Falling back to sessionStorage');
+          return false; // Indicate localStorage failed but data is saved temporarily
+        } catch (sessionError) {
+          console.error('Both localStorage and sessionStorage failed:', sessionError);
+          return false;
+        }
       }
+      return false;
     }
   }
   
   static getStorageReport(): object {
+    if (typeof window === 'undefined') {
+      return {
+        currentUsage: '0 KB',
+        maxSize: `${(this.MAX_STORAGE_SIZE / 1024).toFixed(1)} KB`,
+        percentage: '0%',
+        photosCount: 0,
+        available: true
+      };
+    }
+    
     const usage = this.getStorageUsage();
     const percentage = (usage / this.MAX_STORAGE_SIZE) * 100;
     

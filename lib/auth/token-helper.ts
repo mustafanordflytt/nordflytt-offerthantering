@@ -2,7 +2,7 @@ import { authService } from './auth-service'
 
 export async function getAuthHeaders(): Promise<HeadersInit> {
   // Check localStorage first for development/demo mode
-  const token = localStorage.getItem('crm-token')
+  const token = typeof window !== 'undefined' ? localStorage.getItem('crm-token') : null
   if (token) {
     return {
       'Content-Type': 'application/json',
@@ -30,5 +30,6 @@ export async function getAuthHeaders(): Promise<HeadersInit> {
 
 export async function getAuthToken(): Promise<string | null> {
   const session = await authService.getSession()
-  return session?.token || localStorage.getItem('crm-token') || null
+  const localToken = typeof window !== 'undefined' ? localStorage.getItem('crm-token') : null
+  return session?.token || localToken || null
 }
