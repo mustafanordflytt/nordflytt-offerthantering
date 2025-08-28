@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "echo "Skipping lint for deployment""
+    "lint": "echo Skipping lint for deployment"
   },
   "dependencies": {
     "@aws-sdk/client-sagemaker-runtime": "^3.876.0",
