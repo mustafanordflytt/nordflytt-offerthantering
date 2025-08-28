@@ -17,14 +17,19 @@ function ConfirmationPageInner() {
     
     // In a real app, you would fetch this from the API
     // For demo, we'll use localStorage or URL params
-    const storedData = localStorage.getItem('lastBooking');
+    if (typeof window !== 'undefined') {
+      const storedData = localStorage.getItem('lastBooking');
+      
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        setBookingData(data);
+        setLoading(false);
+        return;
+      }
+    }
     
-    if (storedData) {
-      const data = JSON.parse(storedData);
-      setBookingData(data);
-    } else {
-      // Fallback data for demo
-      setBookingData({
+    // Fallback data for demo
+    setBookingData({
         bookingReference: bookingReference || 'NF2024001',
         customerInfo: {
           name: searchParams.get('name') || 'Test Kund',
@@ -41,7 +46,6 @@ function ConfirmationPageInner() {
         paymentStatus: searchParams.get('status') || 'pending',
         swishPaymentId: searchParams.get('swishId') || undefined
       });
-    }
     
     setLoading(false);
   }, [searchParams]);

@@ -4,6 +4,10 @@
  */
 export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   // Get auth data from localStorage
+  if (typeof window === 'undefined') {
+    throw new Error('authFetch can only be used in browser environment')
+  }
+  
   const authData = localStorage.getItem('staff_auth')
   
   if (!authData) {
@@ -29,7 +33,9 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
   } catch (error) {
     console.error('Auth fetch error:', error)
     // Redirect to login on auth error
-    window.location.href = '/staff/login'
+    if (typeof window !== 'undefined') {
+      window.location.href = '/staff/login'
+    }
     throw error
   }
 }

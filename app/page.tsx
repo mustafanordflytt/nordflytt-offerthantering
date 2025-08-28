@@ -216,19 +216,21 @@ export default function BookingForm() {
     setIsClient(true)
     
     // Load saved language preference only on client side
-    try {
-      const savedLanguage = localStorage.getItem("preferredLanguage") as Language | null
-      if (savedLanguage && (savedLanguage === "sv" || savedLanguage === "en")) {
-        setLanguage(savedLanguage)
-      } else {
-        // If no saved preference, detect from browser
-        const browserLang = navigator.language.split("-")[0]
-        if (browserLang === "en") {
-          setLanguage("en")
+    if (typeof window !== 'undefined') {
+      try {
+        const savedLanguage = localStorage.getItem("preferredLanguage") as Language | null
+        if (savedLanguage && (savedLanguage === "sv" || savedLanguage === "en")) {
+          setLanguage(savedLanguage)
+        } else {
+          // If no saved preference, detect from browser
+          const browserLang = navigator.language.split("-")[0]
+          if (browserLang === "en") {
+            setLanguage("en")
+          }
         }
+      } catch (error) {
+        console.error('Error accessing localStorage:', error)
       }
-    } catch (error) {
-      console.error("Error loading language preference:", error)
     }
   }, [])
 

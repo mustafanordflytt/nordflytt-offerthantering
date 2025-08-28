@@ -7,6 +7,7 @@ import { getAuthHeaders } from '@/lib/token-helper'
 
 export default function TestCalendarAPI() {
   const [results, setResults] = useState<Record<string, any>>({})
+  const [token, setToken] = useState<string | null>(null)
   
   const testEndpoint = async (name: string, url: string) => {
     try {
@@ -51,6 +52,7 @@ export default function TestCalendarAPI() {
   useEffect(() => {
     // Only run tests in browser environment
     if (typeof window !== 'undefined') {
+      setToken(localStorage.getItem('crm-token'))
       runTests()
     }
   }, [])
@@ -61,7 +63,7 @@ export default function TestCalendarAPI() {
       
       <div className="mb-4">
         <p className="text-sm text-muted-foreground mb-2">
-          Token: {localStorage.getItem('crm-token') || 'Not set'}
+          Token: {token || 'Not set'}
         </p>
         <Button onClick={runTests}>Re-run Tests</Button>
       </div>
