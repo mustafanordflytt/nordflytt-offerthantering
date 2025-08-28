@@ -23,7 +23,7 @@ const nextConfig = {
       'recharts',
       'date-fns'
     ],
-    optimizeCss: true,
+    // optimizeCss: true, // Disabled - requires critters package
   },
   
   // 🎯 Optimera bilder
