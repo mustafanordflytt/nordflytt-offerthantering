@@ -7,7 +7,9 @@
     "build": "next build --no-lint",
     "start": "next start",
     "lint": "echo Skipping lint for deployment",
-    "type-check": "echo Skipping type check"
+    "type-check": "echo Skipping type check",
+    "test": "echo 'No unit tests configured' && exit 0",
+    "test:e2e": "echo 'No E2E tests configured' && exit 0"
   },
   "dependencies": {
     "@aws-sdk/client-sagemaker-runtime": "^3.876.0",
