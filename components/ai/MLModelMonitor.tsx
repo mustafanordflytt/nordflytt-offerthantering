@@ -163,7 +163,7 @@ export default function MLModelMonitor() {
             <p className="text-sm font-medium">Confidence Distribution</p>
             <div className="space-y-1">
               <div className="flex items-center justify-between text-sm">
-                <span>High (>85%)</span>
+                <span>High (&gt;85%)</span>
                 <span className="font-medium">
                   {metrics?.confidenceDistribution.high || 0}%
                 </span>
@@ -175,7 +175,7 @@ export default function MLModelMonitor() {
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span>Low (<70%)</span>
+                <span>Low (&lt;70%)</span>
                 <span className="font-medium">
                   {metrics?.confidenceDistribution.low || 0}%
                 </span>

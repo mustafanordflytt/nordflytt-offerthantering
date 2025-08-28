@@ -46,28 +46,19 @@ const nextConfig = {
       crypto: false,
     };
 
-    // Ignorera problematiska TensorFlow filer
-    config.module.rules.push({
-      test: /\.html$/,
-      use: 'ignore-loader'
-    });
-
-    // Ignorera node-pre-gyp filer som orsakar problem
-    config.externals = config.externals || [];
-    if (isServer) {
-      config.externals.push({
-        '@tensorflow/tfjs-node': 'commonjs @tensorflow/tfjs-node',
-        'mock-aws-s3': 'mock-aws-s3',
-        'aws-sdk': 'aws-sdk',
-        'nock': 'nock'
-      });
+    // Handle TensorFlow for browser environment
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@tensorflow/tfjs-node': '@tensorflow/tfjs',
+      };
     }
-
-    // Ignore TensorFlow binary files
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@mapbox/node-pre-gyp': false,
-    };
+    
+    // Ignore problematic files
+    config.module.rules.push({
+      test: /\.node$/,
+      use: 'null-loader'
+    });
 
     if (dev && !isServer) {
       // Minska aggressiv hot reloading som orsakar DOM-konflikter
