@@ -340,3 +340,5 @@ export function logAPIAccess(
   // In production, send to logging service
   console.log('[API Access]', log)
 }
+// Alias exports for compatibility
+export const validateCRMAuth = authenticateAPI;

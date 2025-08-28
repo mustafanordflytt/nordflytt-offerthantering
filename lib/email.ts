@@ -1229,3 +1229,5 @@ RADERA DETTA MEDDELANDE efter säker anteckning av koden.
     };
   }
 }
+// Alias exports for compatibility
+export const sendEmail = sendBookingConfirmation;
