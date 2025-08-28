@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { OrderConfirmation } from '@/components/OrderConfirmation';
 import { Loader2 } from 'lucide-react';
 
-export default function ConfirmationPage() {
+function ConfirmationPageInner() {
   const searchParams = useSearchParams();
   const [bookingData, setBookingData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -66,5 +66,17 @@ export default function ConfirmationPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <OrderConfirmation bookingData={bookingData} />
     </div>
+  );
+}
+
+export default function ConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-12 px-4 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#002A5C]" />
+      </div>
+    }>
+      <ConfirmationPageInner />
+    </Suspense>
   );
 }

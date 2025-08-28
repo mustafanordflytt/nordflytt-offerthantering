@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback, Suspense } from "react"
 import dynamic from "next/dynamic"
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
@@ -100,7 +100,7 @@ interface Order {
   isFallback?: boolean
 }
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationPageInner() {
   console.log('🚀 OrderConfirmationPage component loaded!');
   const router = useRouter()
   const params = useParams()
@@ -5174,3 +5174,15 @@ Vad kan jag hjälpa dig med?`}
       </div>
     )
   }
+
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002A5C]"></div>
+      </div>
+    }>
+      <OrderConfirmationPageInner />
+    </Suspense>
+  )
+}

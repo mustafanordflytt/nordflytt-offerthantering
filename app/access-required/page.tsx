@@ -1,12 +1,13 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { AlertCircle, Lock, Mail, Phone } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-export default function AccessRequiredPage() {
+function AccessRequiredPageInner() {
   const searchParams = useSearchParams()
   const resource = searchParams.get('resource')
   const error = searchParams.get('error')
@@ -75,5 +76,17 @@ export default function AccessRequiredPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function AccessRequiredPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="animate-pulse">Loading...</div>
+      </div>
+    }>
+      <AccessRequiredPageInner />
+    </Suspense>
   )
 }

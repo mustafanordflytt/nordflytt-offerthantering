@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function LoginRedirect() {
+function LoginRedirectInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const from = searchParams.get('from') || ''
@@ -27,5 +27,20 @@ export default function LoginRedirect() {
         <p className="mt-4 text-gray-600">Omdirigerar...</p>
       </div>
     </div>
+  )
+}
+
+export default function LoginRedirect() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002A5C] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Laddar...</p>
+        </div>
+      </div>
+    }>
+      <LoginRedirectInner />
+    </Suspense>
   )
 }

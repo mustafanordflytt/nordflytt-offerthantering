@@ -2,7 +2,7 @@
 
 import Script from 'next/script';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 
 declare global {
   interface Window {
@@ -15,7 +15,7 @@ interface FacebookPixelProps {
   pixelId: string;
 }
 
-export function FacebookPixel({ pixelId }: FacebookPixelProps) {
+function FacebookPixelInner({ pixelId }: FacebookPixelProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -60,6 +60,14 @@ export function FacebookPixel({ pixelId }: FacebookPixelProps) {
         />
       </noscript>
     </>
+  );
+}
+
+export function FacebookPixel({ pixelId }: FacebookPixelProps) {
+  return (
+    <Suspense fallback={null}>
+      <FacebookPixelInner pixelId={pixelId} />
+    </Suspense>
   );
 }
 

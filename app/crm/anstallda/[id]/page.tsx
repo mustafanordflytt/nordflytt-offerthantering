@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -373,7 +373,7 @@ const mockStaffData = {
   }
 }
 
-export default function StaffProfilePage() {
+function StaffProfilePageInner() {
   const params = useParams()
   const searchParams = useSearchParams()
   const { toast } = useToast()
@@ -2863,5 +2863,17 @@ export default function StaffProfilePage() {
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+export default function StaffProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto p-8">
+        <div className="animate-pulse">Loading...</div>
+      </div>
+    }>
+      <StaffProfilePageInner />
+    </Suspense>
   )
 }

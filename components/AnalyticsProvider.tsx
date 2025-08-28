@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { initAnalytics, trackPageViewAll } from '@/lib/analytics';
@@ -10,7 +10,7 @@ import { initGA, logPageView } from '@/lib/analytics/ga4';
 import { initWebVitals, reportNavigationTiming, monitorLongTasks } from '@/lib/analytics/web-vitals';
 import * as Sentry from '@sentry/nextjs';
 
-export default function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+function AnalyticsProviderInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const cookieConsent = useCookieConsent();
@@ -130,5 +130,13 @@ export default function AnalyticsProvider({ children }: { children: React.ReactN
 
       {children}
     </>
+  );
+}
+
+export default function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<>{children}</>}>
+      <AnalyticsProviderInner>{children}</AnalyticsProviderInner>
+    </Suspense>
   );
 }
