@@ -1,4 +1,4 @@
-import { LRUCache } from 'lru-cache'
+// import { LRUCache } from 'lru-cache'
 
 export interface RateLimitOptions {
   interval: number // Time window in seconds
@@ -6,10 +6,7 @@ export interface RateLimitOptions {
 }
 
 // In-memory store for rate limiting (use Redis in production)
-const rateLimitStore = new LRUCache<string, number[]>({
-  max: 10000, // Store up to 10k unique IPs
-  ttl: 1000 * 60 * 60 // 1 hour TTL
-})
+const rateLimitStore = new Map<string, number[]>();
 
 /**
  * Simple rate limiter
