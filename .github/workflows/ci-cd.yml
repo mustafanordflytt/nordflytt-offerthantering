@@ -140,11 +140,13 @@ jobs:
       
       - name: Notify deployment
         uses: 8398a7/action-slack@v3
+        if: ${{ always() && secrets.SLACK_WEBHOOK_URL != '' }}
         with:
           status: ${{ job.status }}
           text: 'Production deployment completed'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        if: always()
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   lighthouse:
     name: Lighthouse Performance Test
