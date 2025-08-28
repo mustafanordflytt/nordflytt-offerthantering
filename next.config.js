@@ -46,12 +46,27 @@ const nextConfig = {
       crypto: false,
     };
 
-    // Handle TensorFlow for browser environment
+    // Handle TensorFlow and AWS SDK for browser environment
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@tensorflow/tfjs-node': '@tensorflow/tfjs',
+        'aws-sdk': false,
+        '@aws-sdk/client-sagemaker': false,
+        '@aws-sdk/client-sagemaker-runtime': false,
+        '@aws-sdk/client-s3': false,
       };
+    }
+    
+    // Server-side externals
+    if (isServer) {
+      config.externals = [
+        ...config.externals,
+        'aws-sdk',
+        '@aws-sdk/client-sagemaker',
+        '@aws-sdk/client-sagemaker-runtime', 
+        '@aws-sdk/client-s3'
+      ];
     }
     
     // Ignore problematic files
