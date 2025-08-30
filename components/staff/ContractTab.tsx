@@ -1,7 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import ContractManagement from '@/components/contracts/ContractManagement'
+// import ContractManagement from '@/components/contracts/ContractManagement'
+const ContractManagement = ({ staffId, staffName, staffRole, staffEmail, contracts }: any) => {
+  return <div className="p-4 border rounded">Contract Management - Temporarily disabled for deployment</div>
+}
 import { useToast } from '@/hooks/use-toast'
 
 interface ContractTabProps {
