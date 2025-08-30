@@ -60,10 +60,6 @@ import {
 import Link from 'next/link'
 import { useToast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
-// import ContractManagement from '@/components/contracts/ContractManagement'
-const ContractManagement = ({ staffId, staffName, staffRole, staffEmail, contracts }: any) => {
-  return <div className="p-4 border rounded">Contract Management - Temporarily disabled for deployment</div>
-}
 import AssetDocumentGenerator from '@/components/assets/AssetDocumentGenerator'
 import AssetDocumentStatus from '@/components/assets/AssetDocumentStatus'
 import OffboardingTab from '@/components/staff/OffboardingTab'
@@ -1576,13 +1572,10 @@ function StaffProfilePageInner() {
 
         {/* AVTAL TAB - FÖRBÄTTRAD MED NYA KOMPONENTER */}
         <TabsContent value="contracts" className="space-y-6">
-          <ContractManagement
-            staffId={staff.id}
-            staffName={staff.name}
-            staffRole={staff.role}
-            staffEmail={staff.email}
-            contracts={staff.contracts || {}}
-          />
+          <div className="p-6 border rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">Contract Management</h3>
+            <p className="text-muted-foreground">Contract management functionality temporarily disabled for deployment.</p>
+          </div>
         </TabsContent>
 
         {/* TILLGÅNGAR TAB */}
