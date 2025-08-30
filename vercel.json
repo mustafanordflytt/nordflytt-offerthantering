@@ -1,28 +1,7 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "framework": "nextjs",
-  "buildCommand": "bash scripts/vercel-build.sh",
-  "outputDirectory": ".next",
-  "devCommand": "npm run dev",
   "installCommand": "npm install --legacy-peer-deps",
   "regions": ["arn1"],
-  "env": {
-    "NODE_ENV": "production",
-    "NEXT_TELEMETRY_DISABLED": "1"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production",
-      "NEXT_TELEMETRY_DISABLED": "1",
-      "SKIP_ENV_VALIDATION": "true",
-      "NPM_CONFIG_LOGLEVEL": "error"
-    }
-  },
   "functions": {
     "app/api/*/route.ts": {
       "maxDuration": 30
