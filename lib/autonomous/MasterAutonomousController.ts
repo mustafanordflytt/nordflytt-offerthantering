@@ -3,11 +3,30 @@
 // Orchestrates all autonomous decision engines with Phase 4 integration
 // =============================================================================
 
-import winston from 'winston';
+// import winston from 'winston'; // Temporarily disabled for deployment
 import Redis from 'redis';
 import { BaseDecisionEngine, DecisionContext, DecisionRecord, PerformanceMetrics } from './BaseDecisionEngine';
 import { PricingDecisionEngine } from './PricingDecisionEngine';
 import { OperationalDecisionEngine } from './OperationalDecisionEngine';
+
+// Mock logger for deployment
+const winston = {
+  createLogger: () => ({
+    info: (msg: string, meta?: any) => console.log('[INFO]', msg, meta || ''),
+    error: (msg: string, meta?: any) => console.error('[ERROR]', msg, meta || ''),
+    warn: (msg: string, meta?: any) => console.warn('[WARN]', msg, meta || ''),
+    debug: (msg: string, meta?: any) => console.log('[DEBUG]', msg, meta || '')
+  }),
+  format: {
+    json: () => {},
+    timestamp: () => {},
+    errors: () => {},
+    combine: () => {}
+  },
+  transports: {
+    Console: class Console {}
+  }
+};
 
 export interface SystemHealth {
   [engineType: string]: {

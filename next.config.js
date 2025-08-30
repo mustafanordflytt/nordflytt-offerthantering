@@ -146,9 +146,7 @@ const nextConfig = {
   },
   
   // 🚀 Vercel deployment optimizations
-  outputFileTracing: true,
   poweredByHeader: false,
-  generateEtags: true,
   compress: true,
 };
 

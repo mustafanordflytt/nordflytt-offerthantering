@@ -1,15 +1,16 @@
 /**
- * AWS SageMaker Client for Nordflytt ML Model
- * Handles real-time inference requests to the deployed RandomForest model
+ * AWS SageMaker Client for Nordflytt ML Model - STUB VERSION
+ * Temporarily disabled for Vercel deployment
  */
 
-import { 
-  SageMakerRuntimeClient, 
-  InvokeEndpointCommand,
-  InvokeEndpointCommandInput,
-  InvokeEndpointCommandOutput 
-} from '@aws-sdk/client-sagemaker-runtime';
-import { fromIni } from '@aws-sdk/credential-provider-ini';
+// Commented out AWS SDK imports for deployment
+// import { 
+//   SageMakerRuntimeClient, 
+//   InvokeEndpointCommand,
+//   InvokeEndpointCommandInput,
+//   InvokeEndpointCommandOutput 
+// } from '@aws-sdk/client-sagemaker-runtime';
+// import { fromIni } from '@aws-sdk/credential-provider-ini';
 
 export interface SageMakerConfig {
   endpointName: string;
@@ -42,7 +43,7 @@ export interface MLModelOutput {
 }
 
 export class SageMakerMLClient {
-  private client: SageMakerRuntimeClient;
+  private client: any; // Temporarily using any instead of SageMakerRuntimeClient
   private endpointName: string;
   private modelVersion: string = 'v1.0-randomforest';
   private inferenceCount: number = 0;
@@ -51,22 +52,9 @@ export class SageMakerMLClient {
   constructor(config: SageMakerConfig) {
     this.endpointName = config.endpointName || 'nordflytt-time-estimation-prod';
     
-    // Initialize AWS SDK client with credentials
-    const clientConfig: any = {
-      region: config.region || 'eu-north-1' // Stockholm region
-    };
-
-    // Use explicit credentials if provided, otherwise use default chain
-    if (config.accessKeyId && config.secretAccessKey) {
-      clientConfig.credentials = {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey
-      };
-    } else if (config.profile) {
-      clientConfig.credentials = fromIni({ profile: config.profile });
-    }
-
-    this.client = new SageMakerRuntimeClient(clientConfig);
+    // Stub implementation - no actual AWS client
+    this.client = null;
+    console.log('SageMaker client disabled for deployment');
   }
 
   /**
@@ -126,16 +114,15 @@ export class SageMakerMLClient {
         instances: [Object.values(modelInput)]
       });
       
-      // Prepare invoke command
-      const command = new InvokeEndpointCommand({
-        EndpointName: this.endpointName,
-        ContentType: 'application/json',
-        Accept: 'application/json',
-        Body: new TextEncoder().encode(inputData)
-      });
+      // STUB: Return mock prediction instead of calling AWS
+      console.log('SageMaker prediction disabled - returning mock data');
       
-      // Make prediction request
-      const response = await this.client.send(command);
+      // Simulate a response
+      const response = {
+        Body: new TextEncoder().encode(JSON.stringify({
+          predictions: [modelInput.enhanced_v21_estimate || 6]
+        }))
+      };
       
       // Parse response
       const responseBody = new TextDecoder().decode(response.Body);
