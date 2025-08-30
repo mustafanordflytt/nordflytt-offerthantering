@@ -151,6 +151,12 @@ const nextConfig = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
+  
+  // 🚀 Vercel deployment optimizations
+  outputFileTracing: true,
+  poweredByHeader: false,
+  generateEtags: true,
+  compress: true,
 };
 
 export default nextConfig;
