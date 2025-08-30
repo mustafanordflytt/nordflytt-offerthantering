@@ -20,15 +20,8 @@ const nextConfig = {
     optimizePackageImports: [
       'lucide-react', 
       '@supabase/supabase-js',
-      '@radix-ui/react-dialog',
-      '@radix-ui/react-dropdown-menu',
-      '@radix-ui/react-select',
-      '@radix-ui/react-tabs',
-      '@radix-ui/react-tooltip',
-      'recharts',
       'date-fns'
     ],
-    // optimizeCss: true, // Disabled - requires critters package
   },
   
   // 🎯 Optimera bilder
@@ -55,11 +48,7 @@ const nextConfig = {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve.alias,
-        '@tensorflow/tfjs-node': '@tensorflow/tfjs',
         'aws-sdk': false,
-        '@aws-sdk/client-sagemaker': false,
-        '@aws-sdk/client-sagemaker-runtime': false,
-        '@aws-sdk/client-s3': false,
       };
     }
     
@@ -68,14 +57,8 @@ const nextConfig = {
       config.externals = [
         ...config.externals,
         'aws-sdk',
-        '@aws-sdk/client-sagemaker',
-        '@aws-sdk/client-sagemaker-runtime', 
-        '@aws-sdk/client-s3',
-        'puppeteer',
         'pg',
-        'redis',
-        'winston',
-        'mqtt'
+        'redis'
       ];
     }
     

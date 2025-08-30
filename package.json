@@ -1,23 +1,20 @@
 {
   "name": "nordflytts-booking-form",
   "version": "1.0.0",
-  "type": "module",
   "engines": {
     "node": ">=18.17.0"
   },
   "scripts": {
     "dev": "next dev",
+    "prebuild": "rm -rf .next",
     "build": "next build",
     "start": "next start",
-    "lint": "echo 'Skipping lint for deployment' && exit 0",
-    "type-check": "echo 'Skipping type check' && exit 0",
-    "test": "echo 'No unit tests configured' && exit 0",
-    "test:e2e": "echo 'No E2E tests configured' && exit 0",
-    "postinstall": "echo 'Dependencies installed successfully'"
+    "lint": "echo 'Lint skipped'",
+    "type-check": "echo 'Type check skipped'",
+    "test": "echo 'Tests skipped'",
+    "test:e2e": "echo 'E2E tests skipped'"
   },
   "dependencies": {
-    "@aws-sdk/client-sagemaker-runtime": "^3.876.0",
-    "@aws-sdk/credential-provider-ini": "^3.876.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -49,7 +46,6 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.56.0",
     "@tailwindcss/postcss": "^4.1.12",
-    "@tensorflow/tfjs": "^4.22.0",
     "@types/leaflet": "^1.9.20",
     "autoprefixer": "^10.4.21",
     "bcryptjs": "^3.0.2",
@@ -66,13 +62,11 @@
     "jspdf": "^3.0.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
-    "mqtt": "^5.14.0",
     "next": "^15.5.2",
     "next-themes": "^0.4.6",
     "openai": "^5.16.0",
     "pg": "^8.16.3",
     "postcss": "^8.5.6",
-    "puppeteer": "^24.17.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.1.1",
     "react-confetti": "^6.4.0",
@@ -90,7 +84,6 @@
     "typescript": "^5.9.2",
     "vaul": "^1.1.2",
     "web-vitals": "^5.1.0",
-    "winston": "^3.17.0",
     "xml2js": "^0.6.2",
     "zod": "^4.1.4",
     "zustand": "^5.0.8"
