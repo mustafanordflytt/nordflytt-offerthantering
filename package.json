@@ -2,14 +2,18 @@
   "name": "nordflytts-booking-form",
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "next dev",
-    "build": "next build --no-lint",
+    "build": "next build",
     "start": "next start",
-    "lint": "echo Skipping lint for deployment",
-    "type-check": "echo Skipping type check",
+    "lint": "echo 'Skipping lint for deployment' && exit 0",
+    "type-check": "echo 'Skipping type check' && exit 0",
     "test": "echo 'No unit tests configured' && exit 0",
-    "test:e2e": "echo 'No E2E tests configured' && exit 0"
+    "test:e2e": "echo 'No E2E tests configured' && exit 0",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
   "dependencies": {
     "@aws-sdk/client-sagemaker-runtime": "^3.876.0",
@@ -95,5 +99,11 @@
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.8"
+  },
+  "overrides": {
+    "react": "$react",
+    "react-dom": "$react-dom",
+    "@types/react": "$@types/react",
+    "@types/react-dom": "$@types/react-dom"
   }
 }
