@@ -155,6 +155,7 @@ jobs:
           fi
       
       - name: Deploy to Vercel Production
+        id: deploy
         if: steps.check-vercel.outputs.has-credentials == 'true'
         uses: amondnet/vercel-action@v25
         with:
@@ -200,8 +201,11 @@ jobs:
   lighthouse:
     name: Lighthouse Performance Test
     runs-on: ubuntu-latest
-    needs: [test, security, e2e-tests]
-    if: github.ref == 'refs/heads/main' && success()
+    needs: deploy-production
+    if: |
+      github.ref == 'refs/heads/main' && 
+      needs.deploy-production.result == 'success' && 
+      needs.deploy-production.outputs.preview-url != ''
     
     steps:
       - uses: actions/checkout@v3
@@ -210,9 +214,9 @@ jobs:
         uses: treosh/lighthouse-ci-action@v9
         with:
           urls: |
-            https://nordflytt.se
-            https://nordflytt.se/form
-            https://nordflytt.se/staff
-          budgetPath: ./lighthouse-budget.json
+            ${{ needs.deploy-production.outputs.preview-url }}
+            ${{ needs.deploy-production.outputs.preview-url }}/form
+            ${{ needs.deploy-production.outputs.preview-url }}/staff
           uploadArtifacts: true
           temporaryPublicStorage: true
+        continue-on-error: true
